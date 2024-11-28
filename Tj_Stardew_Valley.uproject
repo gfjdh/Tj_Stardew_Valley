@@ -7,7 +7,10 @@
 		{
 			"Name": "Tj_Stardew_Valley",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"PaperZD"
+			]
 		}
 	],
 	"Plugins": [
