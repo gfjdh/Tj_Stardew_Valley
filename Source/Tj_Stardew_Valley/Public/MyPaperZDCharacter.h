@@ -7,6 +7,7 @@
 #include "PaperSpriteComponent.h"
 #include "Camera/CameraComponent.h"
 #include "PaperFlipbookComponent.h"
+#include "PaperFlipbook.h"
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -43,7 +44,29 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UInputAction* MoveAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MoveSpeed = 500.0f;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool CanMove = true;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPaperFlipbook* WalkUpAnimation;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPaperFlipbook* WalkDownAnimation;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPaperFlipbook* WalkSideAnimation;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPaperFlipbook* IdleUpAnimation;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPaperFlipbook* IdleDownAnimation;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPaperFlipbook* IdleSideAnimation;
 
 	AMyPaperZDCharacter();
 
@@ -54,4 +77,5 @@ public:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 	void Move(const FInputActionValue& Value);
+	void StopMove();
 };
