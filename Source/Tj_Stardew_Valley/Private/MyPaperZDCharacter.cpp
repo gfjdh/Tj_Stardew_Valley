@@ -35,9 +35,9 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 	PlayerSprite = CreateDefaultSubobject<UPaperFlipbookComponent>(TEXT("PlayerSprite"));
 	PlayerSprite->SetupAttachment(RootComponent);
 
-	static ConstructorHelpers::FObjectFinder<UPaperFlipbook> PlayerAnimation(TEXT("/Game/Assets/Player/Player_Animation/idle_down"));
+	/*static ConstructorHelpers::FObjectFinder<UPaperFlipbook> PlayerAnimation(TEXT("/Game/Assets/Player/Player_Animation/idle_down"));
 	if (PlayerAnimation.Succeeded())
 	{
 		PlayerSprite->SetFlipbook(PlayerAnimation.Object);
-	}
+	}*/
 }
