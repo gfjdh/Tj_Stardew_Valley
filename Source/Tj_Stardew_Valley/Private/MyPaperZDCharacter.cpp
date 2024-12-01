@@ -1,4 +1,5 @@
 #include "MyPaperZDCharacter.h"
+#include "PaperFlipbook.h"
 
 AMyPaperZDCharacter::AMyPaperZDCharacter()
 {
@@ -21,7 +22,8 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(RootComponent);
 	SpringArm->TargetArmLength = 500.0f;
-	SpringArm->SetRelativeRotation(FRotator(0.0f, 0.0f, -90.0f));
+	// 设置 SpringArm 在 Z 轴方向旋转 -90 度
+	SpringArm->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
 
 	// 创建一个 Camera 组件，并将其设置为 SpringArm 的子组件
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
@@ -35,9 +37,11 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 	PlayerSprite = CreateDefaultSubobject<UPaperFlipbookComponent>(TEXT("PlayerSprite"));
 	PlayerSprite->SetupAttachment(RootComponent);
 
-	/*static ConstructorHelpers::FObjectFinder<UPaperFlipbook> PlayerAnimation(TEXT("/Game/Assets/Player/Player_Animation/idle_down"));
-	if (PlayerAnimation.Succeeded())
+	// 加载指定的 uasset 文件
+	static ConstructorHelpers::FObjectFinder<UObject> PlayerFlipbook(TEXT("PaperFlipbook'/Game/Assets/Player/Player_Animation/idle_down/idle_down_at.idle_down_at'"));
+	if (PlayerFlipbook.Succeeded())
 	{
-		PlayerSprite->SetFlipbook(PlayerAnimation.Object);
-	}*/
+		PlayerSprite->SetFlipbook(Cast<UPaperFlipbook>(PlayerFlipbook.Object));
+	}
+	
 }
