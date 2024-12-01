@@ -1,9 +1,13 @@
 #include "MyPaperZDCharacter.h"
 #include "PaperFlipbook.h"
+#include "EnhancedInputSubsystems.h"
+#include "EnhancedInputComponent.h"
+#include "InputAction.h"
+#include "InputMappingContext.h"
+#include "GameFramework/Actor.h"
 
 AMyPaperZDCharacter::AMyPaperZDCharacter()
 {
-	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	// 忽略 PaperZD 自带的 CollisionCylinder
 	UCapsuleComponent* DefaultCapsule = Cast<UCapsuleComponent>(GetDefaultSubobjectByName(TEXT("CollisionCylinder")));
@@ -43,5 +47,52 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 	{
 		PlayerSprite->SetFlipbook(Cast<UPaperFlipbook>(PlayerFlipbook.Object));
 	}
-	
+
+	// 加载输入上下文和移动动作
+	static ConstructorHelpers::FObjectFinder<UInputMappingContext> InputMappingContextFinder(TEXT("InputMappingContext'/Game/Input/Input_Context.Input_Context'"));
+	if (InputMappingContextFinder.Succeeded())
+	{
+		InputMappingContext = InputMappingContextFinder.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> MoveActionFinder(TEXT("InputAction'/Game/Input/Input_Move.Input_Move'"));
+	if (MoveActionFinder.Succeeded())
+	{
+		MoveAction = MoveActionFinder.Object;
+	}
+
+
+
+	AutoPossessPlayer = EAutoReceiveInput::Player0;
+}
+
+void AMyPaperZDCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController)
+	{
+		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+		if (Subsystem)
+		{
+			Subsystem->AddMappingContext(InputMappingContext, 0);
+		}
+	}
+}
+
+void AMyPaperZDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
+	if (EnhancedInputComponent)
+	{
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMyPaperZDCharacter::Move);
+	}
+}
+
+void AMyPaperZDCharacter::Move(const FInputActionValue& Value)
+{
+	FVector2D MoveVector = Value.Get<FVector2D>();
+	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("MoveVector: %s"), *MoveVector.ToString()));
 }
