@@ -7,15 +7,11 @@
 		{
 			"Name": "Tj_Stardew_Valley",
 			"Type": "Runtime",
-<<<<<<< Updated upstream
-			"LoadingPhase": "Default"
-=======
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
-				"PaperZD",
-				"Engine"
+				"Engine",
+				"PaperZD"
 			]
->>>>>>> Stashed changes
 		}
 	],
 	"Plugins": [
