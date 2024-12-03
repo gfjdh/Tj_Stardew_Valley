@@ -12,7 +12,7 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 	UCapsuleComponent* DefaultCapsule = Cast<UCapsuleComponent>(GetDefaultSubobjectByName(TEXT("CollisionCylinder")));
 	if (DefaultCapsule)
 	{
-		DefaultCapsule->InitCapsuleSize(0.0f, 0.0f);
+		DefaultCapsule->InitCapsuleSize(16.0f, 16.0f);
 	}
 
 	// 创建一个 CapsuleComp 组件，并将其设置为根组件
@@ -27,7 +27,7 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 	SpringArm->SetupAttachment(RootComponent);
 	SpringArm->TargetArmLength = 500.0f;
 	// 设置 SpringArm 在 Z 轴方向旋转 -90 度
-	SpringArm->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
+	SpringArm->SetRelativeRotation(FRotator(-90.0f, -90.0f, 0.0f));
 
 	// 创建一个 Camera 组件，并将其设置为 SpringArm 的子组件
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
@@ -40,6 +40,7 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 	// 创建一个 PaperFlipbookComponent 组件，并将其设置为根组件
 	PlayerSprite = CreateDefaultSubobject<UPaperFlipbookComponent>(TEXT("PlayerSprite"));
 	PlayerSprite->SetupAttachment(RootComponent);
+	PlayerSprite->SetRelativeRotation(FRotator(0.0f, 0.0f, -90.0f));
 
 	// 加载默认指定的 uasset 文件
 	static ConstructorHelpers::FObjectFinder<UObject> PlayerFlipbook(TEXT("PaperFlipbook'/Game/Assets/Player/Player_Animation/idle_down/idle_down_at.idle_down_at'"));
@@ -148,7 +149,7 @@ void AMyPaperZDCharacter::Move(const FInputActionValue& Value)
 
 			float DeltaTime = GetWorld()->DeltaTimeSeconds;
 			FVector CurrentLocation = GetActorLocation();
-			FVector DistanceToMove = GetActorUpVector() * MoveSpeed * MoveVector.Y * DeltaTime;
+			FVector DistanceToMove = GetActorRightVector() * MoveSpeed * MoveVector.Y * DeltaTime * (-1);
 			FVector NewLocation = CurrentLocation + DistanceToMove;
 			SetActorLocation(NewLocation);
 		}
