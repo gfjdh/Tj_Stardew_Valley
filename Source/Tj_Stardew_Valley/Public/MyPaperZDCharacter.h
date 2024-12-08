@@ -45,7 +45,7 @@ public:
 	UInputAction* MoveAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MoveSpeed = 500.0f;
+	float MoveSpeed = 300.0f;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool CanMove = true;

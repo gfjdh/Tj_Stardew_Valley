@@ -20,10 +20,10 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 	SetRootComponent(CapsuleComp);
 	// 设置 CapsuleComp 的大小为 10*10
 	CapsuleComp->InitCapsuleSize(16.0f, 16.0f);
-	// 设置碰撞属性
-	CapsuleComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	CapsuleComp->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
-	CapsuleComp->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
+	//// 设置碰撞属性
+	//CapsuleComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	//CapsuleComp->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
+	//CapsuleComp->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 
 
 
