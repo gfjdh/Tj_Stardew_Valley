@@ -12,7 +12,7 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 	UCapsuleComponent* DefaultCapsule = Cast<UCapsuleComponent>(GetDefaultSubobjectByName(TEXT("CollisionCylinder")));
 	if (DefaultCapsule)
 	{
-		DefaultCapsule->InitCapsuleSize(16.0f, 16.0f);
+		DefaultCapsule->InitCapsuleSize(0.0f, 0.0f);
 	}
 
 	// 创建一个 CapsuleComp 组件，并将其设置为根组件
@@ -20,6 +20,11 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 	SetRootComponent(CapsuleComp);
 	// 设置 CapsuleComp 的大小为 10*10
 	CapsuleComp->InitCapsuleSize(16.0f, 16.0f);
+	// 设置碰撞属性
+	CapsuleComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	CapsuleComp->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
+	CapsuleComp->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
+
 
 
 	// 创建一个 SpringArm 组件，并将其设置为 CapsuleComp 的子组件
