@@ -4,28 +4,17 @@
 #include "InputAction.h"
 #include "InputMappingContext.h"
 #include "GameFramework/Actor.h"
+#include "GameFramework/CharacterMovementComponent.h" 
+
 
 AMyPaperZDCharacter::AMyPaperZDCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	// 忽略 PaperZD 自带的 CollisionCylinder
 	UCapsuleComponent* DefaultCapsule = Cast<UCapsuleComponent>(GetDefaultSubobjectByName(TEXT("CollisionCylinder")));
 	if (DefaultCapsule)
 	{
-		DefaultCapsule->InitCapsuleSize(0.0f, 0.0f);
+		DefaultCapsule->InitCapsuleSize(16.0f, 16.0f);
 	}
-
-	// 创建一个 CapsuleComp 组件，并将其设置为根组件
-	CapsuleComp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComp"));
-	SetRootComponent(CapsuleComp);
-	// 设置 CapsuleComp 的大小为 10*10
-	CapsuleComp->InitCapsuleSize(16.0f, 16.0f);
-	//// 设置碰撞属性
-	//CapsuleComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	//CapsuleComp->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
-	//CapsuleComp->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
-
-
 
 	// 创建一个 SpringArm 组件，并将其设置为 CapsuleComp 的子组件
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
@@ -42,16 +31,14 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 	// 设置正交宽度为512
 	Camera->OrthoWidth = 300.0f;
 
-	// 创建一个 PaperFlipbookComponent 组件，并将其设置为根组件
-	PlayerSprite = CreateDefaultSubobject<UPaperFlipbookComponent>(TEXT("PlayerSprite"));
-	PlayerSprite->SetupAttachment(RootComponent);
-	PlayerSprite->SetRelativeRotation(FRotator(0.0f, 0.0f, -90.0f));
+	GetSprite()->SetupAttachment(RootComponent);
+	GetSprite()->SetRelativeRotation(FRotator(0.0f, 0.0f, -90.0f));
 
 	// 加载默认指定的 uasset 文件
 	static ConstructorHelpers::FObjectFinder<UObject> PlayerFlipbook(TEXT("PaperFlipbook'/Game/Assets/Player/Player_Animation/idle_down/idle_down_at.idle_down_at'"));
 	if (PlayerFlipbook.Succeeded())
 	{
-		PlayerSprite->SetFlipbook(Cast<UPaperFlipbook>(PlayerFlipbook.Object));
+		GetSprite()->SetFlipbook(Cast<UPaperFlipbook>(PlayerFlipbook.Object));
 	}
 
 	// 加载输入上下文和移动动作
@@ -104,6 +91,10 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 		IdleSideAnimation = Cast<UPaperFlipbook>(IdleSideFlipbook.Object);
 	}
 
+
+	// 设置步高为0
+	GetCharacterMovement()->MaxStepHeight = 0.0f;
+
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 }
 
@@ -122,6 +113,25 @@ void AMyPaperZDCharacter::BeginPlay()
 	}
 }
 
+
+void AMyPaperZDCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	/*if (CanMove) {
+		if (MovementDirection.Length() > 0.0f) {
+			if (MovementDirection.Length() > 1.0f) {
+				MovementDirection.Normalize();
+			}
+			FVector2D DistanceToMove = MovementDirection * MoveSpeed * DeltaTime;
+			FVector CurrentLocation = GetActorLocation();
+			FVector NewLocation = FVector(CurrentLocation.X + DistanceToMove.X, CurrentLocation.Y + (-1) * DistanceToMove.Y, CurrentLocation.Z);
+		}
+	}*/
+	FVector PlayerLocation = GetActorLocation();
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Player Location: X=%f, Y=%f, Z=%f"), PlayerLocation.X, PlayerLocation.Y, PlayerLocation.Z));
+}
+
+
 void AMyPaperZDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -133,63 +143,56 @@ void AMyPaperZDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	}
 }
 
+
 void AMyPaperZDCharacter::Move(const FInputActionValue& Value)
 {
 	FVector2D MoveVector = Value.Get<FVector2D>();
-	//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("MoveVector: %s"), *MoveVector.ToString()));
 
 	if (CanMove)
 	{
 		if (abs(MoveVector.Y) > 0.0f)
 		{
-
 			if (MoveVector.Y > 0.0f)
 			{
-				PlayerSprite->SetFlipbook(WalkUpAnimation);
+				GetSprite()->SetFlipbook(WalkUpAnimation);
 			}
 			else
 			{
-				PlayerSprite->SetFlipbook(WalkDownAnimation);
+				GetSprite()->SetFlipbook(WalkDownAnimation);
 			}
 
-			float DeltaTime = GetWorld()->DeltaTimeSeconds;
-			FVector CurrentLocation = GetActorLocation();
-			FVector DistanceToMove = GetActorRightVector() * MoveSpeed * MoveVector.Y * DeltaTime * (-1);
-			FVector NewLocation = CurrentLocation + DistanceToMove;
-			SetActorLocation(NewLocation);
+			AddMovementInput(GetActorRightVector(), MoveVector.Y * (-1));
 		}
 		else if (abs(MoveVector.X) > 0.0f)
 		{
-			PlayerSprite->SetFlipbook(WalkSideAnimation);
+			GetSprite()->SetFlipbook(WalkSideAnimation);
 			if (MoveVector.X > 0.0f)
 			{
-				PlayerSprite->SetWorldScale3D(FVector(1.0f, 1.0f, 1.0f));
+				GetSprite()->SetWorldScale3D(FVector(1.0f, 1.0f, 1.0f));
 			}
 			else
 			{
-				PlayerSprite->SetWorldScale3D(FVector(-1.0f, 1.0f, 1.0f));
+				GetSprite()->SetWorldScale3D(FVector(-1.0f, 1.0f, 1.0f));
 			}
-			float DeltaTime = GetWorld()->DeltaTimeSeconds;
-			FVector CurrentLocation = GetActorLocation();
-			FVector DistanceToMove = GetActorForwardVector() * MoveSpeed * MoveVector.X * DeltaTime;
-			FVector NewLocation = CurrentLocation + DistanceToMove;
-			SetActorLocation(NewLocation);
+
+			AddMovementInput(GetActorForwardVector(), MoveVector.X);
 		}
 	}
 }
 
 void AMyPaperZDCharacter::StopMove()
 {
-	if (PlayerSprite->GetFlipbook() == WalkUpAnimation)
+	MovementDirection = FVector2D::ZeroVector;
+	if (GetSprite()->GetFlipbook() == WalkUpAnimation)
 	{
-		PlayerSprite->SetFlipbook(IdleUpAnimation);
+		GetSprite()->SetFlipbook(IdleUpAnimation);
 	}
-	else if (PlayerSprite->GetFlipbook() == WalkDownAnimation)
+	else if (GetSprite()->GetFlipbook() == WalkDownAnimation)
 	{
-		PlayerSprite->SetFlipbook(IdleDownAnimation);
+		GetSprite()->SetFlipbook(IdleDownAnimation);
 	}
-	else if (PlayerSprite->GetFlipbook() == WalkSideAnimation)
+	else if (GetSprite()->GetFlipbook() == WalkSideAnimation)
 	{
-		PlayerSprite->SetFlipbook(IdleSideAnimation);
+		GetSprite()->SetFlipbook(IdleSideAnimation);
 	}
 }

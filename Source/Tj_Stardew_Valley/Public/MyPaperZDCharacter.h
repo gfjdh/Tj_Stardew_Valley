@@ -24,8 +24,6 @@ class TJ_STARDEW_VALLEY_API AMyPaperZDCharacter : public APaperZDCharacter
 {
 	GENERATED_BODY()
 public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	UCapsuleComponent* CapsuleComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	USpringArmComponent* SpringArm;
@@ -33,8 +31,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UCameraComponent* Camera;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	UPaperFlipbookComponent* PlayerSprite;
 
 
 
@@ -46,6 +42,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MoveSpeed = 300.0f;
+
+	UPROPERTY(BlueprintReadWrite)
+	FVector2D MovementDirection;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool CanMove = true;
@@ -78,4 +77,9 @@ public:
 
 	void Move(const FInputActionValue& Value);
 	void StopMove();
+
+	void Interact(const FInputActionValue& Value);
+
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 };
