@@ -117,18 +117,8 @@ void AMyPaperZDCharacter::BeginPlay()
 void AMyPaperZDCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	/*if (CanMove) {
-		if (MovementDirection.Length() > 0.0f) {
-			if (MovementDirection.Length() > 1.0f) {
-				MovementDirection.Normalize();
-			}
-			FVector2D DistanceToMove = MovementDirection * MoveSpeed * DeltaTime;
-			FVector CurrentLocation = GetActorLocation();
-			FVector NewLocation = FVector(CurrentLocation.X + DistanceToMove.X, CurrentLocation.Y + (-1) * DistanceToMove.Y, CurrentLocation.Z);
-		}
-	}*/
 	FVector PlayerLocation = GetActorLocation();
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Player Location: X=%f, Y=%f, Z=%f"), PlayerLocation.X, PlayerLocation.Y, PlayerLocation.Z));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Player Location: X=%f, Y=%f, Z=%f"), PlayerLocation.X, PlayerLocation.Y, PlayerLocation.Z));
 }
 
 
@@ -155,10 +145,12 @@ void AMyPaperZDCharacter::Move(const FInputActionValue& Value)
 			if (MoveVector.Y > 0.0f)
 			{
 				GetSprite()->SetFlipbook(WalkUpAnimation);
+				PlayerDirection = EPlayerDirection::Up;
 			}
 			else
 			{
 				GetSprite()->SetFlipbook(WalkDownAnimation);
+				PlayerDirection = EPlayerDirection::Down;
 			}
 
 			AddMovementInput(GetActorRightVector(), MoveVector.Y * (-1));
@@ -169,10 +161,12 @@ void AMyPaperZDCharacter::Move(const FInputActionValue& Value)
 			if (MoveVector.X > 0.0f)
 			{
 				GetSprite()->SetWorldScale3D(FVector(1.0f, 1.0f, 1.0f));
+				PlayerDirection = EPlayerDirection::Right;
 			}
 			else
 			{
 				GetSprite()->SetWorldScale3D(FVector(-1.0f, 1.0f, 1.0f));
+				PlayerDirection = EPlayerDirection::Left;
 			}
 
 			AddMovementInput(GetActorForwardVector(), MoveVector.X);
