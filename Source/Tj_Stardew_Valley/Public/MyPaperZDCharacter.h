@@ -22,7 +22,6 @@
 #include "InputActionValue.h"
 #include "GameFramework/Controller.h"
 
-
 #include "MyPaperZDCharacter.generated.h"
 
 
@@ -36,19 +35,30 @@ enum class EPlayerDirection : uint8
 	Right
 };
 
+UENUM(BlueprintType)
+enum class EPlayerState : uint8
+{
+	Idle,
+	Walk,
+	Chop,
+	Mine,
+	Water,
+	Hoe
+};
 
 UCLASS()
 class TJ_STARDEW_VALLEY_API AMyPaperZDCharacter : public APaperZDCharacter
 {
 	GENERATED_BODY()
 public:
-
+	//基本组件
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	USpringArmComponent* SpringArm;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UCameraComponent* Camera;
 
+	//互动碰撞盒
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UBoxComponent* InteractionBoxUp;
 
@@ -62,6 +72,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UBoxComponent* InteractionBoxLeft;
 
+	//输入
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UInputMappingContext* InputMappingContext;
 
@@ -72,6 +83,16 @@ public:
 	UInputAction* ChopAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UInputAction* MineAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UInputAction* WaterAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UInputAction* HoeAction;
+
+	//砍树动画
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UPaperZDAnimSequence* ChopAnimSequenceUp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -80,20 +101,55 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UPaperZDAnimSequence* ChopAnimSequenceSide;
 
+	//挖矿动画
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPaperZDAnimSequence* MineAnimSequenceUp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPaperZDAnimSequence* MineAnimSequenceDown;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPaperZDAnimSequence* MineAnimSequenceSide;
+
+	//浇水动画
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPaperZDAnimSequence* WaterAnimSequenceUp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPaperZDAnimSequence* WaterAnimSequenceDown;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPaperZDAnimSequence* WaterAnimSequenceSide;
+
+	//铲地动画
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPaperZDAnimSequence* HoeAnimSequenceUp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPaperZDAnimSequence* HoeAnimSequenceDown;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPaperZDAnimSequence* HoeAnimSequenceSide;
+
+
+	//移动速度
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MoveSpeed = 300.0f;
 
+	//移动方向
 	UPROPERTY(BlueprintReadWrite)
 	FVector2D MovementDirection;
 
+	//是否可以移动
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool CanMove = true;
 
+	//是否可以互动
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool CanInteract = true;
 
-
-	FZDOnAnimationOverrideEndSignature OnChopOverrideEndDelegate;
+	//动画结束代理
+	FZDOnAnimationOverrideEndSignature OnInteractOverrideEndDelegate;
 
 
 
@@ -101,6 +157,11 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	EPlayerDirection PlayerDirection;
 
+	// 存储玩家当前的状态
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	EPlayerState CurrentPlayerState;
+
+	//耐力
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float Stamina = 100.0f;
 
@@ -112,18 +173,33 @@ public:
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
+	//移动
 	void Move(const FInputActionValue& Value);
 
+	//砍树
 	void Chop(const FInputActionValue& Value);
 
-	void OnChopOverrideAnimEnd(bool bCompleted);
+	//挖矿
+	void Mine(const FInputActionValue& Value);
+
+	//浇水
+	void Water(const FInputActionValue& Value);
+
+	//铲地
+	void Hoe(const FInputActionValue& Value);
+
+	//动画结束
+	void OnInteractOverrideAnimEnd(bool bCompleted);
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	//互动碰撞盒开始重叠
 	UFUNCTION()
 	void InteractBoxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	//互动碰撞盒结束重叠
 	UFUNCTION(BlueprintCallable)
 	void EnableInteractBox(bool Enabled);
 };
