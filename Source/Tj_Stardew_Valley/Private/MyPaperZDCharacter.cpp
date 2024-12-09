@@ -440,3 +440,46 @@ void AMyPaperZDCharacter::UpdateStamina(int Value) {
 	PlayerUIWidget->SetStamina(Stamina);
 	SDGameInstance->SetPlayerStamina(Stamina);
 }
+
+
+void AMyPaperZDCharacter::CollectItem(CollectableType ItemType) {
+	//²¥·ÅÉùÒô
+	//UGameplayStatics::PlaySound2D(GetWorld(), PickSound);
+
+	switch (ItemType) {
+		case CollectableType::Potion:
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Potion"));
+			break;
+		case CollectableType::Gold:
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Gold"));
+			break;
+		case CollectableType::Wood:
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Wood"));
+			break;
+		case CollectableType::Stone:
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Stone"));
+			break;
+		case CollectableType::Ore:
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Ore"));
+			break;
+		case CollectableType::Seed:
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Seed"));
+			break;
+		case CollectableType::Tool:
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Tool"));
+			break;
+		case CollectableType::Food:				
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Food"));
+			break;
+		case CollectableType::Crop:
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Crop"));
+			break;
+		case CollectableType::Other:
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Other"));
+			break;
+		default:
+			break;
+	}
+
+
+}

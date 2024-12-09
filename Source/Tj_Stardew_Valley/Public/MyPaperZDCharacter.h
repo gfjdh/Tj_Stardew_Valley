@@ -22,10 +22,12 @@
 #include "Components/InputComponent.h"
 #include "InputActionValue.h"
 #include "GameFramework/Controller.h"
+#include "Sound/SoundBase.h"
 
 
 #include "PlayerUI.h"
 #include "StardrewGameInstance.h"
+#include "CollectableEntity.h"
 
 #include "MyPaperZDCharacter.generated.h"
 
@@ -148,6 +150,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UStardrewGameInstance* SDGameInstance;
 
+	//音效
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USoundBase* PickSound;
 
 	//移动速度
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -235,4 +240,9 @@ public:
 	//互动碰撞盒结束重叠
 	UFUNCTION(BlueprintCallable)
 	void EnableInteractBox(bool Enabled);
+
+
+	void CollectItem(CollectableType ItemType);
+
+
 };
