@@ -25,7 +25,7 @@
 
 
 #include "PlayerUI.h"
-
+#include "StardrewGameInstance.h"
 
 #include "MyPaperZDCharacter.generated.h"
 
@@ -137,11 +137,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UPaperZDAnimSequence* HoeAnimSequenceSide;
 
+	//UI设置
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UPlayerUI> PlayerUIClass;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UPlayerUI* PlayerUIWidget;
+
+	//实例
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UStardrewGameInstance* SDGameInstance;
 
 
 	//移动速度

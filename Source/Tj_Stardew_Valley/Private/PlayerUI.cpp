@@ -6,7 +6,7 @@
 
 void UPlayerUI::SetStamina(int NewStamina) {
 
-	FString Str = FString::Printf(TEXT("Stamia: %d"), NewStamina);
+	FString Str = FString::Printf(TEXT("Stamina: %d"), NewStamina);
 	StaminaText->SetText(FText::FromString(Str));
 }
 

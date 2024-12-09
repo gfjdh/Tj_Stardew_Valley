@@ -135,6 +135,13 @@ void AMyPaperZDCharacter::BeginPlay()
 	InteractionBoxRight->OnComponentBeginOverlap.AddDynamic(this, &AMyPaperZDCharacter::InteractBoxOverlapBegin);
 	InteractionBoxLeft->OnComponentBeginOverlap.AddDynamic(this, &AMyPaperZDCharacter::InteractBoxOverlapBegin);
 
+	SDGameInstance = Cast<UStardrewGameInstance>(GetGameInstance());
+	if (SDGameInstance)
+	{
+		Stamina = SDGameInstance->Stamina;
+	}
+
+	// 创建玩家UI
 	if (PlayerUIClass)
 	{
 		PlayerUIWidget = CreateWidget <UPlayerUI>(UGameplayStatics::GetPlayerController(GetWorld(), 0), PlayerUIClass);
@@ -306,7 +313,7 @@ void AMyPaperZDCharacter::Water(const FInputActionValue& Value)
 	}
 
 	CurrentPlayerState = EPlayerState::Idle;
-	UpdateStamina(-5);
+	UpdateStamina(-2);
 }
 
 // 铲地
@@ -431,4 +438,5 @@ void AMyPaperZDCharacter::UpdateStamina(int Value) {
 		Stamina = 0;
 	}
 	PlayerUIWidget->SetStamina(Stamina);
+	SDGameInstance->SetPlayerStamina(Stamina);
 }
