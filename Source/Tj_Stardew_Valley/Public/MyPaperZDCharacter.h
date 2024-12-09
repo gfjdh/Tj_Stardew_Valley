@@ -8,18 +8,18 @@
 #include "Camera/CameraComponent.h"
 #include "PaperFlipbookComponent.h"
 #include "PaperFlipbook.h"
+#include "PaperZDAnimInstance.h"
+#include "PaperZDAnimationComponent.h"
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Components/InputComponent.h"
 #include "InputActionValue.h"
 #include "GameFramework/Controller.h"
-
+#include "Components/BoxComponent.h"
 
 
 #include "MyPaperZDCharacter.generated.h"
-
-
 
 
 
@@ -45,6 +45,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UCameraComponent* Camera;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UBoxComponent* InteractionBox;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UInputMappingContext* InputMappingContext;
 
@@ -63,48 +66,18 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool CanMove = true;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	UPaperFlipbook* WalkUpAnimation;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	UPaperFlipbook* WalkDownAnimation;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	UPaperFlipbook* WalkSideAnimation;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	UPaperFlipbook* IdleUpAnimation;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	UPaperFlipbook* IdleDownAnimation;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	UPaperFlipbook* IdleSideAnimation;
-
-
 	// 存储玩家当前的朝向
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	EPlayerDirection PlayerDirection;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float Stamina = 100.0f;
-
-	// 劈砍动画
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	UPaperFlipbook* ChopDownAnimation;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	UPaperFlipbook* ChopUpAnimation;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	UPaperFlipbook* ChopSideAnimation;
 
 
 	AMyPaperZDCharacter();
 
 	virtual void BeginPlay() override;
 
-	//virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
