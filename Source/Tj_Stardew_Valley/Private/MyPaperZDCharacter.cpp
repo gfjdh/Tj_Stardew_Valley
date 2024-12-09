@@ -1,11 +1,5 @@
 #include "MyPaperZDCharacter.h"
-#include "EnhancedInputSubsystems.h"
-#include "EnhancedInputComponent.h"
-#include "InputAction.h"
-#include "InputMappingContext.h"
-#include "GameFramework/Actor.h"
-#include "GameFramework/CharacterMovementComponent.h" 
-
+#include "TreeStump.h"
 
 AMyPaperZDCharacter::AMyPaperZDCharacter()
 {
@@ -31,8 +25,21 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 	// 设置正交宽度为512
 	Camera->OrthoWidth = 300.0f;
 
+
+	InteractionBoxUp = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionBoxUp"));
+	InteractionBoxUp->SetupAttachment(RootComponent);
+	
+	InteractionBoxDown = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionBoxDown"));
+	InteractionBoxDown->SetupAttachment(RootComponent);
+
+	InteractionBoxSide = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionBoxSide"));
+	InteractionBoxSide->SetupAttachment(RootComponent);
+
 	//GetSprite()->SetupAttachment(RootComponent);
 	GetSprite()->SetRelativeRotation(FRotator(0.0f, 0.0f, -90.0f));
+
+
+
 
 
 	/*static ConstructorHelpers::FClassFinder<UPaperZDAnimInstance> AnimBPClass(TEXT("/Game/Assets/Player/BP_PlayerAnim"));
@@ -84,6 +91,11 @@ void AMyPaperZDCharacter::BeginPlay()
 	}
 
 	OnChopOverrideEndDelegate.BindUObject(this, &AMyPaperZDCharacter::OnChopOverrideAnimEnd);
+	InteractionBoxUp->OnComponentBeginOverlap.AddDynamic(this, &AMyPaperZDCharacter::InteractBoxOverlapBegin);
+	InteractionBoxDown->OnComponentBeginOverlap.AddDynamic(this, &AMyPaperZDCharacter::InteractBoxOverlapBegin);
+	InteractionBoxSide->OnComponentBeginOverlap.AddDynamic(this, &AMyPaperZDCharacter::InteractBoxOverlapBegin);
+	EnableInteractBox(false);
+
 }
 
 
@@ -152,6 +164,7 @@ void AMyPaperZDCharacter::Chop(const FInputActionValue& Value)
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Chop!")));
 		CanMove = false;
 		CanInteract = false;
+		EnableInteractBox(true);
 		switch (PlayerDirection)
 		{
 			case EPlayerDirection::Up:
@@ -172,4 +185,44 @@ void AMyPaperZDCharacter::OnChopOverrideAnimEnd(bool bCompleted)
 {
 	CanMove = true;
 	CanInteract = true;
+	EnableInteractBox(false);
+}
+
+
+
+void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
+
+	ATreeStump* TreeStump = Cast<ATreeStump>(OtherActor);
+	if (TreeStump) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Tree is being Chopped"));
+		//TreeStump->Chop();
+	}
+}
+
+void AMyPaperZDCharacter::EnableInteractBox(bool Enabled){
+
+	UBoxComponent* InteractionBox = InteractionBoxUp;
+
+	switch (PlayerDirection) {
+		case EPlayerDirection::Up:
+			InteractionBox = InteractionBoxUp;
+			break;
+		case EPlayerDirection::Down:
+			InteractionBox = InteractionBoxDown;
+			break;
+		case EPlayerDirection::Left:
+		case EPlayerDirection::Right:
+			InteractionBox = InteractionBoxSide;
+			break;
+	}
+
+	if (Enabled) {
+		InteractionBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		InteractionBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
+	}
+	else {
+		InteractionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		InteractionBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+	}
 }

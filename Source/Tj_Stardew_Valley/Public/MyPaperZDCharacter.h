@@ -10,13 +10,17 @@
 #include "PaperFlipbook.h"
 #include "PaperZDAnimInstance.h"
 #include "PaperZDAnimationComponent.h"
+#include "Components/BoxComponent.h"
+#include "InputAction.h"
+#include "InputMappingContext.h"
+#include "GameFramework/Actor.h"
+#include "GameFramework/CharacterMovementComponent.h" 
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Components/InputComponent.h"
 #include "InputActionValue.h"
 #include "GameFramework/Controller.h"
-#include "Components/BoxComponent.h"
 
 
 #include "MyPaperZDCharacter.generated.h"
@@ -46,7 +50,14 @@ public:
 	UCameraComponent* Camera;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	UBoxComponent* InteractionBox;
+	UBoxComponent* InteractionBoxUp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+
+	UBoxComponent* InteractionBoxDown;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UBoxComponent* InteractionBoxSide;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UInputMappingContext* InputMappingContext;
@@ -106,4 +117,10 @@ public:
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION()
+	void InteractBoxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION(BlueprintCallable)
+	void EnableInteractBox(bool Enabled);
 };
