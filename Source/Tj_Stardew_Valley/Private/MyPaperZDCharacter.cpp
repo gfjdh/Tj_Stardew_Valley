@@ -28,12 +28,19 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 
 	InteractionBoxUp = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionBoxUp"));
 	InteractionBoxUp->SetupAttachment(RootComponent);
+	InteractionBoxUp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	
 	InteractionBoxDown = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionBoxDown"));
 	InteractionBoxDown->SetupAttachment(RootComponent);
+	InteractionBoxDown->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	InteractionBoxSide = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionBoxSide"));
-	InteractionBoxSide->SetupAttachment(RootComponent);
+	InteractionBoxRight = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionBoxRight"));
+	InteractionBoxRight->SetupAttachment(RootComponent);
+	InteractionBoxRight->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	InteractionBoxLeft = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionBoxLeft"));
+	InteractionBoxLeft->SetupAttachment(RootComponent);
+	InteractionBoxLeft->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	//GetSprite()->SetupAttachment(RootComponent);
 	GetSprite()->SetRelativeRotation(FRotator(0.0f, 0.0f, -90.0f));
@@ -93,8 +100,8 @@ void AMyPaperZDCharacter::BeginPlay()
 	OnChopOverrideEndDelegate.BindUObject(this, &AMyPaperZDCharacter::OnChopOverrideAnimEnd);
 	InteractionBoxUp->OnComponentBeginOverlap.AddDynamic(this, &AMyPaperZDCharacter::InteractBoxOverlapBegin);
 	InteractionBoxDown->OnComponentBeginOverlap.AddDynamic(this, &AMyPaperZDCharacter::InteractBoxOverlapBegin);
-	InteractionBoxSide->OnComponentBeginOverlap.AddDynamic(this, &AMyPaperZDCharacter::InteractBoxOverlapBegin);
-	EnableInteractBox(false);
+	InteractionBoxRight->OnComponentBeginOverlap.AddDynamic(this, &AMyPaperZDCharacter::InteractBoxOverlapBegin);
+	InteractionBoxLeft->OnComponentBeginOverlap.AddDynamic(this, &AMyPaperZDCharacter::InteractBoxOverlapBegin);
 
 }
 
@@ -195,7 +202,7 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 
 	ATreeStump* TreeStump = Cast<ATreeStump>(OtherActor);
 	if (TreeStump) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Tree is being Chopped"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Tree is being Chopped"));
 		//TreeStump->Chop();
 	}
 }
@@ -212,8 +219,10 @@ void AMyPaperZDCharacter::EnableInteractBox(bool Enabled){
 			InteractionBox = InteractionBoxDown;
 			break;
 		case EPlayerDirection::Left:
+			InteractionBox = InteractionBoxLeft;
+			break;
 		case EPlayerDirection::Right:
-			InteractionBox = InteractionBoxSide;
+			InteractionBox = InteractionBoxRight;
 			break;
 	}
 

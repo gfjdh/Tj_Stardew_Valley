@@ -57,7 +57,10 @@ public:
 	UBoxComponent* InteractionBoxDown;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	UBoxComponent* InteractionBoxSide;
+	UBoxComponent* InteractionBoxRight;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UBoxComponent* InteractionBoxLeft;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UInputMappingContext* InputMappingContext;
