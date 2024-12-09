@@ -54,6 +54,13 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 		MoveAction = MoveActionFinder.Object;
 	}
 
+	static ConstructorHelpers::FObjectFinder<UInputAction> InteractionFinder(TEXT("InputAction'/Game/Input/Input_Interaction.Input_Interaction'"));
+	if (InteractionFinder.Succeeded())
+	{
+		Interaction = InteractionFinder.Object;
+	}
+
+
 	// 加载行走和待机动画
 	static ConstructorHelpers::FObjectFinder<UObject> WalkUpFlipbook(TEXT("PaperFlipbook'/Game/Assets/Player/Player_Animation/walk_up/walk_up_at.walk_up_at'"));
 	if (WalkUpFlipbook.Succeeded())
@@ -90,6 +97,29 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 	{
 		IdleSideAnimation = Cast<UPaperFlipbook>(IdleSideFlipbook.Object);
 	}
+
+
+
+	static ConstructorHelpers::FObjectFinder<UObject> ChopDownFlipbook(TEXT("PaperFlipbook'/Game/Assets/Player/Player_Animation/Chop/Chop_Down.Chop_Down'"));
+	if (ChopDownFlipbook.Succeeded())
+	{
+		ChopDownAnimation = Cast<UPaperFlipbook>(ChopDownFlipbook.Object);
+	}
+
+	static ConstructorHelpers::FObjectFinder<UObject> ChopUpFlipbook(TEXT("PaperFlipbook'/Game/Assets/Player/Player_Animation/Chop/Chop_Up.Chop_Up'"));
+	if (ChopUpFlipbook.Succeeded())
+	{
+		ChopUpAnimation = Cast<UPaperFlipbook>(ChopUpFlipbook.Object);
+	}
+
+	static ConstructorHelpers::FObjectFinder<UObject> ChopSideFlipbook(TEXT("PaperFlipbook'/Game/Assets/Player/Player_Animation/Chop/Chop_Side.Chop_Side'"));
+	if (ChopSideFlipbook.Succeeded())
+	{
+		ChopSideAnimation = Cast<UPaperFlipbook>(ChopSideFlipbook.Object);
+	}
+
+
+
 
 
 	// 设置步高为0
@@ -130,6 +160,7 @@ void AMyPaperZDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	{
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMyPaperZDCharacter::Move);
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Completed, this, &AMyPaperZDCharacter::StopMove);
+		EnhancedInputComponent->BindAction(Interaction, ETriggerEvent::Triggered, this, &AMyPaperZDCharacter::Interact);
 	}
 }
 
@@ -140,7 +171,7 @@ void AMyPaperZDCharacter::Move(const FInputActionValue& Value)
 
 	if (CanMove)
 	{
-		if (abs(MoveVector.Y) > 0.0f)
+		if (FMath::Abs(MoveVector.Y) > 0.0f)
 		{
 			if (MoveVector.Y > 0.0f)
 			{
@@ -153,11 +184,12 @@ void AMyPaperZDCharacter::Move(const FInputActionValue& Value)
 				PlayerDirection = EPlayerDirection::Down;
 			}
 
-			AddMovementInput(GetActorRightVector(), MoveVector.Y * (-1));
+			AddMovementInput(GetActorRightVector(), -MoveVector.Y);
 		}
-		else if (abs(MoveVector.X) > 0.0f)
+		else if (FMath::Abs(MoveVector.X) > 0.0f)
 		{
 			GetSprite()->SetFlipbook(WalkSideAnimation);
+
 			if (MoveVector.X > 0.0f)
 			{
 				GetSprite()->SetWorldScale3D(FVector(1.0f, 1.0f, 1.0f));
@@ -177,16 +209,46 @@ void AMyPaperZDCharacter::Move(const FInputActionValue& Value)
 void AMyPaperZDCharacter::StopMove()
 {
 	MovementDirection = FVector2D::ZeroVector;
-	if (GetSprite()->GetFlipbook() == WalkUpAnimation)
+
+	switch (PlayerDirection)
 	{
-		GetSprite()->SetFlipbook(IdleUpAnimation);
+		case EPlayerDirection::Up:
+			GetSprite()->SetFlipbook(IdleUpAnimation);
+			break;
+		case EPlayerDirection::Down:
+			GetSprite()->SetFlipbook(IdleDownAnimation);
+			break;
+		case EPlayerDirection::Left:
+			GetSprite()->SetFlipbook(IdleSideAnimation);
+			break;
+		case EPlayerDirection::Right:
+			GetSprite()->SetFlipbook(IdleSideAnimation);
+			break;
+		default:
+			break;
 	}
-	else if (GetSprite()->GetFlipbook() == WalkDownAnimation)
+}
+
+void AMyPaperZDCharacter::Interact(const FInputActionValue& Value)
+{
+	if (Value.Get<bool>())
 	{
-		GetSprite()->SetFlipbook(IdleDownAnimation);
-	}
-	else if (GetSprite()->GetFlipbook() == WalkSideAnimation)
-	{
-		GetSprite()->SetFlipbook(IdleSideAnimation);
+		switch (PlayerDirection)
+		{
+			case EPlayerDirection::Up:
+				GetSprite()->SetFlipbook(ChopUpAnimation);
+				break;
+			case EPlayerDirection::Down:
+				GetSprite()->SetFlipbook(ChopDownAnimation);
+				break;
+			case EPlayerDirection::Left:
+				GetSprite()->SetFlipbook(ChopSideAnimation);
+				break;
+			case EPlayerDirection::Right:
+				GetSprite()->SetFlipbook(ChopSideAnimation);
+				break;
+			default:
+				break;
+		}
 	}
 }
