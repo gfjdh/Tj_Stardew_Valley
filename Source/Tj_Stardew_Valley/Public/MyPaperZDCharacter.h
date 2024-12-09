@@ -55,7 +55,16 @@ public:
 	UInputAction* MoveAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UInputAction* Interaction;
+	UInputAction* ChopAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPaperZDAnimSequence* ChopAnimSequenceUp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPaperZDAnimSequence* ChopAnimSequenceDown;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPaperZDAnimSequence* ChopAnimSequenceSide;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MoveSpeed = 300.0f;
@@ -65,6 +74,14 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool CanMove = true;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool CanInteract = true;
+
+
+	FZDOnAnimationOverrideEndSignature OnChopOverrideEndDelegate;
+
+
 
 	// 存储玩家当前的朝向
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
@@ -82,9 +99,10 @@ public:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 	void Move(const FInputActionValue& Value);
-	void StopMove();
 
-	void Interact(const FInputActionValue& Value);
+	void Chop(const FInputActionValue& Value);
+
+	void OnChopOverrideAnimEnd(bool bCompleted);
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

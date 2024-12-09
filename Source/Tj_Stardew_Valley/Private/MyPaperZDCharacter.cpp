@@ -41,6 +41,7 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 		GetAnimationComponent()->SetAnimInstanceClass(AnimBPClass.Class);//写入会导致虚幻无法正常启动
 	}*/
 
+	PlayerDirection = EPlayerDirection::Down;
 
 	// 加载输入上下文和移动动作
 	static ConstructorHelpers::FObjectFinder<UInputMappingContext> InputMappingContextFinder(TEXT("InputMappingContext'/Game/Input/Input_Context.Input_Context'"));
@@ -58,7 +59,7 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 	static ConstructorHelpers::FObjectFinder<UInputAction> InteractionFinder(TEXT("InputAction'/Game/Input/Input_Interaction.Input_Interaction'"));
 	if (InteractionFinder.Succeeded())
 	{
-		Interaction = InteractionFinder.Object;
+		ChopAction = InteractionFinder.Object;
 	}
 
 
@@ -81,6 +82,8 @@ void AMyPaperZDCharacter::BeginPlay()
 			Subsystem->AddMappingContext(InputMappingContext, 0);
 		}
 	}
+
+	OnChopOverrideEndDelegate.BindUObject(this, &AMyPaperZDCharacter::OnChopOverrideAnimEnd);
 }
 
 
@@ -99,9 +102,7 @@ void AMyPaperZDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	if (EnhancedInputComponent)
 	{
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMyPaperZDCharacter::Move);
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Completed, this, &AMyPaperZDCharacter::StopMove);
-		EnhancedInputComponent->BindAction(Interaction, ETriggerEvent::Triggered, this, &AMyPaperZDCharacter::Interact);
-		EnhancedInputComponent->BindAction(Interaction, ETriggerEvent::Completed, this, &AMyPaperZDCharacter::StopMove);
+		EnhancedInputComponent->BindAction(ChopAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::Chop);
 	}
 }
 
@@ -144,22 +145,31 @@ void AMyPaperZDCharacter::Move(const FInputActionValue& Value)
 	}
 }
 
-void AMyPaperZDCharacter::StopMove()
+void AMyPaperZDCharacter::Chop(const FInputActionValue& Value)
 {
-	MovementDirection = FVector2D::ZeroVector;
-	if (!CanMove)
+	if (CanInteract)
 	{
-		CanMove = true;
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Chop!")));
+		CanMove = false;
+		CanInteract = false;
+		switch (PlayerDirection)
+		{
+			case EPlayerDirection::Up:
+				GetAnimInstance()->PlayAnimationOverride(ChopAnimSequenceUp, FName("DefaultSlot"), 1.0f, 0.0f, OnChopOverrideEndDelegate);
+				break;
+			case EPlayerDirection::Down:
+				GetAnimInstance()->PlayAnimationOverride(ChopAnimSequenceDown, FName("DefaultSlot"), 1.0f, 0.0f, OnChopOverrideEndDelegate);
+				break;
+			case EPlayerDirection::Left:
+			case EPlayerDirection::Right:
+				GetAnimInstance()->PlayAnimationOverride(ChopAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnChopOverrideEndDelegate);
+				break;
+		}
 	}
 }
 
-void AMyPaperZDCharacter::Interact(const FInputActionValue& Value)
+void AMyPaperZDCharacter::OnChopOverrideAnimEnd(bool bCompleted)
 {
-	if (Value.Get<bool>())
-	{
-		if (CanMove)
-		{
-			CanMove = false;
-		}
-	}
+	CanMove = true;
+	CanInteract = true;
 }
