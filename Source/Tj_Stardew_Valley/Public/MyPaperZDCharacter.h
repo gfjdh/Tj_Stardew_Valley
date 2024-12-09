@@ -15,12 +15,17 @@
 #include "InputMappingContext.h"
 #include "GameFramework/Actor.h"
 #include "GameFramework/CharacterMovementComponent.h" 
+#include "Kismet/GameplayStatics.h"
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Components/InputComponent.h"
 #include "InputActionValue.h"
 #include "GameFramework/Controller.h"
+
+
+#include "PlayerUI.h"
+
 
 #include "MyPaperZDCharacter.generated.h"
 
@@ -50,6 +55,7 @@ UCLASS()
 class TJ_STARDEW_VALLEY_API AMyPaperZDCharacter : public APaperZDCharacter
 {
 	GENERATED_BODY()
+
 public:
 	//基本组件
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
@@ -131,6 +137,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UPaperZDAnimSequence* HoeAnimSequenceSide;
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UPlayerUI> PlayerUIClass;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPlayerUI* PlayerUIWidget;
+
 
 	//移动速度
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -163,8 +175,15 @@ public:
 
 	//耐力
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float Stamina = 100.0f;
+	int Stamina = 100;
 
+	//金钱
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int Gold = 0;
+
+	//等级
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int Level = 1;
 
 	AMyPaperZDCharacter();
 
@@ -187,6 +206,15 @@ public:
 
 	//铲地
 	void Hoe(const FInputActionValue& Value);
+
+	//更新耐力
+	void UpdateStamina(int Value);
+
+	//更新金钱
+	//void UpdateGold(int Value);
+
+	//更新等级
+	//void UpdateLevel(int Value);
 
 	//动画结束
 	void OnInteractOverrideAnimEnd(bool bCompleted);

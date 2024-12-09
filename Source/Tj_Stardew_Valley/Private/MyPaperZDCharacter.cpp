@@ -135,6 +135,19 @@ void AMyPaperZDCharacter::BeginPlay()
 	InteractionBoxRight->OnComponentBeginOverlap.AddDynamic(this, &AMyPaperZDCharacter::InteractBoxOverlapBegin);
 	InteractionBoxLeft->OnComponentBeginOverlap.AddDynamic(this, &AMyPaperZDCharacter::InteractBoxOverlapBegin);
 
+	if (PlayerUIClass)
+	{
+		PlayerUIWidget = CreateWidget <UPlayerUI>(UGameplayStatics::GetPlayerController(GetWorld(), 0), PlayerUIClass);
+		if (PlayerUIWidget)
+		{
+			PlayerUIWidget->AddToPlayerScreen();
+			PlayerUIWidget->SetStamina(Stamina);
+			PlayerUIWidget->SetGold(36);
+			PlayerUIWidget->SetLevel(1);
+
+		}
+	}
+
 }
 
 // Called every frame
@@ -233,6 +246,7 @@ void AMyPaperZDCharacter::Chop(const FInputActionValue& Value)
 	}
 
 	CurrentPlayerState = EPlayerState::Idle;
+	UpdateStamina(-5);
 }
 
 // 挖矿
@@ -262,6 +276,7 @@ void AMyPaperZDCharacter::Mine(const FInputActionValue& Value)
 	}
 
 	CurrentPlayerState = EPlayerState::Idle;
+	UpdateStamina(-5);
 }
 
 // 浇水
@@ -291,6 +306,7 @@ void AMyPaperZDCharacter::Water(const FInputActionValue& Value)
 	}
 
 	CurrentPlayerState = EPlayerState::Idle;
+	UpdateStamina(-5);
 }
 
 // 铲地
@@ -320,6 +336,7 @@ void AMyPaperZDCharacter::Hoe(const FInputActionValue& Value)
 	}
 
 	CurrentPlayerState = EPlayerState::Idle;
+	UpdateStamina(-5);
 }
 
 // 互动动画结束
@@ -403,4 +420,15 @@ void AMyPaperZDCharacter::EnableInteractBox(bool Enabled){
 		InteractionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		InteractionBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 	}
+}
+
+void AMyPaperZDCharacter::UpdateStamina(int Value) {
+	Stamina += Value;
+	if (Stamina > 100) {
+		Stamina = 100;
+	}
+	else if (Stamina < 0) {
+		Stamina = 0;
+	}
+	PlayerUIWidget->SetStamina(Stamina);
 }
