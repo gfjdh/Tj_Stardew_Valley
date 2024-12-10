@@ -26,7 +26,7 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 	// 设置投射模式为正交
 	Camera->ProjectionMode = ECameraProjectionMode::Orthographic;
 	// 设置正交宽度为512
-	Camera->OrthoWidth = 300.0f;
+	Camera->OrthoWidth = 150.0f;
 
 	// 创建互动碰撞盒
 	InteractionBoxUp = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionBoxUp"));
@@ -127,7 +127,7 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 		RunAction = RunFinder.Object;
 	}
 
-	GetCharacterMovement()->MaxWalkSpeed = 300.0f;
+	GetCharacterMovement()->MaxWalkSpeed = 150.0f;
 
 	// 设置步高为0
 	GetCharacterMovement()->MaxStepHeight = 0.0f;
@@ -433,13 +433,13 @@ void AMyPaperZDCharacter::Run(const FInputActionValue& Value)
 	{
 		Running = true;
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("StartRun!"));
-		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+		GetCharacterMovement()->MaxWalkSpeed = 300.0f;
 	}
 	else if (Running)
 	{
 		Running = false;
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("StopRun!"));
-		GetCharacterMovement()->MaxWalkSpeed = 300.0f;
+		GetCharacterMovement()->MaxWalkSpeed = 150.0f;
 	}
 	else if (IsTired)
 	{
@@ -558,7 +558,7 @@ void AMyPaperZDCharacter::UpdateStamina(int Value) {
 		if (!IsTired) {
 			if (Running) {
 				Running = false;
-				GetCharacterMovement()->MaxWalkSpeed = 300.0f;
+				GetCharacterMovement()->MaxWalkSpeed = 150.0f;
 			}
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired!"));
 			CanInteract = false;
