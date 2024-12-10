@@ -50,8 +50,11 @@ enum class EPlayerState : uint8
 	Chop,
 	Mine,
 	Water,
-	Hoe
+	Hoe,
+	Fish,
+	Interact
 };
+
 
 UCLASS()
 class TJ_STARDEW_VALLEY_API AMyPaperZDCharacter : public APaperZDCharacter
@@ -99,6 +102,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UInputAction* HoeAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UInputAction* FishAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UInputAction* InterAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UInputAction* RunAction;
+
+
+
 	//砍树动画
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UPaperZDAnimSequence* ChopAnimSequenceUp;
@@ -139,6 +153,26 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UPaperZDAnimSequence* HoeAnimSequenceSide;
 
+	//钓鱼动画
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPaperZDAnimSequence* FishAnimSequenceUp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPaperZDAnimSequence* FishAnimSequenceDown;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPaperZDAnimSequence* FishAnimSequenceSide;
+
+	//互动动画
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPaperZDAnimSequence* InteractAnimSequenceUp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPaperZDAnimSequence* InteractAnimSequenceDown;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPaperZDAnimSequence* InteractAnimSequenceSide;
+
 	//UI设置
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UPlayerUI> PlayerUIClass;
@@ -170,6 +204,14 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool CanInteract = true;
 
+	//是否疲劳
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool IsTired = false;
+
+	//是否正在跑步
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool Running = false;
+
 	//动画结束代理
 	FZDOnAnimationOverrideEndSignature OnInteractOverrideEndDelegate;
 
@@ -187,13 +229,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int Stamina = 100;
 
-	//金钱
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	int Gold = 0;
-
 	//等级
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int Level = 1;
+
+	//经验
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int Exp = 0;
 
 	AMyPaperZDCharacter();
 
@@ -217,6 +259,15 @@ public:
 	//铲地
 	void Hoe(const FInputActionValue& Value);
 
+	//钓鱼
+	void Fish(const FInputActionValue& Value);
+
+	//奔跑
+	void Run(const FInputActionValue& Value);
+
+	//互动
+	void Interact(const FInputActionValue& Value);
+
 	//更新耐力
 	void UpdateStamina(int Value);
 
@@ -224,7 +275,7 @@ public:
 	//void UpdateGold(int Value);
 
 	//更新等级
-	//void UpdateLevel(int Value);
+	void UpdateLevel(int ExValue);
 
 	//动画结束
 	void OnInteractOverrideAnimEnd(bool bCompleted);
