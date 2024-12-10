@@ -40,6 +40,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	CollectableType Type;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int ItemId = 0;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int ExpValue = 0;
 
 	// Sets default values for this actor's properties
 	ACollectableEntity();

@@ -18,5 +18,13 @@ public:
 	UPROPERTY(VIsibleAnywhere, BlueprintReadWrite)
 	int Stamina = 100;
 
+	UPROPERTY(VIsibleAnywhere, BlueprintReadWrite)
+	int GoldWealth = 0;
+
+	UPROPERTY(VIsibleAnywhere, BlueprintReadWrite)
+	int Level = 1;
+
 	void SetPlayerStamina(int NewStamina);
+	void SetPlayerGold(int Coins);
+	void SetPlayerLevel(int UpLevel);
 };

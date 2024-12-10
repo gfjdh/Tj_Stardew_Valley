@@ -37,8 +37,17 @@ void ATreeStump::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* 
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
 	AMyPaperZDCharacter* Player = Cast<AMyPaperZDCharacter>(OtherActor);
 	if (Player) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Can be chopped"));
-		//Log;
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Can be chopped"));
 	}
 
+}
+
+void ATreeStump::Chop(AActor* OtherActor) {
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Chopped"));
+	//写出逻辑:掉落物品等等
+	int ExpValue = 0;//需要修改
+	AMyPaperZDCharacter* Player = Cast<AMyPaperZDCharacter>(OtherActor);
+	if (Player) {
+		Player->UpdateLevel(ExpValue);
+	}
 }
