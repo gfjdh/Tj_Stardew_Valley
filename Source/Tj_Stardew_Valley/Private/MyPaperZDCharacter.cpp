@@ -452,7 +452,7 @@ void AMyPaperZDCharacter::OnInteractOverrideAnimEnd(bool bCompleted)
 }
 
 
-// 互动树开始重叠
+// 互动开始重叠
 void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
 
@@ -495,6 +495,9 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));
 		}
 	}
+	/*else if (FishSpot) {
+		FishSpot->Fishgame();
+	}*/
 	else {
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));
 	}
@@ -549,6 +552,7 @@ void AMyPaperZDCharacter::UpdateStamina(int Value) {
 			Stamina = -150;
 		}
 		if (!IsTired) {
+			GetCharacterMovement()->MaxWalkSpeed = 300.0f;
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired!"));
 			CanInteract = false;
 			IsTired = true;
