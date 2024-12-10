@@ -26,7 +26,7 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 	// 设置投射模式为正交
 	Camera->ProjectionMode = ECameraProjectionMode::Orthographic;
 	// 设置正交宽度为512
-	Camera->OrthoWidth = 300.0f;
+	Camera->OrthoWidth = 150.0f;
 
 	// 创建互动碰撞盒
 	InteractionBoxUp = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionBoxUp"));
@@ -127,7 +127,7 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 		RunAction = RunFinder.Object;
 	}
 
-	GetCharacterMovement()->MaxWalkSpeed = 300.0f;
+	GetCharacterMovement()->MaxWalkSpeed = 150.0f;
 
 	// 设置步高为0
 	GetCharacterMovement()->MaxStepHeight = 0.0f;
@@ -279,10 +279,10 @@ void AMyPaperZDCharacter::Chop(const FInputActionValue& Value)
 				GetAnimInstance()->PlayAnimationOverride(ChopAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
 				break;
 		}
-	}
 
-	CurrentPlayerState = EPlayerState::Idle;
-	UpdateStamina(-5);
+		CurrentPlayerState = EPlayerState::Idle;
+		UpdateStamina(-5);
+	}
 }
 
 // 挖矿
@@ -309,10 +309,10 @@ void AMyPaperZDCharacter::Mine(const FInputActionValue& Value)
 				GetAnimInstance()->PlayAnimationOverride(MineAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
 				break;
 		}
-	}
 
-	CurrentPlayerState = EPlayerState::Idle;
-	UpdateStamina(-5);
+		CurrentPlayerState = EPlayerState::Idle;
+		UpdateStamina(-5);
+	}
 }
 
 // 浇水
@@ -339,10 +339,10 @@ void AMyPaperZDCharacter::Water(const FInputActionValue& Value)
 				GetAnimInstance()->PlayAnimationOverride(WaterAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
 				break;
 		}
-	}
 
-	CurrentPlayerState = EPlayerState::Idle;
-	UpdateStamina(-2);
+		CurrentPlayerState = EPlayerState::Idle;
+		UpdateStamina(-2);
+	}
 }
 
 
@@ -370,10 +370,10 @@ void AMyPaperZDCharacter::Hoe(const FInputActionValue& Value)
 				GetAnimInstance()->PlayAnimationOverride(HoeAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
 				break;
 		}
-	}
 
-	CurrentPlayerState = EPlayerState::Idle;
-	UpdateStamina(-5);
+		CurrentPlayerState = EPlayerState::Idle;
+		UpdateStamina(-5);
+	}
 }
 
 // 钓鱼
@@ -399,9 +399,10 @@ void AMyPaperZDCharacter::Fish(const FInputActionValue& Value)
 				GetAnimInstance()->PlayAnimationOverride(FishAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
 				break;
 		}
+
+		CurrentPlayerState = EPlayerState::Idle;
+		UpdateStamina(-5);
 	}
-	CurrentPlayerState = EPlayerState::Idle;
-	UpdateStamina(-5);
 }
 
 // 互动
@@ -435,13 +436,17 @@ void AMyPaperZDCharacter::Run(const FInputActionValue& Value)
 	{
 		Running = true;
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("StartRun!"));
-		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+		GetCharacterMovement()->MaxWalkSpeed = 300.0f;
 	}
 	else if (Running)
 	{
 		Running = false;
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("StopRun!"));
-		GetCharacterMovement()->MaxWalkSpeed = 300.0f;
+		GetCharacterMovement()->MaxWalkSpeed = 150.0f;
+	}
+	else if (IsTired)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired! Cant Run!"));
 	}
 }
 
@@ -450,12 +455,14 @@ void AMyPaperZDCharacter::Run(const FInputActionValue& Value)
 void AMyPaperZDCharacter::OnInteractOverrideAnimEnd(bool bCompleted)
 {
 	CanMove = true;
-	CanInteract = true;
+	if (!IsTired) {
+		CanInteract = true;
+	}
 	EnableInteractBox(false);
 }
 
 
-// 互动树开始重叠
+// 互动开始重叠
 void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
 
@@ -498,9 +505,9 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));
 		}
 	}
-	else {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));
-	}
+	/*else if (FishSpot) {
+		FishSpot->Fishgame();
+	}*/
 }
 
 
@@ -552,6 +559,10 @@ void AMyPaperZDCharacter::UpdateStamina(int Value) {
 			Stamina = -150;
 		}
 		if (!IsTired) {
+			if (Running) {
+				Running = false;
+				GetCharacterMovement()->MaxWalkSpeed = 150.0f;
+			}
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired!"));
 			CanInteract = false;
 			IsTired = true;
