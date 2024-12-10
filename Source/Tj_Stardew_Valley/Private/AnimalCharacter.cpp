@@ -6,6 +6,9 @@ AAnimalCharacter::AAnimalCharacter()
 	IsAlive = true;
 	CanMove = true;
 	IsFed = false;
+	MoveStarted = false;
+	HadSpawnedProduct = false;
+	CanSpawnProduct = false;
 }
 
 void AAnimalCharacter::BeginPlay()
@@ -104,6 +107,14 @@ void AAnimalCharacter::OnMoveDurationTimerTimeout()
 	}
 }
 
+void AAnimalCharacter::OnSpawnProductTimerTimerTimeout()
+{
+	if (IsAlive)
+	{
+		CanSpawnProduct = true;
+	}
+}
+
 void AAnimalCharacter::UpdateDirection()
 {
 	if (AnimalDirection == Direction::Left)
@@ -113,5 +124,47 @@ void AAnimalCharacter::UpdateDirection()
 	else
 	{
 		GetSprite()->SetWorldScale3D(FVector(-1.0f, 1.0f, 1.0f));
+	}
+}
+
+void AAnimalCharacter::EatFood()
+{
+	//判断喂的食物类型是否正确
+	
+	//调试信息
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Animal eat food!")));
+	//喂食后开始产出产品
+	IsFed = true;
+	
+	GetWorldTimerManager().SetTimer(SpawnProductTimer, this, &AAnimalCharacter::OnSpawnProductTimerTimerTimeout,
+		1.0f, false, SpawnProductTime);
+}
+
+void AAnimalCharacter::SpawnProduct()
+{
+	if (!IsFed || HadSpawnedProduct || !CanSpawnProduct)
+		return;
+	//由时间管理部分在每天的开始设置IsFed为false,HadSpawnedProduct为false
+	HadSpawnedProduct = true;
+	CanSpawnProduct = false;
+
+	//产出产品
+	switch (Type) {
+		case AnimalType::Chicken:
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Chicken produce egg!")));
+			//产出鸡蛋
+			break;
+		case AnimalType::Cow:
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Cow produce milk!")));
+			//产出牛奶
+			break;
+		case AnimalType::Pig:
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Pig produce ?")));
+			//产出猪
+			break;
+		case AnimalType::Sheep:
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Sheep produce wool!")));
+			//产出羊毛
+			break;
 	}
 }

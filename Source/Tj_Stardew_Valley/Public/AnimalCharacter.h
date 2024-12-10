@@ -51,11 +51,20 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool MoveStarted = false;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool HadSpawnedProduct = false;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool CanSpawnProduct = false;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MovementCoolDown = 3.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MovementDuration = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float SpawnProductTime = 20.0f;//喂食后多久产出产品
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AnimalType Type;
@@ -69,6 +78,7 @@ public:
 
 	FTimerHandle MoveCoolDownTimer;
 	FTimerHandle MoveDurationTimer;
+	FTimerHandle SpawnProductTimer;
 
 
 //成员方法
@@ -76,5 +86,8 @@ public:
 	void Move();
 	void OnMoveCoolDownTimerTimeout();
 	void OnMoveDurationTimerTimeout();
+	void OnSpawnProductTimerTimerTimeout();
 	void UpdateDirection();
+	void EatFood();
+	void SpawnProduct();
 };

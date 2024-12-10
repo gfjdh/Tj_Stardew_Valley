@@ -469,6 +469,7 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 	ATreeStump* TreeStump = Cast<ATreeStump>(OtherActor);
 	AOres* Ores = Cast<AOres>(OtherActor);
 	ACrop* Crop = Cast<ACrop>(OtherActor);
+	AAnimalCharacter* Animal = Cast<AAnimalCharacter>(OtherActor);
 	//AFishSpot* Fish = Cast<AFish>(OtherActor);
 	//AAnimal* Animal = Cast<AAnimal>(OtherActor);
 	//ACharacter* NPC = Cast<ACharacter>(OtherActor);
@@ -503,6 +504,21 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 		}
 		else {
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));
+		}
+	}
+	else if (Animal) {
+		if (CurrentPlayerState == EPlayerState::Interact) {
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Interact with animal"));
+			if (Animal->HadSpawnedProduct) {
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Animal has already spawned product"));
+				return;
+			}
+			if (!Animal->IsFed) {
+				Animal->EatFood();
+			}
+			else{
+				Animal->SpawnProduct();
+			}
 		}
 	}
 	/*else if (FishSpot) {

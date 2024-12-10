@@ -28,6 +28,7 @@
 #include "PlayerUI.h"
 #include "StardrewGameInstance.h"
 #include "CollectableEntity.h"
+#include "AnimalCharacter.h"
 
 #include "MyPaperZDCharacter.generated.h"
 
