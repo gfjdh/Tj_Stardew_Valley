@@ -144,6 +144,9 @@ void AMyPaperZDCharacter::BeginPlay()
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if (PlayerController)
 	{
+		//ÏÔÊ¾Êó±ê
+		PlayerController->SetShowMouseCursor(true);
+
 		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 		if (Subsystem)
 		{
