@@ -37,8 +37,9 @@ void ACrop::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* Other
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
 	AMyPaperZDCharacter* Player = Cast<AMyPaperZDCharacter>(OtherActor);
 	if (Player) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Can be watered"));
-		//Log;
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Can be watered"));
 	}
 
 }
+
+//同样的，这里也可以写出作物的逻辑，比如掉落物品等等

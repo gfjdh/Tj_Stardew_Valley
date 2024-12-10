@@ -106,6 +106,29 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 		HoeAction = HoeFinder.Object;
 	}
 
+	// 加载钓鱼输入
+	static ConstructorHelpers::FObjectFinder<UInputAction> FishFinder(TEXT("InputAction'/Game/Input/Input_Fish.Input_Fish'"));
+	if (FishFinder.Succeeded())
+	{
+		FishAction = FishFinder.Object;
+	}
+
+
+	// 加载互动输入
+	static ConstructorHelpers::FObjectFinder<UInputAction> InterActionFinder(TEXT("InputAction'/Game/Input/Input_Interact.Input_Interact'"));
+	if (InterActionFinder.Succeeded())
+	{
+		InterAction = InterActionFinder.Object;
+	}
+	// 加载奔跑输入
+	static ConstructorHelpers::FObjectFinder<UInputAction> RunFinder(TEXT("InputAction'/Game/Input/Input_Run.Input_Run'"));
+	if (RunFinder.Succeeded())
+	{
+		RunAction = RunFinder.Object;
+	}
+
+	GetCharacterMovement()->MaxWalkSpeed = 300.0f;
+
 	// 设置步高为0
 	GetCharacterMovement()->MaxStepHeight = 0.0f;
 
@@ -149,8 +172,8 @@ void AMyPaperZDCharacter::BeginPlay()
 		{
 			PlayerUIWidget->AddToPlayerScreen();
 			PlayerUIWidget->SetStamina(Stamina);
-			PlayerUIWidget->SetGold(36);
-			PlayerUIWidget->SetLevel(1);
+			PlayerUIWidget->SetGold(SDGameInstance->GoldWealth);
+			PlayerUIWidget->SetLevel(Level);
 
 		}
 	}
@@ -178,6 +201,9 @@ void AMyPaperZDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(MineAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::Mine);
 		EnhancedInputComponent->BindAction(WaterAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::Water);
 		EnhancedInputComponent->BindAction(HoeAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::Hoe);
+		EnhancedInputComponent->BindAction(FishAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::Fish);
+		EnhancedInputComponent->BindAction(RunAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::Run);
+		EnhancedInputComponent->BindAction(InterAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::Interact);
 	}
 }
 
@@ -316,6 +342,7 @@ void AMyPaperZDCharacter::Water(const FInputActionValue& Value)
 	UpdateStamina(-2);
 }
 
+
 // 铲地
 void AMyPaperZDCharacter::Hoe(const FInputActionValue& Value)
 {
@@ -346,6 +373,76 @@ void AMyPaperZDCharacter::Hoe(const FInputActionValue& Value)
 	UpdateStamina(-5);
 }
 
+// 钓鱼
+void AMyPaperZDCharacter::Fish(const FInputActionValue& Value)
+{
+	if (CanInteract)
+	{
+		CurrentPlayerState = EPlayerState::Fish;
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Fish!")));
+		CanMove = false;
+		CanInteract = false;
+		EnableInteractBox(true);
+		switch (PlayerDirection)
+		{
+			case EPlayerDirection::Up:
+				GetAnimInstance()->PlayAnimationOverride(FishAnimSequenceUp, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
+				break;
+			case EPlayerDirection::Down:
+				GetAnimInstance()->PlayAnimationOverride(FishAnimSequenceDown, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
+				break;
+			case EPlayerDirection::Left:
+			case EPlayerDirection::Right:
+				GetAnimInstance()->PlayAnimationOverride(FishAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
+				break;
+		}
+	}
+	CurrentPlayerState = EPlayerState::Idle;
+	UpdateStamina(-5);
+}
+
+// 互动
+void AMyPaperZDCharacter::Interact(const FInputActionValue& Value)
+{
+	CurrentPlayerState = EPlayerState::Interact;
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Interact!")));
+	CanMove = false;
+	CanInteract = false;
+	EnableInteractBox(true);
+	switch (PlayerDirection)
+	{
+		case EPlayerDirection::Up:
+			GetAnimInstance()->PlayAnimationOverride(InteractAnimSequenceUp, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
+			break;
+		case EPlayerDirection::Down:
+			GetAnimInstance()->PlayAnimationOverride(InteractAnimSequenceDown, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
+			break;
+		case EPlayerDirection::Left:
+		case EPlayerDirection::Right:
+			GetAnimInstance()->PlayAnimationOverride(InteractAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
+			break;
+	}
+	CurrentPlayerState = EPlayerState::Idle;
+}
+
+//奔跑
+void AMyPaperZDCharacter::Run(const FInputActionValue& Value)
+{
+	if (CanMove && !IsTired && !Running)
+	{
+		Running = true;
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("StartRun!"));
+		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+	}
+	else if (Running)
+	{
+		Running = false;
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("StopRun!"));
+		GetCharacterMovement()->MaxWalkSpeed = 300.0f;
+	}
+}
+
+
 // 互动动画结束
 void AMyPaperZDCharacter::OnInteractOverrideAnimEnd(bool bCompleted)
 {
@@ -362,6 +459,9 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 	ATreeStump* TreeStump = Cast<ATreeStump>(OtherActor);
 	AOres* Ores = Cast<AOres>(OtherActor);
 	ACrop* Crop = Cast<ACrop>(OtherActor);
+	//AFishSpot* Fish = Cast<AFish>(OtherActor);
+	//AAnimal* Animal = Cast<AAnimal>(OtherActor);
+	//ACharacter* NPC = Cast<ACharacter>(OtherActor);
 
 	if (TreeStump) {
 		if (CurrentPlayerState == EPlayerState::Chop) {
@@ -394,6 +494,9 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 		else {
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));
 		}
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));
 	}
 }
 
@@ -431,48 +534,81 @@ void AMyPaperZDCharacter::EnableInteractBox(bool Enabled){
 
 void AMyPaperZDCharacter::UpdateStamina(int Value) {
 	Stamina += Value;
-	if (Stamina > 100) {
-		Stamina = 100;
+	if (Stamina > 0) {
+		if (Stamina > 100) {
+			Stamina = 100;
+		}
+		if (IsTired) {
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Player is not tired anymore!"));
+			CanInteract = true;
+			IsTired = false;
+		}
 	}
-	else if (Stamina < 0) {
-		Stamina = 0;
+	else {
+		if (Stamina < -150) {
+			Stamina = -150;
+		}
+		if (!IsTired) {
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired!"));
+			CanInteract = false;
+			IsTired = true;
+		}
 	}
 	PlayerUIWidget->SetStamina(Stamina);
 	SDGameInstance->SetPlayerStamina(Stamina);
 }
 
+void AMyPaperZDCharacter::UpdateLevel(int ExValue) {
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Gained Exp: %d"), ExValue));
+	Exp += ExValue;
+	if (Exp >= 10) {
+		Exp = 0;
+		Level++;
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Level Up"));
+		PlayerUIWidget->SetLevel(Level);
+		SDGameInstance->SetPlayerLevel(1);
+		Exp = 0;
+	}
+}
+
+
 
 void AMyPaperZDCharacter::CollectItem(CollectableType ItemType) {
 	//播放声音
 	//UGameplayStatics::PlaySound2D(GetWorld(), PickSound);
+	int HealAmount = FMath::RandRange(10, 20);
+	int GoldAmount = 1;
 
 	switch (ItemType) {
 		case CollectableType::Potion:
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Potion"));
+			UpdateStamina(HealAmount);
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Potion"));
 			break;
 		case CollectableType::Gold:
+			SDGameInstance->SetPlayerGold(GoldAmount);
+			PlayerUIWidget->SetGold(SDGameInstance->GoldWealth);
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Gold"));
 			break;
 		case CollectableType::Wood:
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Wood"));
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, TEXT("Wood"));
 			break;
 		case CollectableType::Stone:
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Stone"));
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, TEXT("Stone"));
 			break;
 		case CollectableType::Ore:
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Ore"));
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, TEXT("Ore"));
 			break;
 		case CollectableType::Seed:
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Seed"));
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, TEXT("Seed"));
 			break;
 		case CollectableType::Tool:
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Tool"));
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Tool"));
 			break;
 		case CollectableType::Food:				
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Food"));
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, TEXT("Food"));
 			break;
 		case CollectableType::Crop:
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Crop"));
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, TEXT("Crop"));
 			break;
 		case CollectableType::Other:
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Other"));
