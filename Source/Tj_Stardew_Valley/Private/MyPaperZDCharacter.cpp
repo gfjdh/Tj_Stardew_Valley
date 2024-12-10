@@ -276,10 +276,10 @@ void AMyPaperZDCharacter::Chop(const FInputActionValue& Value)
 				GetAnimInstance()->PlayAnimationOverride(ChopAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
 				break;
 		}
-	}
 
-	CurrentPlayerState = EPlayerState::Idle;
-	UpdateStamina(-5);
+		CurrentPlayerState = EPlayerState::Idle;
+		UpdateStamina(-5);
+	}
 }
 
 // ÍÚ¿ó
@@ -306,10 +306,10 @@ void AMyPaperZDCharacter::Mine(const FInputActionValue& Value)
 				GetAnimInstance()->PlayAnimationOverride(MineAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
 				break;
 		}
-	}
 
-	CurrentPlayerState = EPlayerState::Idle;
-	UpdateStamina(-5);
+		CurrentPlayerState = EPlayerState::Idle;
+		UpdateStamina(-5);
+	}
 }
 
 // ½½Ë®
@@ -336,10 +336,10 @@ void AMyPaperZDCharacter::Water(const FInputActionValue& Value)
 				GetAnimInstance()->PlayAnimationOverride(WaterAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
 				break;
 		}
-	}
 
-	CurrentPlayerState = EPlayerState::Idle;
-	UpdateStamina(-2);
+		CurrentPlayerState = EPlayerState::Idle;
+		UpdateStamina(-2);
+	}
 }
 
 
@@ -367,10 +367,10 @@ void AMyPaperZDCharacter::Hoe(const FInputActionValue& Value)
 				GetAnimInstance()->PlayAnimationOverride(HoeAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
 				break;
 		}
-	}
 
-	CurrentPlayerState = EPlayerState::Idle;
-	UpdateStamina(-5);
+		CurrentPlayerState = EPlayerState::Idle;
+		UpdateStamina(-5);
+	}
 }
 
 // µöÓã
@@ -396,9 +396,10 @@ void AMyPaperZDCharacter::Fish(const FInputActionValue& Value)
 				GetAnimInstance()->PlayAnimationOverride(FishAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
 				break;
 		}
+
+		CurrentPlayerState = EPlayerState::Idle;
+		UpdateStamina(-5);
 	}
-	CurrentPlayerState = EPlayerState::Idle;
-	UpdateStamina(-5);
 }
 
 // »¥¶¯
@@ -440,6 +441,10 @@ void AMyPaperZDCharacter::Run(const FInputActionValue& Value)
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("StopRun!"));
 		GetCharacterMovement()->MaxWalkSpeed = 300.0f;
 	}
+	else if (IsTired)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired! Cant Run!"));
+	}
 }
 
 
@@ -447,7 +452,9 @@ void AMyPaperZDCharacter::Run(const FInputActionValue& Value)
 void AMyPaperZDCharacter::OnInteractOverrideAnimEnd(bool bCompleted)
 {
 	CanMove = true;
-	CanInteract = true;
+	if (!IsTired) {
+		CanInteract = true;
+	}
 	EnableInteractBox(false);
 }
 
@@ -498,9 +505,6 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 	/*else if (FishSpot) {
 		FishSpot->Fishgame();
 	}*/
-	else {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));
-	}
 }
 
 
@@ -552,7 +556,10 @@ void AMyPaperZDCharacter::UpdateStamina(int Value) {
 			Stamina = -150;
 		}
 		if (!IsTired) {
-			GetCharacterMovement()->MaxWalkSpeed = 300.0f;
+			if (Running) {
+				Running = false;
+				GetCharacterMovement()->MaxWalkSpeed = 300.0f;
+			}
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired!"));
 			CanInteract = false;
 			IsTired = true;
