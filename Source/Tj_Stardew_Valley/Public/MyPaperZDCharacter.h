@@ -282,6 +282,12 @@ public:
 	//互动
 	void Interact(const FInputActionValue& Value);
 
+	//相机
+	void CameraChangeUp(const FInputActionValue& Value);
+
+	void CameraChangeDown(const FInputActionValue& Value);
+
+
 	//钓鱼模式按键
 	void PullRod(const FInputActionValue& Value);
 
