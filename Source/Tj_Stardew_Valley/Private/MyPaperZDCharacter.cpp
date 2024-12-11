@@ -26,7 +26,7 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 	// 设置投射模式为正交
 	Camera->ProjectionMode = ECameraProjectionMode::Orthographic;
 	// 设置正交宽度为512
-	Camera->OrthoWidth = 300.0f;
+	Camera->OrthoWidth = 150.0f;
 
 	// 创建互动碰撞盒
 	InteractionBoxUp = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionBoxUp"));
@@ -127,7 +127,7 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 		RunAction = RunFinder.Object;
 	}
 
-	GetCharacterMovement()->MaxWalkSpeed = 300.0f;
+	GetCharacterMovement()->MaxWalkSpeed = 150.0f;
 
 	// 设置步高为0
 	GetCharacterMovement()->MaxStepHeight = 0.0f;
@@ -144,6 +144,9 @@ void AMyPaperZDCharacter::BeginPlay()
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if (PlayerController)
 	{
+		//显示鼠标
+		PlayerController->SetShowMouseCursor(true);
+
 		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 		if (Subsystem)
 		{
@@ -276,10 +279,10 @@ void AMyPaperZDCharacter::Chop(const FInputActionValue& Value)
 				GetAnimInstance()->PlayAnimationOverride(ChopAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
 				break;
 		}
-	}
 
-	CurrentPlayerState = EPlayerState::Idle;
-	UpdateStamina(-5);
+		CurrentPlayerState = EPlayerState::Idle;
+		UpdateStamina(-5);
+	}
 }
 
 // 挖矿
@@ -306,10 +309,10 @@ void AMyPaperZDCharacter::Mine(const FInputActionValue& Value)
 				GetAnimInstance()->PlayAnimationOverride(MineAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
 				break;
 		}
-	}
 
-	CurrentPlayerState = EPlayerState::Idle;
-	UpdateStamina(-5);
+		CurrentPlayerState = EPlayerState::Idle;
+		UpdateStamina(-5);
+	}
 }
 
 // 浇水
@@ -336,10 +339,10 @@ void AMyPaperZDCharacter::Water(const FInputActionValue& Value)
 				GetAnimInstance()->PlayAnimationOverride(WaterAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
 				break;
 		}
-	}
 
-	CurrentPlayerState = EPlayerState::Idle;
-	UpdateStamina(-2);
+		CurrentPlayerState = EPlayerState::Idle;
+		UpdateStamina(-2);
+	}
 }
 
 
@@ -367,10 +370,10 @@ void AMyPaperZDCharacter::Hoe(const FInputActionValue& Value)
 				GetAnimInstance()->PlayAnimationOverride(HoeAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
 				break;
 		}
-	}
 
-	CurrentPlayerState = EPlayerState::Idle;
-	UpdateStamina(-5);
+		CurrentPlayerState = EPlayerState::Idle;
+		UpdateStamina(-5);
+	}
 }
 
 // 钓鱼
@@ -396,9 +399,10 @@ void AMyPaperZDCharacter::Fish(const FInputActionValue& Value)
 				GetAnimInstance()->PlayAnimationOverride(FishAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
 				break;
 		}
+
+		CurrentPlayerState = EPlayerState::Idle;
+		UpdateStamina(-5);
 	}
-	CurrentPlayerState = EPlayerState::Idle;
-	UpdateStamina(-5);
 }
 
 // 互动
@@ -432,13 +436,17 @@ void AMyPaperZDCharacter::Run(const FInputActionValue& Value)
 	{
 		Running = true;
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("StartRun!"));
-		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+		GetCharacterMovement()->MaxWalkSpeed = 300.0f;
 	}
 	else if (Running)
 	{
 		Running = false;
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("StopRun!"));
-		GetCharacterMovement()->MaxWalkSpeed = 300.0f;
+		GetCharacterMovement()->MaxWalkSpeed = 150.0f;
+	}
+	else if (IsTired)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired! Cant Run!"));
 	}
 }
 
@@ -447,7 +455,9 @@ void AMyPaperZDCharacter::Run(const FInputActionValue& Value)
 void AMyPaperZDCharacter::OnInteractOverrideAnimEnd(bool bCompleted)
 {
 	CanMove = true;
-	CanInteract = true;
+	if (!IsTired) {
+		CanInteract = true;
+	}
 	EnableInteractBox(false);
 }
 
@@ -459,8 +469,8 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 	ATreeStump* TreeStump = Cast<ATreeStump>(OtherActor);
 	AOres* Ores = Cast<AOres>(OtherActor);
 	ACrop* Crop = Cast<ACrop>(OtherActor);
-	//AFishSpot* Fish = Cast<AFish>(OtherActor);
-	//AAnimal* Animal = Cast<AAnimal>(OtherActor);
+	AAnimalCharacter* Animal = Cast<AAnimalCharacter>(OtherActor);
+	AFishSpot* Fish = Cast<AFishSpot>(OtherActor);
 	//ACharacter* NPC = Cast<ACharacter>(OtherActor);
 
 	if (TreeStump) {
@@ -495,11 +505,23 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));
 		}
 	}
-	/*else if (FishSpot) {
-		FishSpot->Fishgame();
-	}*/
-	else {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));
+	else if (Animal) {
+		if (CurrentPlayerState == EPlayerState::Interact) {
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Interact with animal"));
+			if (Animal->HadSpawnedProduct) {
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Animal has already spawned product"));
+				return;
+			}
+			if (!Animal->IsFed) {
+				Animal->EatFood();
+			}
+			else{
+				Animal->SpawnProduct();
+			}
+		}
+	}
+	else if (Fish) {
+		Fish->Fishgame();
 	}
 }
 
@@ -552,7 +574,10 @@ void AMyPaperZDCharacter::UpdateStamina(int Value) {
 			Stamina = -150;
 		}
 		if (!IsTired) {
-			GetCharacterMovement()->MaxWalkSpeed = 300.0f;
+			if (Running) {
+				Running = false;
+				GetCharacterMovement()->MaxWalkSpeed = 150.0f;
+			}
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired!"));
 			CanInteract = false;
 			IsTired = true;
