@@ -29,6 +29,7 @@
 #include "StardrewGameInstance.h"
 #include "CollectableEntity.h"
 #include "AnimalCharacter.h"
+#include "FishSpot.h"
 
 #include "MyPaperZDCharacter.generated.h"
 
