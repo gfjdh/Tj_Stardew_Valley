@@ -121,6 +121,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UFishingWidget* FishingWidget;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UInputAction* CameraUpAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UInputAction* CameraDownAction;
+
 	//¿³Ê÷¶¯»­
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UPaperZDAnimSequence* ChopAnimSequenceUp;
