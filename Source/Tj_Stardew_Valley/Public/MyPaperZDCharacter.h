@@ -30,6 +30,7 @@
 #include "CollectableEntity.h"
 #include "AnimalCharacter.h"
 #include "FishSpot.h"
+#include "FishingWidget.h"
 
 #include "MyPaperZDCharacter.generated.h"
 
@@ -54,7 +55,8 @@ enum class EPlayerState : uint8
 	Water,
 	Hoe,
 	Fish,
-	Interact
+	Interact,
+	InFishingGame
 };
 
 
@@ -113,7 +115,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UInputAction* RunAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UInputAction* PullRodAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UFishingWidget* FishingWidget;
 
 	//砍树动画
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -270,6 +276,9 @@ public:
 	//互动
 	void Interact(const FInputActionValue& Value);
 
+	//钓鱼模式按键
+	void PullRod(const FInputActionValue& Value);
+
 	//更新耐力
 	void UpdateStamina(int Value);
 
@@ -297,5 +306,7 @@ public:
 
 	void CollectItem(CollectableType ItemType);
 
+	void ActivatePlayer(bool IsActivate);
 
+	void FishGame();
 };

@@ -18,6 +18,9 @@ public:
 	UProgressBar* FishingProgressBar;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UImage* BlackCover;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UImage* UI;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
@@ -35,15 +38,23 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float MinRangeY = 0.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float FishPosition = -40.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float GreenZonePoisition = -30.0f;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool IsInGame = false;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float GamePercentage = 0.0f;
+
 public:
 	void EnableDisplay(bool IsEnable);
 	void BeginFishing();
 	void EndFishing();
 	void UpdateProgressBar();
 	void SetFishPosition(float PositionY);
+	void SetGreenZonePosition(float PositionY);
 };
