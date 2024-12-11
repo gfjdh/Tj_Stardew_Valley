@@ -113,7 +113,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UInputAction* RunAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UInputAction* CameraUpAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UInputAction* CameraDownAction;
 
 	//砍树动画
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -269,6 +273,11 @@ public:
 
 	//互动
 	void Interact(const FInputActionValue& Value);
+
+	//相机
+	void CameraChangeUp(const FInputActionValue& Value);
+
+	void CameraChangeDown(const FInputActionValue& Value);
 
 	//更新耐力
 	void UpdateStamina(int Value);

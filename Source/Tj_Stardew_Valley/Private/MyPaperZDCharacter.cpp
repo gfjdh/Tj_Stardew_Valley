@@ -25,8 +25,8 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 	// 设置投射模式为正交
 	Camera->ProjectionMode = ECameraProjectionMode::Orthographic;
-	// 设置正交宽度为512
-	Camera->OrthoWidth = 150.0f;
+	// 设置正交宽度为300
+	Camera->OrthoWidth = 300.0f;
 
 	// 创建互动碰撞盒
 	InteractionBoxUp = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionBoxUp"));
@@ -127,6 +127,19 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 		RunAction = RunFinder.Object;
 	}
 
+	// 加载相机输入
+	static ConstructorHelpers::FObjectFinder<UInputAction> CameraFinder(TEXT("InputAction'/Game/Input/Input_CameraUp.Input_CameraUp'"));
+	if (CameraFinder.Succeeded())
+	{
+		CameraUpAction = CameraFinder.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> CameraDownFinder(TEXT("InputAction'/Game/Input/Input_CameraDown.Input_CameraDown'"));
+	if (CameraDownFinder.Succeeded())
+	{
+		CameraDownAction = CameraDownFinder.Object;
+	}
+
 	GetCharacterMovement()->MaxWalkSpeed = 150.0f;
 
 	// 设置步高为0
@@ -207,6 +220,8 @@ void AMyPaperZDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(FishAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::Fish);
 		EnhancedInputComponent->BindAction(RunAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::Run);
 		EnhancedInputComponent->BindAction(InterAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::Interact);
+		EnhancedInputComponent->BindAction(CameraUpAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::CameraChangeUp);
+		EnhancedInputComponent->BindAction(CameraDownAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::CameraChangeDown);
 	}
 }
 
@@ -402,6 +417,26 @@ void AMyPaperZDCharacter::Fish(const FInputActionValue& Value)
 
 		CurrentPlayerState = EPlayerState::Idle;
 		UpdateStamina(-5);
+	}
+}
+
+// 切换相机
+void AMyPaperZDCharacter::CameraChangeUp(const FInputActionValue& Value)
+{
+
+	Camera->OrthoWidth += 100.0f;
+	if (Camera->OrthoWidth > 550.0f)
+	{
+		Camera->OrthoWidth = 550.0f;
+	}
+}
+
+void AMyPaperZDCharacter::CameraChangeDown(const FInputActionValue& Value)
+{
+	Camera->OrthoWidth -= 100.0f;
+	if (Camera->OrthoWidth < 50.0f)
+	{
+		Camera->OrthoWidth = 50.0f;
 	}
 }
 
