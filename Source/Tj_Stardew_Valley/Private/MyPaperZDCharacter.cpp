@@ -470,8 +470,7 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 	AOres* Ores = Cast<AOres>(OtherActor);
 	ACrop* Crop = Cast<ACrop>(OtherActor);
 	AAnimalCharacter* Animal = Cast<AAnimalCharacter>(OtherActor);
-	//AFishSpot* Fish = Cast<AFish>(OtherActor);
-	//AAnimal* Animal = Cast<AAnimal>(OtherActor);
+	AFishSpot* Fish = Cast<AFishSpot>(OtherActor);
 	//ACharacter* NPC = Cast<ACharacter>(OtherActor);
 
 	if (TreeStump) {
@@ -521,9 +520,9 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 			}
 		}
 	}
-	/*else if (FishSpot) {
-		FishSpot->Fishgame();
-	}*/
+	else if (Fish) {
+		Fish->Fishgame();
+	}
 }
 
 
