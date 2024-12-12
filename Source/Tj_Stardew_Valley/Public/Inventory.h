@@ -25,7 +25,7 @@ public:
 	int32 MaxInventorySlots = 1000;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int UsingIndex = 0;
+	UItem* UsingItemSlot;
 
 
 protected:
@@ -40,14 +40,9 @@ public:
 	UFUNCTION()
 	bool AddItem(const UItem* ItemToAdd);
 
-	bool AddItemByIndex(const UItem* ItemToAdd);
-
 	// 移除物品
 	UFUNCTION()
 	bool RemoveItem(int32 ItemID, int32 Amount);
-
-	UFUNCTION()
-	bool RemoveItemByIndex(int32 Index, int32 Amount);
 
 	// 打印物品栏内容(Debug用)
 	UFUNCTION()
@@ -55,9 +50,9 @@ public:
 
 	// 使用物品
 	UFUNCTION()
-	UItem* UseItem();
+	void UseItem(int32 Index);
 
-	// 改变使用物品的序号
+	// 获取物品
 	UFUNCTION()
-	void SwitchItem();
+	UItem* GetItem(int32 ItemID);
 };

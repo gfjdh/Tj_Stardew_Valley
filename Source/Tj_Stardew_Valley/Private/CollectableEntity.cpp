@@ -14,6 +14,8 @@ ACollectableEntity::ACollectableEntity()
 
 	ItemSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("ItemSprite"));
 	ItemSprite->SetupAttachment(RootComponent);
+
+	ItemData = CreateDefaultSubobject<UItem>(TEXT("ItemData"));
 }
 
 // Called when the game starts or when spawned
@@ -37,8 +39,9 @@ void ACollectableEntity::OverlapBegin(UPrimitiveComponent* OverlappedComponent, 
 
 	AMyPaperZDCharacter* Player = Cast<AMyPaperZDCharacter>(OtherActor);
 	if (Player) {
-		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Picked it!"));
-		Player->CollectItem(Type);
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Picked it!"));
+		ItemData->CreateItemInfo(ItemId);
+		Player->CollectItem(ItemData);
 		Player->UpdateLevel(ExpValue);
 		Destroy();
 	}
