@@ -120,11 +120,4 @@ public:
 
 	void CreateItemInfo(int32 InItemID);
 
-	void ConsumeItem();
-
-	void EquipItem();
-
-	void UnEquipItem();
-
-	void DropItem();
 };

@@ -47,20 +47,4 @@ void UItem::CreateItemInfo(int32 InItemID)
 }
 
 
-void UItem::ConsumeItem()
-{
-
-}
-
-void UItem::EquipItem()
-{
-}
-
-void UItem::UnEquipItem()
-{
-}
-
-void UItem::DropItem()
-{
-}
 
