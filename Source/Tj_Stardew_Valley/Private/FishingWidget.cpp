@@ -6,7 +6,7 @@ void UFishingWidget::EnableDisplay(bool IsEnable)
 	if(IsEnable)
 		AddToViewport();
 	else 
-		RemoveFromViewport();
+		RemoveFromParent();
 }
 
 void UFishingWidget::BeginFishing()
