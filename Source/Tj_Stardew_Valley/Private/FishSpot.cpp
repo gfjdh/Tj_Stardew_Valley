@@ -16,11 +16,5 @@ void AFishSpot::BeginPlay()
 void AFishSpot::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-}
-
-void AFishSpot::Fishgame()
-{
-	//Fish Game
 }
 
