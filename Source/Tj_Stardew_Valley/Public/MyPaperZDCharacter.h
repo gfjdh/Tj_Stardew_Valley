@@ -93,10 +93,16 @@ public:
 	UInputAction* MoveAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UInputAction* UseAction;
+	UInputAction* ChopAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UInputAction* SwitchAction;
+	UInputAction* MineAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UInputAction* WaterAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UInputAction* HoeAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UInputAction* FishAction;
@@ -240,28 +246,20 @@ public:
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
-	//
-
 	//移动
 	void Move(const FInputActionValue& Value);
 
 	//砍树
-	void Chop();
+	void Chop(const FInputActionValue& Value);
 
 	//挖矿
-	void Mine();
+	void Mine(const FInputActionValue& Value);
 
 	//浇水
-	void Water();
+	void Water(const FInputActionValue& Value);
 
 	//铲地
-	void Hoe();
-
-	//使用物品
-	void UseItem(const FInputActionValue& Value);
-
-	//切换物品
-	void SwitchItem(const FInputActionValue& Value);
+	void Hoe(const FInputActionValue& Value);
 
 	//钓鱼
 	void Fish(const FInputActionValue& Value);
