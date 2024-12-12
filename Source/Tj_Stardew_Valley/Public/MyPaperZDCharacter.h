@@ -119,9 +119,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UInputAction* CameraDownAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UInputAction* InventoryAction;
-
 	//砍树动画
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UPaperZDAnimSequence* ChopAnimSequenceUp;
@@ -281,9 +278,6 @@ public:
 	void CameraChangeUp(const FInputActionValue& Value);
 
 	void CameraChangeDown(const FInputActionValue& Value);
-
-	//物品栏
-	void Inventory(const FInputActionValue& Value);
 
 	//更新耐力
 	void UpdateStamina(int Value);

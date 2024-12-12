@@ -40,7 +40,6 @@ void ACollectableEntity::OverlapBegin(UPrimitiveComponent* OverlappedComponent, 
 		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Picked it!"));
 		Player->CollectItem(Type);
 		Player->UpdateLevel(ExpValue);
-
 		Destroy();
 	}
 

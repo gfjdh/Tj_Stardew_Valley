@@ -3,9 +3,7 @@
 
 #include "StardrewGameInstance.h"
 
-UStardrewGameInstance::UStardrewGameInstance() {
-	PlayerInventory = CreateDefaultSubobject<UPlayerInventory>(TEXT("PlayerInventory"));
-}
+
 void UStardrewGameInstance::SetPlayerStamina(int NewStamina) {
 	Stamina = NewStamina;
 }

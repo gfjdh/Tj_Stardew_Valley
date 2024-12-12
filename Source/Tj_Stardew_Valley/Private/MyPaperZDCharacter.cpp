@@ -140,13 +140,6 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 		CameraDownAction = CameraDownFinder.Object;
 	}
 
-	// 加载物品栏输入
-	static ConstructorHelpers::FObjectFinder<UInputAction> InventoryFinder(TEXT("InputAction'/Game/Input/Input_Inventory.Input_Inventory'"));
-	if (InventoryFinder.Succeeded())
-	{
-		InventoryAction = InventoryFinder.Object;
-	}
-
 	GetCharacterMovement()->MaxWalkSpeed = 150.0f;
 
 	// 设置步高为0
@@ -229,7 +222,6 @@ void AMyPaperZDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(PullRodAction, ETriggerEvent::Triggered, this, &AMyPaperZDCharacter::PullRod);
 		EnhancedInputComponent->BindAction(CameraUpAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::CameraChangeUp);
 		EnhancedInputComponent->BindAction(CameraDownAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::CameraChangeDown);
-		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::Inventory);
 	}
 }
 
@@ -531,11 +523,6 @@ void AMyPaperZDCharacter::Run(const FInputActionValue& Value)
 	}
 }
 
-//物品栏
-void AMyPaperZDCharacter::Inventory(const FInputActionValue& Value)
-{
-	SDGameInstance->PlayerInventory->PrintInventory();
-}
 
 // 互动动画结束
 void AMyPaperZDCharacter::OnInteractOverrideAnimEnd(bool bCompleted)
