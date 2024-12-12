@@ -30,9 +30,6 @@
 #include "CollectableEntity.h"
 #include "AnimalCharacter.h"
 #include "FishSpot.h"
-#include "FishingWidget.h"
-#include "Inventory.h"
-
 
 #include "MyPaperZDCharacter.generated.h"
 
@@ -57,8 +54,7 @@ enum class EPlayerState : uint8
 	Water,
 	Hoe,
 	Fish,
-	Interact,
-	InFishingGame
+	Interact
 };
 
 
@@ -117,20 +113,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UInputAction* RunAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UInputAction* PullRodAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UFishingWidget* FishingWidget;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UInputAction* CameraUpAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UInputAction* CameraDownAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UInputAction* InventoryAction;
 
 	//砍树动画
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -199,10 +182,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UPlayerUI* PlayerUIWidget;
 
-	//物品栏设置
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	UInventory* PlayerInventory;
-
 	//实例
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UStardrewGameInstance* SDGameInstance;
@@ -239,6 +218,7 @@ public:
 	FZDOnAnimationOverrideEndSignature OnInteractOverrideEndDelegate;
 
 
+
 	// 存储玩家当前的朝向
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	EPlayerDirection PlayerDirection;
@@ -246,7 +226,6 @@ public:
 	// 存储玩家当前的状态
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	EPlayerState CurrentPlayerState;
-
 
 	//耐力
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -291,16 +270,6 @@ public:
 	//互动
 	void Interact(const FInputActionValue& Value);
 
-	//相机
-	void CameraChangeUp(const FInputActionValue& Value);
-
-	void CameraChangeDown(const FInputActionValue& Value);
-
-	void Inventory(const FInputActionValue& Value);
-
-	//钓鱼模式按键
-	void PullRod(const FInputActionValue& Value);
-
 	//更新耐力
 	void UpdateStamina(int Value);
 
@@ -326,14 +295,7 @@ public:
 	void EnableInteractBox(bool Enabled);
 
 
-	void CollectItem(UItem* ItemData);
-
-	//void ActivatePlayer(bool IsActivate);
-
-	//void FishGame();
-
-	//void FishGameTick();
-
+	void CollectItem(CollectableType ItemType);
 
 
 };
