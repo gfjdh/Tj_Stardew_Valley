@@ -78,32 +78,18 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 		MoveAction = MoveActionFinder.Object;
 	}
 
-	// 加载砍树输入
-	static ConstructorHelpers::FObjectFinder<UInputAction> InteractionFinder(TEXT("InputAction'/Game/Input/Input_Chop.Input_Chop'"));
+	// 加载使用输入
+	static ConstructorHelpers::FObjectFinder<UInputAction> InteractionFinder(TEXT("InputAction'/Game/Input/Input_Use.Input_Use'"));
 	if (InteractionFinder.Succeeded())
 	{
-		ChopAction = InteractionFinder.Object;
+		UseAction = InteractionFinder.Object;
 	}
 
-	// 加载挖矿输入
-	static ConstructorHelpers::FObjectFinder<UInputAction> MineFinder(TEXT("InputAction'/Game/Input/Input_Mine.Input_Mine'"));
-	if (MineFinder.Succeeded())
+	//加载改变使用物品的序号输入
+	static ConstructorHelpers::FObjectFinder<UInputAction> SwitchItemFinder(TEXT("InputAction'/Game/Input/Input_Switch.Input_Switch'"));
+	if (SwitchItemFinder.Succeeded())
 	{
-		MineAction = MineFinder.Object;
-	}
-
-	// 加载浇水输入
-	static ConstructorHelpers::FObjectFinder<UInputAction> WaterFinder(TEXT("InputAction'/Game/Input/Input_Water.Input_Water'"));
-	if (WaterFinder.Succeeded())
-	{
-		WaterAction = WaterFinder.Object;
-	}
-
-	// 加载铲地输入
-	static ConstructorHelpers::FObjectFinder<UInputAction> HoeFinder(TEXT("InputAction'/Game/Input/Input_Hoe.Input_Hoe'"));
-	if (HoeFinder.Succeeded())
-	{
-		HoeAction = HoeFinder.Object;
+		SwitchAction = SwitchItemFinder.Object;
 	}
 
 	// 加载钓鱼输入
@@ -200,10 +186,8 @@ void AMyPaperZDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	if (EnhancedInputComponent)
 	{
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMyPaperZDCharacter::Move);
-		EnhancedInputComponent->BindAction(ChopAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::Chop);
-		EnhancedInputComponent->BindAction(MineAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::Mine);
-		EnhancedInputComponent->BindAction(WaterAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::Water);
-		EnhancedInputComponent->BindAction(HoeAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::Hoe);
+		EnhancedInputComponent->BindAction(UseAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::UseItem);
+		EnhancedInputComponent->BindAction(SwitchAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::SwitchItem);
 		EnhancedInputComponent->BindAction(FishAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::Fish);
 		EnhancedInputComponent->BindAction(RunAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::Run);
 		EnhancedInputComponent->BindAction(InterAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::Interact);
@@ -255,8 +239,82 @@ void AMyPaperZDCharacter::Move(const FInputActionValue& Value)
 	CurrentPlayerState = EPlayerState::Idle;
 }
 
+// 使用物品
+void AMyPaperZDCharacter::UseItem(const FInputActionValue& Value)
+{
+	if (CurrentPlayerState == EPlayerState::InFishingGame)
+		return;
+	CurrentPlayerState = EPlayerState::Interact;
+	UItem* UsingItem = PlayerInventory->UseItem();
+	if (UsingItem == nullptr) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("The Item is unusable!")));
+		return;
+	}
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("UseItem!")));
+	if (UsingItem->ItemType == CollectableType::Tool) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Using type:Tool!")));
+		switch (UsingItem->ItemID)
+		{
+			case 50:
+				Chop();
+				break;
+			case 51:
+				Mine();
+				break;
+			case 53:
+				Water();
+				break;
+			case 52:
+				Hoe();
+				break;
+		}
+	}
+	//else if (UsingItem->ItemType == CollectableType::Seed)
+	//{
+	//	//Plant();
+	//}
+	else if (UsingItem->ItemType == CollectableType::Food)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Using type:Food!")));
+		switch (UsingItem->ItemID)
+		{
+			case 60:
+				UpdateStamina(5);
+				break;
+		}
+		PlayerInventory->RemoveItemByIndex(PlayerInventory->UsingIndex, 1);
+	}
+	else if (UsingItem->ItemType == CollectableType::Potion)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Using type:Potion!")));
+		switch (UsingItem->ItemID)
+		{
+			case 40:
+				UpdateStamina(15);
+				break;
+		}
+		PlayerInventory->RemoveItemByIndex(PlayerInventory->UsingIndex, 1);
+	}
+	//else if (UsingItem->ItemType == CollectableType::Other)
+	//{
+	//	//
+	//}
+	CurrentPlayerState = EPlayerState::Idle;
+}
+
+// 切换物品
+void AMyPaperZDCharacter::SwitchItem(const FInputActionValue& Value)
+{
+	if (CurrentPlayerState == EPlayerState::InFishingGame)
+		return;
+	CurrentPlayerState = EPlayerState::Interact;
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("SwitchItem!")));
+	PlayerInventory->SwitchItem();
+	CurrentPlayerState = EPlayerState::Idle;
+}
+
 // 砍树
-void AMyPaperZDCharacter::Chop(const FInputActionValue& Value)
+void AMyPaperZDCharacter::Chop()
 {
 	if (CanInteract)
 	{
@@ -286,7 +344,7 @@ void AMyPaperZDCharacter::Chop(const FInputActionValue& Value)
 }
 
 // 挖矿
-void AMyPaperZDCharacter::Mine(const FInputActionValue& Value)
+void AMyPaperZDCharacter::Mine()
 {
 	if (CanInteract)
 	{
@@ -316,7 +374,7 @@ void AMyPaperZDCharacter::Mine(const FInputActionValue& Value)
 }
 
 // 浇水
-void AMyPaperZDCharacter::Water(const FInputActionValue& Value)
+void AMyPaperZDCharacter::Water()
 {
 	if (CanInteract)
 	{
@@ -347,7 +405,7 @@ void AMyPaperZDCharacter::Water(const FInputActionValue& Value)
 
 
 // 铲地
-void AMyPaperZDCharacter::Hoe(const FInputActionValue& Value)
+void AMyPaperZDCharacter::Hoe()
 {
 	if (CanInteract)
 	{

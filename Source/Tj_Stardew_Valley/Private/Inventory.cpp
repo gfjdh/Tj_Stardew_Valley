@@ -1,0 +1,214 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "Inventory.h"
+
+// Sets default values for this component's properties
+UInventory::UInventory()
+{
+	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
+	// off to improve performance if you don't need them.
+	PrimaryComponentTick.bCanEverTick = true;
+
+	// ...
+}
+
+
+// Called when the game starts
+void UInventory::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// ...
+	
+}
+
+
+// Called every frame
+void UInventory::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	// ...
+}
+
+bool UInventory::AddItem(const UItem* ItemToAdd)
+{
+	if (ItemToAdd == nullptr)
+	{
+		return false;
+	}
+	if (Inventory.Num() >= MaxInventorySlots)
+	{
+		return false;
+	}
+	if (ItemToAdd->CurrentAmount <= 0)
+	{
+		return false;
+	}
+	if (ItemToAdd->MaxStackAmount <= 0)
+	{
+		return false;
+	}
+	if (ItemToAdd->CurrentAmount > ItemToAdd->MaxStackAmount)
+	{
+		return false;
+	}
+
+	for (auto& i : Inventory)
+	{
+		if (i->ItemID == ItemToAdd->ItemID)
+		{
+			i->CurrentAmount += ItemToAdd->CurrentAmount;
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Item ID %d Picked Up"), ItemToAdd->ItemID));
+			return true;
+		}
+	}
+
+	Inventory.Add(const_cast<UItem*>(ItemToAdd));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Item ID %d Picked Up"), ItemToAdd->ItemID));
+
+
+	return true;
+}
+
+bool UInventory::AddItemByIndex(const UItem* ItemToAdd)
+{
+	if (ItemToAdd == nullptr)
+	{
+		return false;
+	}
+	if (Inventory.Num() >= MaxInventorySlots)
+	{
+		return false;
+	}
+	if (ItemToAdd->CurrentAmount <= 0)
+	{
+		return false;
+	}
+	if (ItemToAdd->MaxStackAmount <= 0)
+	{
+		return false;
+	}
+	if (ItemToAdd->CurrentAmount > ItemToAdd->MaxStackAmount)
+	{
+		return false;
+	}
+	for (auto& i : Inventory)
+	{
+		if (i->ItemID == ItemToAdd->ItemID)
+		{
+			i->CurrentAmount += ItemToAdd->CurrentAmount;
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Item ID %d Picked Up"), ItemToAdd->ItemID));
+			return true;
+		}
+	}
+	Inventory.Add(const_cast<UItem*>(ItemToAdd));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Item ID %d Picked Up"), ItemToAdd->ItemID));
+	return true;
+}
+
+
+bool UInventory::RemoveItem(int32 ItemID, int32 Amount)
+{
+	if (Amount <= 0)
+	{
+		return false;
+	}
+	for (auto& i : Inventory)
+	{
+		if (i->ItemID == ItemID)
+		{
+			if (i->CurrentAmount >= Amount)
+			{
+				i->CurrentAmount -= Amount;
+				if (i->CurrentAmount <= 0)
+				{
+					Inventory.Remove(i);
+				}
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool UInventory::RemoveItemByIndex(int32 Index, int32 Amount) {
+	if (Amount <= 0)
+	{
+		return false;
+	}
+	if (Index < 0 || Index >= Inventory.Num())
+	{
+		return false;
+	}
+	if (Inventory[Index]->CurrentAmount >= Amount)
+	{
+		Inventory[Index]->CurrentAmount -= Amount;
+		if (Inventory[Index]->CurrentAmount <= 0)
+		{
+			Inventory.RemoveAt(Index);
+		}
+		return true;
+	}
+	return false;
+}
+
+void UInventory::PrintInventory()
+{
+	int Index = 0;
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("===Inventory Contents==="));
+	for (auto& i : Inventory)
+	{
+		if (i->ItemID == -1)
+		{
+			continue;
+		}
+		FString ItemInfo = FString::Printf(TEXT("Item: %s (ID: %d) Amount: %d/%d,Index:%d"),
+			*i->ItemName, i->ItemID, i->CurrentAmount, i->MaxStackAmount,Index);
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::White, ItemInfo);
+		Index++;
+	}
+}
+
+// 使用物品
+UItem* UInventory::UseItem()
+{
+	if (Inventory.Num() <= 0)
+	{
+		return nullptr;
+	}
+	if (UsingIndex >= Inventory.Num())
+	{
+		UsingIndex = 0;
+	}
+	if (Inventory[UsingIndex]->ItemID == -1)
+	{
+		return nullptr;
+	}
+	if (Inventory[UsingIndex]->bIsConsumable)
+	{
+		FString ItemInfo = FString::Printf(TEXT("Using :%d"), Inventory[UsingIndex]->ItemID);
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::White, ItemInfo);
+		return Inventory[UsingIndex];
+	}
+	if (Inventory[UsingIndex]->bIsEquippable)
+	{
+		FString ItemInfo = FString::Printf(TEXT("Equipping :%d"), Inventory[UsingIndex]->ItemID);
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::White, ItemInfo);
+		return Inventory[UsingIndex];
+	}
+	return nullptr;
+}
+
+// 改变使用物品的序号
+void UInventory::SwitchItem()
+{
+	UsingIndex++;
+	if (UsingIndex >= Inventory.Num())
+	{
+		UsingIndex = 0;
+	}
+	FString ItemInfo = FString::Printf(TEXT("Switching to :%d"), UsingIndex);
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::White, ItemInfo);
+}
