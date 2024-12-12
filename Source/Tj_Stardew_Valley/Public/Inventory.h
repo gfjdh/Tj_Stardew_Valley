@@ -22,7 +22,7 @@ public:
 	TArray<UItem*> Inventory;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 MaxInventorySlots = 1000;
+	int32 MaxInventorySlots = 40;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int UsingIndex = 0;
