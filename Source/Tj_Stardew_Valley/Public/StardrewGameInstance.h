@@ -2,6 +2,8 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "PlayerInventory.h"
+
 #include "StardrewGameInstance.generated.h"
 
 UCLASS()
@@ -17,6 +19,11 @@ public:
 
 	UPROPERTY(VIsibleAnywhere, BlueprintReadWrite)
 	int Level = 1;
+
+	UPROPERTY(VIsibleAnywhere, BlueprintReadWrite)
+	UPlayerInventory* PlayerInventory;
+
+	UStardrewGameInstance();
 
 
 	void SetPlayerStamina(int NewStamina);
