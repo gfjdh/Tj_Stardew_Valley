@@ -201,6 +201,7 @@ void AMyPaperZDCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	FVector PlayerLocation = GetActorLocation();
 	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Player Location: X=%f, Y=%f, Z=%f"), PlayerLocation.X, PlayerLocation.Y, PlayerLocation.Z));
+	FishGameTick();
 }
 
 
@@ -478,27 +479,19 @@ void AMyPaperZDCharacter::Interact(const FInputActionValue& Value)
 void AMyPaperZDCharacter::PullRod(const FInputActionValue& Value)
 {
 	if (CurrentPlayerState == EPlayerState::InFishingGame) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("IntoFishingGame!"));
-		//按上时 绿zone上升, 按下时 绿zone下降
 		//将Value转化为float
 		float Dir = Value.Get<float>();
+		//按上时 绿zone上升, 按下时 绿zone下降
+		float NewGreenZonePositionY = FishingWidget->GreenZonePositionY;
 		if(Dir > 0.0f){
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Pull Up!"));
+			NewGreenZonePositionY -= FishingWidget->GreenZoneSpeed;
 		}
-		else if(Dir < 0.0f){
+		else if (Dir < 0.0f) {
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Pull Down!"));
+			NewGreenZonePositionY += FishingWidget->GreenZoneSpeed;
 		}
-		
-		//判断是否钓到鱼或时间到
-		if (FishingWidget->GamePercentage >= 100.0f) {
-			FishingWidget->EndFishing();
-			//spawn fish
-
-			ActivatePlayer(true);
-			CanInteract = true;
-			CurrentPlayerState = EPlayerState::Idle;
-			UpdateStamina(-5);
-		}
+		FishingWidget->UpdateGreenZonePosition(NewGreenZonePositionY);
 	}
 }
 
@@ -709,7 +702,7 @@ void AMyPaperZDCharacter::CollectItem(CollectableType ItemType) {
 		case CollectableType::Tool:
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Tool"));
 			break;
-		case CollectableType::Food:				
+		case CollectableType::Food:
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, TEXT("Food"));
 			break;
 		case CollectableType::Crop:
@@ -721,8 +714,6 @@ void AMyPaperZDCharacter::CollectItem(CollectableType ItemType) {
 		default:
 			break;
 	}
-
-
 }
 
 void AMyPaperZDCharacter::ActivatePlayer(bool IsActivate)
@@ -738,6 +729,49 @@ void AMyPaperZDCharacter::FishGame()
 			CurrentPlayerState = EPlayerState::InFishingGame;
 			FishingWidget->BeginFishing();
 			ActivatePlayer(false);
+		}
+	}
+}
+
+void AMyPaperZDCharacter::FishGameTick()
+{
+	if (FishingWidget) {
+		if (FishingWidget->IsInGame && CurrentPlayerState == EPlayerState::InFishingGame) {
+			//判断绿Zone和鱼是否有相交,若有,则增加percentage
+			float GreenZoneTop = FishingWidget->GreenZonePositionY;
+			float GreenZoneBottom = FishingWidget->GreenZonePositionY + FishingWidget->GreenZoneHeight;
+			float FishTop = FishingWidget->FishPositionY;
+			float FishBottom = FishingWidget->FishPositionY + FishingWidget->FishHeight;
+			float FishingSpeed = FishingWidget->PercentageBarSpeed;
+			if (GreenZoneBottom < FishTop || GreenZoneTop > FishBottom) {
+				FishingSpeed *= -0.4;
+			}
+			//打印FishingSpeed
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("FishingSpeed: %f"), FishingSpeed));
+			//打印GreenZoneTop
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("GreenZoneTop: %f"), GreenZoneTop));
+			//打印GreenZoneBottom
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("GreenZoneBottom: %f"), GreenZoneBottom));
+			//打印FishTop
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("FishTop: %f"), FishTop));
+			//打印FishBottom
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("FishBottom: %f"), FishBottom));
+			//Percentage
+			FishingWidget->SetPercentage(FishingWidget->GamePercentage + FishingSpeed);
+			//更新图片
+			FishingWidget->UpdateProgressBar();
+
+			//判断是否钓到鱼或时间到
+			if (FishingWidget->GamePercentage >= 100.0f) {
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Fish Caught!"));
+				FishingWidget->EndFishing();
+				//spawn fish
+
+				ActivatePlayer(true);
+				CanInteract = true;
+				CurrentPlayerState = EPlayerState::Idle;
+				UpdateStamina(-5);
+			}
 		}
 	}
 }

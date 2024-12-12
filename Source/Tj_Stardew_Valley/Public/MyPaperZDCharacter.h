@@ -315,10 +315,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void EnableInteractBox(bool Enabled);
 
-
 	void CollectItem(CollectableType ItemType);
 
 	void ActivatePlayer(bool IsActivate);
 
 	void FishGame();
+
+	void FishGameTick();
 };

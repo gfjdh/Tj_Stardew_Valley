@@ -33,16 +33,34 @@ public:
 	UTextBlock* FishHint;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float MaxRangeY = 0.0f;
+	float MaxRangeY = 740.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float MinRangeY = 0.0f;
+	float MinRangeY = 300.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float FishPosition = -40.0f;
+	float FishPositionX = -40.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float GreenZonePoisition = -30.0f;
+	float FishPositionY = 570.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float InitialFishPositionY = 570.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float FishHeight = 80.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float GreenZonePoisitionX = -65.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float GreenZonePositionY = 740.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float InitialGreenZonePositionY = 740.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float GreenZoneHeight = 140.0f;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool IsInGame = false;
@@ -50,11 +68,18 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float GamePercentage = 0.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float PercentageBarSpeed = 0.1f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float GreenZoneSpeed = 2.0f;
+
 public:
 	void EnableDisplay(bool IsEnable);
 	void BeginFishing();
 	void EndFishing();
 	void UpdateProgressBar();
+	void SetPercentage(float Percentage);
 	void SetFishPosition(float PositionY);
-	void SetGreenZonePosition(float PositionY);
+	void UpdateGreenZonePosition(float NewPositionY);
 };
