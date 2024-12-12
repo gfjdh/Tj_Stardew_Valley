@@ -25,8 +25,8 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 	// 设置投射模式为正交
 	Camera->ProjectionMode = ECameraProjectionMode::Orthographic;
-	// 设置正交宽度为512
-	Camera->OrthoWidth = 150.0f;
+	// 设置正交宽度为300
+	Camera->OrthoWidth = 300.0f;
 
 	// 创建互动碰撞盒
 	InteractionBoxUp = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionBoxUp"));
@@ -48,6 +48,8 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 	// 设置角色的默认朝向
 	GetSprite()->SetRelativeRotation(FRotator(0.0f, 0.0f, -90.0f));
 
+
+	PlayerInventory = CreateDefaultSubobject<UInventory>(TEXT("PlayerInventory"));
 
 
 
@@ -113,7 +115,6 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 		FishAction = FishFinder.Object;
 	}
 
-
 	// 加载互动输入
 	static ConstructorHelpers::FObjectFinder<UInputAction> InterActionFinder(TEXT("InputAction'/Game/Input/Input_Interact.Input_Interact'"));
 	if (InterActionFinder.Succeeded())
@@ -125,6 +126,26 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 	if (RunFinder.Succeeded())
 	{
 		RunAction = RunFinder.Object;
+	}
+
+	// 加载相机输入
+	static ConstructorHelpers::FObjectFinder<UInputAction> CameraFinder(TEXT("InputAction'/Game/Input/Input_CameraUp.Input_CameraUp'"));
+	if (CameraFinder.Succeeded())
+	{
+		CameraUpAction = CameraFinder.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> CameraDownFinder(TEXT("InputAction'/Game/Input/Input_CameraDown.Input_CameraDown'"));
+	if (CameraDownFinder.Succeeded())
+	{
+		CameraDownAction = CameraDownFinder.Object;
+	}
+
+	// 加载物品栏输入
+	static ConstructorHelpers::FObjectFinder<UInputAction> InventoryFinder(TEXT("InputAction'/Game/Input/Input_Inventory.Input_Inventory'"));
+	if(InventoryFinder.Succeeded())
+	{
+		InventoryAction = InventoryFinder.Object;
 	}
 
 	GetCharacterMovement()->MaxWalkSpeed = 150.0f;
@@ -177,7 +198,6 @@ void AMyPaperZDCharacter::BeginPlay()
 			PlayerUIWidget->SetStamina(Stamina);
 			PlayerUIWidget->SetGold(SDGameInstance->GoldWealth);
 			PlayerUIWidget->SetLevel(Level);
-
 		}
 	}
 
@@ -189,6 +209,7 @@ void AMyPaperZDCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	FVector PlayerLocation = GetActorLocation();
 	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Player Location: X=%f, Y=%f, Z=%f"), PlayerLocation.X, PlayerLocation.Y, PlayerLocation.Z));
+	//FishGameTick();
 }
 
 
@@ -207,6 +228,10 @@ void AMyPaperZDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(FishAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::Fish);
 		EnhancedInputComponent->BindAction(RunAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::Run);
 		EnhancedInputComponent->BindAction(InterAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::Interact);
+		EnhancedInputComponent->BindAction(PullRodAction, ETriggerEvent::Triggered, this, &AMyPaperZDCharacter::PullRod);
+		EnhancedInputComponent->BindAction(CameraUpAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::CameraChangeUp);
+		EnhancedInputComponent->BindAction(CameraDownAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::CameraChangeDown);
+		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::Inventory);
 	}
 }
 
@@ -215,7 +240,8 @@ void AMyPaperZDCharacter::Move(const FInputActionValue& Value)
 {
 	// 获取移动向量
 	FVector2D MoveVector = Value.Get<FVector2D>();
-
+	if (CurrentPlayerState == EPlayerState::InFishingGame) 
+		return;
 
 	if (CanMove)
 	{
@@ -258,6 +284,8 @@ void AMyPaperZDCharacter::Move(const FInputActionValue& Value)
 // 砍树
 void AMyPaperZDCharacter::Chop(const FInputActionValue& Value)
 {
+	if (CurrentPlayerState == EPlayerState::InFishingGame)
+		return;
 	if (CanInteract)
 	{
 		CurrentPlayerState = EPlayerState::Chop;
@@ -288,6 +316,8 @@ void AMyPaperZDCharacter::Chop(const FInputActionValue& Value)
 // 挖矿
 void AMyPaperZDCharacter::Mine(const FInputActionValue& Value)
 {
+	if (CurrentPlayerState == EPlayerState::InFishingGame)
+		return;
 	if (CanInteract)
 	{
 		CurrentPlayerState = EPlayerState::Mine;
@@ -318,6 +348,8 @@ void AMyPaperZDCharacter::Mine(const FInputActionValue& Value)
 // 浇水
 void AMyPaperZDCharacter::Water(const FInputActionValue& Value)
 {
+	if (CurrentPlayerState == EPlayerState::InFishingGame)
+		return;
 	if (CanInteract)
 	{
 		CurrentPlayerState = EPlayerState::Water;
@@ -349,6 +381,8 @@ void AMyPaperZDCharacter::Water(const FInputActionValue& Value)
 // 铲地
 void AMyPaperZDCharacter::Hoe(const FInputActionValue& Value)
 {
+	if (CurrentPlayerState == EPlayerState::InFishingGame)
+		return;
 	if (CanInteract)
 	{
 		CurrentPlayerState = EPlayerState::Hoe;
@@ -379,12 +413,13 @@ void AMyPaperZDCharacter::Hoe(const FInputActionValue& Value)
 // 钓鱼
 void AMyPaperZDCharacter::Fish(const FInputActionValue& Value)
 {
+	if (CurrentPlayerState == EPlayerState::InFishingGame)
+		return;
 	if (CanInteract)
 	{
 		CurrentPlayerState = EPlayerState::Fish;
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Fish!")));
-		CanMove = false;
-		CanInteract = false;
+		//ActivatePlayer(false);
 		EnableInteractBox(true);
 		switch (PlayerDirection)
 		{
@@ -399,15 +434,35 @@ void AMyPaperZDCharacter::Fish(const FInputActionValue& Value)
 				GetAnimInstance()->PlayAnimationOverride(FishAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
 				break;
 		}
-
-		CurrentPlayerState = EPlayerState::Idle;
-		UpdateStamina(-5);
 	}
 }
+
+// 切换相机
+void AMyPaperZDCharacter::CameraChangeUp(const FInputActionValue& Value)
+{
+
+	Camera->OrthoWidth += 100.0f;
+	if (Camera->OrthoWidth > 550.0f)
+	{
+		Camera->OrthoWidth = 550.0f;
+	}
+}
+
+void AMyPaperZDCharacter::CameraChangeDown(const FInputActionValue& Value)
+{
+	Camera->OrthoWidth -= 100.0f;
+	if (Camera->OrthoWidth < 50.0f)
+	{
+		Camera->OrthoWidth = 50.0f;
+	}
+}
+
 
 // 互动
 void AMyPaperZDCharacter::Interact(const FInputActionValue& Value)
 {
+	if (CurrentPlayerState == EPlayerState::InFishingGame)
+		return;
 	CurrentPlayerState = EPlayerState::Interact;
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Interact!")));
 	CanMove = false;
@@ -427,6 +482,26 @@ void AMyPaperZDCharacter::Interact(const FInputActionValue& Value)
 			break;
 	}
 	CurrentPlayerState = EPlayerState::Idle;
+}
+
+//钓鱼游戏
+void AMyPaperZDCharacter::PullRod(const FInputActionValue& Value)
+{
+	if (CurrentPlayerState == EPlayerState::InFishingGame) {
+		//将Value转化为float
+		float Dir = Value.Get<float>();
+		//按上时 绿zone上升, 按下时 绿zone下降
+		float NewGreenZonePositionY = FishingWidget->GreenZonePositionY;
+		if(Dir > 0.0f){
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Pull Up!"));
+			NewGreenZonePositionY -= FishingWidget->GreenZoneSpeed;
+		}
+		else if (Dir < 0.0f) {
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Pull Down!"));
+			NewGreenZonePositionY += FishingWidget->GreenZoneSpeed;
+		}
+		FishingWidget->UpdateGreenZonePosition(NewGreenZonePositionY);
+	}
 }
 
 //奔跑
@@ -450,6 +525,12 @@ void AMyPaperZDCharacter::Run(const FInputActionValue& Value)
 	}
 }
 
+//背包
+void AMyPaperZDCharacter::Inventory(const FInputActionValue& Value)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Open!"));
+	PlayerInventory->PrintInventory();
+}
 
 // 互动动画结束
 void AMyPaperZDCharacter::OnInteractOverrideAnimEnd(bool bCompleted)
@@ -521,7 +602,10 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 		}
 	}
 	else if (Fish) {
-		Fish->Fishgame();
+		if (CurrentPlayerState == EPlayerState::Fish) {
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Fish!"));
+			//FishGame();
+		}
 	}
 }
 
@@ -602,49 +686,57 @@ void AMyPaperZDCharacter::UpdateLevel(int ExValue) {
 
 
 
-void AMyPaperZDCharacter::CollectItem(CollectableType ItemType) {
-	//播放声音
-	//UGameplayStatics::PlaySound2D(GetWorld(), PickSound);
+void AMyPaperZDCharacter::CollectItem(UItem* ItemData) {
+
 	int HealAmount = FMath::RandRange(10, 20);
 	int GoldAmount = 1;
 
-	switch (ItemType) {
-		case CollectableType::Potion:
-			UpdateStamina(HealAmount);
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Potion"));
-			break;
+	switch (ItemData->ItemType) {
 		case CollectableType::Gold:
 			SDGameInstance->SetPlayerGold(GoldAmount);
 			PlayerUIWidget->SetGold(SDGameInstance->GoldWealth);
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Gold"));
 			break;
-		case CollectableType::Wood:
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, TEXT("Wood"));
-			break;
-		case CollectableType::Stone:
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, TEXT("Stone"));
-			break;
-		case CollectableType::Ore:
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, TEXT("Ore"));
-			break;
-		case CollectableType::Seed:
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, TEXT("Seed"));
-			break;
-		case CollectableType::Tool:
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Tool"));
-			break;
-		case CollectableType::Food:				
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, TEXT("Food"));
-			break;
-		case CollectableType::Crop:
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, TEXT("Crop"));
-			break;
-		case CollectableType::Other:
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Other"));
-			break;
+
 		default:
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Default,Pick UP"));
+			PlayerInventory->AddItem(ItemData);
 			break;
 	}
-
-
 }
+
+//void AMyPaperZDCharacter::FishGameTick()
+//{
+//	if (FishingWidget) {
+//		if (FishingWidget->IsInGame && CurrentPlayerState == EPlayerState::InFishingGame) {
+//			//判断绿Zone和鱼是否有相交,若有,则增加percentage
+//			float GreenZoneTop = FishingWidget->GreenZonePositionY;
+//			float GreenZoneBottom = FishingWidget->GreenZonePositionY + FishingWidget->GreenZoneHeight;
+//			float FishTop = FishingWidget->FishPositionY;
+//			float FishBottom = FishingWidget->FishPositionY + FishingWidget->FishHeight;
+//			float FishingSpeed = FishingWidget->PercentageBarSpeed;
+//			if (GreenZoneBottom < FishTop || GreenZoneTop > FishBottom) {
+//				FishingSpeed *= -0.4;
+//			}
+//			//Percentage
+//			FishingWidget->SetPercentage(FishingWidget->GamePercentage + FishingSpeed);
+//			//更新图片
+//			FishingWidget->UpdateProgressBar();
+//
+//			//每x秒随机鱼位置
+//			FishingWidget->SetFishRandomPosition();
+//
+//			//判断是否钓到鱼或时间到
+//			if (FishingWidget->GamePercentage >= 100.0f) {
+//				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Fish Caught!"));
+//				FishingWidget->EndFishing();
+//				//spawn fish
+//
+//				ActivatePlayer(true);
+//				CanInteract = true;
+//				CurrentPlayerState = EPlayerState::Idle;
+//				UpdateStamina(-5);
+//			}
+//		}
+//	}
+//}

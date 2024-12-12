@@ -6,24 +6,10 @@
 #include "GameFramework/Actor.h"
 #include "Components/CapsuleComponent.h"
 #include "PaperSpriteComponent.h"
+#include "Item.h"
 
 
 #include "CollectableEntity.generated.h"
-
-UENUM(BlueprintType)
-enum class CollectableType : uint8
-{
-	Potion,
-	Gold,
-	Wood,
-	Stone,
-	Ore,
-	Seed,
-	Tool,
-	Food,
-	Crop,
-	Other
-};
 
 UCLASS()
 class TJ_STARDEW_VALLEY_API ACollectableEntity : public AActor
@@ -46,6 +32,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int ExpValue = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UItem* ItemData;
 
 	// Sets default values for this actor's properties
 	ACollectableEntity();
