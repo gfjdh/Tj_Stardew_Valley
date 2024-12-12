@@ -52,7 +52,7 @@ void UFishingWidget::SetFishPosition(float NewPositionY)
 	if (NewPositionY < MinRangeY)
 		NewPositionY = MinRangeY;
 	if (NewPositionY == FishPositionY) return;
-	//变速移动到制定为止：要求加速->(匀速)->减速
+	//变速移动到指定位置：要求加速->(匀速)->减速
 	FishPositionY = FMath::FInterpTo(FishPositionY, NewPositionY, 0.1f, 0.5f);
 	FishImage->SetRenderTranslation(FVector2D(0, FishPositionY - InitialFishPositionY));
 }

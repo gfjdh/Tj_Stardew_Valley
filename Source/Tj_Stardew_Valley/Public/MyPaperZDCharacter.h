@@ -328,12 +328,9 @@ public:
 
 	void CollectItem(UItem* ItemData);
 
-	//void ActivatePlayer(bool IsActivate);
+	void ActivatePlayer(bool IsActivate);
 
-	//void FishGame();
+	void FishGame();
 
-	//void FishGameTick();
-
-
-
+	void FishGameTick();
 };
