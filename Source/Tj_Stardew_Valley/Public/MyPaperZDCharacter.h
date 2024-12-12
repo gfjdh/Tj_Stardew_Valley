@@ -31,6 +31,8 @@
 #include "AnimalCharacter.h"
 #include "FishSpot.h"
 #include "FishingWidget.h"
+#include "Inventory.h"
+
 
 #include "MyPaperZDCharacter.generated.h"
 
@@ -126,6 +128,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UInputAction* CameraDownAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UInputAction* InventoryAction;
 
 	//砍树动画
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -234,7 +239,6 @@ public:
 	FZDOnAnimationOverrideEndSignature OnInteractOverrideEndDelegate;
 
 
-
 	// 存储玩家当前的朝向
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	EPlayerDirection PlayerDirection;
@@ -242,6 +246,7 @@ public:
 	// 存储玩家当前的状态
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	EPlayerState CurrentPlayerState;
+
 
 	//耐力
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -291,6 +296,7 @@ public:
 
 	void CameraChangeDown(const FInputActionValue& Value);
 
+	void Inventory(const FInputActionValue& Value);
 
 	//钓鱼模式按键
 	void PullRod(const FInputActionValue& Value);
@@ -327,5 +333,7 @@ public:
 	void FishGame();
 
 	void FishGameTick();
+
+
 
 };

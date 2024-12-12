@@ -697,47 +697,46 @@ void AMyPaperZDCharacter::CollectItem(UItem* ItemData) {
 			PlayerUIWidget->SetGold(SDGameInstance->GoldWealth);
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Gold"));
 			break;
-	
+
 		default:
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Default,Pick UP"));
 			PlayerInventory->AddItem(ItemData);
 			break;
 	}
-	void AMyPaperZDCharacter::FishGameTick()
-	{
-		if (FishingWidget) {
-			if (FishingWidget->IsInGame && CurrentPlayerState == EPlayerState::InFishingGame) {
-				//判断绿Zone和鱼是否有相交,若有,则增加percentage
-				float GreenZoneTop = FishingWidget->GreenZonePositionY;
-				float GreenZoneBottom = FishingWidget->GreenZonePositionY + FishingWidget->GreenZoneHeight;
-				float FishTop = FishingWidget->FishPositionY;
-				float FishBottom = FishingWidget->FishPositionY + FishingWidget->FishHeight;
-				float FishingSpeed = FishingWidget->PercentageBarSpeed;
-				if (GreenZoneBottom < FishTop || GreenZoneTop > FishBottom) {
-					FishingSpeed *= -0.4;
-				}
-				//Percentage
-				FishingWidget->SetPercentage(FishingWidget->GamePercentage + FishingSpeed);
-				//更新图片
-				FishingWidget->UpdateProgressBar();
+}
 
-				//每x秒随机鱼位置
-				FishingWidget->SetFishRandomPosition();
+void AMyPaperZDCharacter::FishGameTick()
+{
+	if (FishingWidget) {
+		if (FishingWidget->IsInGame && CurrentPlayerState == EPlayerState::InFishingGame) {
+			//判断绿Zone和鱼是否有相交,若有,则增加percentage
+			float GreenZoneTop = FishingWidget->GreenZonePositionY;
+			float GreenZoneBottom = FishingWidget->GreenZonePositionY + FishingWidget->GreenZoneHeight;
+			float FishTop = FishingWidget->FishPositionY;
+			float FishBottom = FishingWidget->FishPositionY + FishingWidget->FishHeight;
+			float FishingSpeed = FishingWidget->PercentageBarSpeed;
+			if (GreenZoneBottom < FishTop || GreenZoneTop > FishBottom) {
+				FishingSpeed *= -0.4;
+			}
+			//Percentage
+			FishingWidget->SetPercentage(FishingWidget->GamePercentage + FishingSpeed);
+			//更新图片
+			FishingWidget->UpdateProgressBar();
 
-				//判断是否钓到鱼或时间到
-				if (FishingWidget->GamePercentage >= 100.0f) {
-					GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Fish Caught!"));
-					FishingWidget->EndFishing();
-					//spawn fish
+			//每x秒随机鱼位置
+			FishingWidget->SetFishRandomPosition();
 
-					ActivatePlayer(true);
-					CanInteract = true;
-					CurrentPlayerState = EPlayerState::Idle;
-					UpdateStamina(-5);
-				}
+			//判断是否钓到鱼或时间到
+			if (FishingWidget->GamePercentage >= 100.0f) {
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Fish Caught!"));
+				FishingWidget->EndFishing();
+				//spawn fish
+
+				ActivatePlayer(true);
+				CanInteract = true;
+				CurrentPlayerState = EPlayerState::Idle;
+				UpdateStamina(-5);
 			}
 		}
 	}
-
-
 }
