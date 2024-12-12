@@ -33,6 +33,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int ExpValue = 0;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UItem* ItemData;
+
 	// Sets default values for this actor's properties
 	ACollectableEntity();
 

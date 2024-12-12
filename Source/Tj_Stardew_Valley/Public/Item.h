@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "PaperSprite.h"
+#include "Engine/DataTable.h"
+
 
 #include "Item.generated.h"
 
@@ -25,6 +27,36 @@ enum class CollectableType : uint8
 	Crop,
 	Other
 };
+USTRUCT(BlueprintType)
+struct FItemData : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 ItemID;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString ItemName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	CollectableType ItemType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPaperSprite* ItemSprite;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 CurrentAmount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 MaxStackAmount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsConsumable;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsEquippable;
+};
+
 
 
 /**
@@ -60,6 +92,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsEquippable;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UDataTable* ItemDataTable;
+
 	UItem()
 	{
 		ItemID = -1;
@@ -83,7 +118,7 @@ public:
 		bIsEquippable = Equippable;
 	}
 
-	void CreateItemInfo(int32 ItemID);
+	void CreateItemInfo(int32 InItemID);
 
 	void ConsumeItem();
 

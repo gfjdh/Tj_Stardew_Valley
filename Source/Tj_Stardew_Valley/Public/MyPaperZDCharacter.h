@@ -194,6 +194,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UPlayerUI* PlayerUIWidget;
 
+	//物品栏设置
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UInventory* PlayerInventory;
+
 	//实例
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UStardrewGameInstance* SDGameInstance;
@@ -316,8 +320,7 @@ public:
 	void EnableInteractBox(bool Enabled);
 
 
-
-	void CollectItem(CollectableType ItemType);
+	void CollectItem(UItem* ItemData);
 
 	void ActivatePlayer(bool IsActivate);
 

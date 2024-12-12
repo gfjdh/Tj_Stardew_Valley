@@ -10,13 +10,6 @@ UInventory::UInventory()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	InventoryPosition.SetNum(MaxInventorySlots);
-
-	for (auto& i : InventoryPosition)
-	{
-		i = -1;
-	}
-
 	// ...
 }
 
@@ -61,18 +54,21 @@ bool UInventory::AddItem(const UItem* ItemToAdd)
 	{
 		return false;
 	}
-	if (ItemToAdd->bIsConsumable)
+
+	for (auto& i : Inventory)
 	{
-		for (auto& i : Inventory)
+		if (i->ItemID == ItemToAdd->ItemID)
 		{
-			if (i->ItemID == ItemToAdd->ItemID)
-			{
-				i->CurrentAmount += ItemToAdd->CurrentAmount;
-				return true;
-			}
+			i->CurrentAmount += ItemToAdd->CurrentAmount;
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Item ID %d Picked Up"), ItemToAdd->ItemID));
+			return true;
 		}
 	}
+
 	Inventory.Add(const_cast<UItem*>(ItemToAdd));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Item ID %d Picked Up"), ItemToAdd->ItemID));
+
+
 	return true;
 }
 
