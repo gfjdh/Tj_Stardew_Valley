@@ -5,8 +5,8 @@ void UFishingWidget::EnableDisplay(bool IsEnable)
 	//显示或隐藏UI
 	if(IsEnable)
 		AddToViewport();
-	else
-		RemoveFromParent();
+	else 
+		RemoveFromViewport();
 }
 
 void UFishingWidget::BeginFishing()
@@ -32,19 +32,6 @@ void UFishingWidget::UpdateProgressBar()
 void UFishingWidget::SetFishPosition(float PositionY)
 {
 	//设置鱼的位置
-	if (PositionY > MaxRangeY)
-		PositionY = MaxRangeY;
-	if (PositionY < MinRangeY)
-		PositionY = MinRangeY;
-	FishImage->SetRenderTranslation(FVector2D(FishPosition, PositionY));
-}
-
-void UFishingWidget::SetGreenZonePosition(float PositionY)
-{
-	//设置绿色区域的位置
-	if (PositionY > MaxRangeY)
-		PositionY = MaxRangeY;
-	if (PositionY < MinRangeY)
-		PositionY = MinRangeY;
-	GreenZone->SetRenderTranslation(FVector2D(GreenZonePoisition, PositionY));
+	float PositionX = -30.0f;
+	FishImage->SetRenderTranslation(FVector2D(PositionX, PositionY));
 }

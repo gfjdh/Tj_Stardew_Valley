@@ -22,4 +22,7 @@ public:
 public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	UBoxComponent* BoxComp;
+
+public:
+	void Fishgame();
 };
