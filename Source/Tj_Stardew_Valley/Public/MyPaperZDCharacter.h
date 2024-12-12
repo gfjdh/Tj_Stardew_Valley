@@ -32,6 +32,7 @@
 #include "FishSpot.h"
 #include "FishingWidget.h"
 #include "Inventory.h"
+#include "SkillStates.h"
 
 
 #include "MyPaperZDCharacter.generated.h"
@@ -126,6 +127,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UInputAction* InventoryAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UInputAction* SkillAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UInputAction* SwitchSkillAction;
+
 	//砍树动画
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UPaperZDAnimSequence* ChopAnimSequenceUp;
@@ -201,6 +208,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UStardrewGameInstance* SDGameInstance;
 
+	//技能
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	USkillStates* PlayerSkill;
+
 	//音效
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USoundBase* PickSound;
@@ -261,7 +272,6 @@ public:
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
-	//
 
 	//移动
 	void Move(const FInputActionValue& Value);
@@ -299,6 +309,9 @@ public:
 	void CameraChangeDown(const FInputActionValue& Value);
 
 	void Inventory(const FInputActionValue& Value);
+
+	//切换技能
+	void SwitchSkill(const FInputActionValue& Value);
 
 	//钓鱼模式按键
 	void PullRod(const FInputActionValue& Value);

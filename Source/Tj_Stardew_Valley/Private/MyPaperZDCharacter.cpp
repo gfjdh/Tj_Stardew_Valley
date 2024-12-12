@@ -51,7 +51,7 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 
 	PlayerInventory = CreateDefaultSubobject<UInventory>(TEXT("PlayerInventory"));
 
-
+	PlayerSkill = CreateDefaultSubobject<USkillStates>(TEXT("PlayerSkill"));
 
 
 	/*static ConstructorHelpers::FClassFinder<UPaperZDAnimInstance> AnimBPClass(TEXT("/Game/Assets/Player/BP_PlayerAnim"));
@@ -132,6 +132,20 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 	if(InventoryFinder.Succeeded())
 	{
 		InventoryAction = InventoryFinder.Object;
+	}
+
+	//加载技能输入
+	static ConstructorHelpers::FObjectFinder<UInputAction> SkillFinder(TEXT("InputAction'/Game/Input/Input_Skill.Input_Skill'"));
+	if (SkillFinder.Succeeded())
+	{
+		SkillAction = SkillFinder.Object;
+	}
+
+	//加载切换技能输入
+	static ConstructorHelpers::FObjectFinder<UInputAction> SwitchSkillFinder(TEXT("InputAction'/Game/Input/Input_SwitchSkill.Input_SwitchSkill'"));
+	if (SwitchSkillFinder.Succeeded())
+	{
+		SwitchSkillAction = SwitchSkillFinder.Object;
 	}
 
 	GetCharacterMovement()->MaxWalkSpeed = 150.0f;
@@ -216,6 +230,7 @@ void AMyPaperZDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(CameraUpAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::CameraChangeUp);
 		EnhancedInputComponent->BindAction(CameraDownAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::CameraChangeDown);
 		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::Inventory);
+		EnhancedInputComponent->BindAction(SwitchSkillAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::SwitchSkill);
 	}
 }
 
@@ -600,6 +615,15 @@ void AMyPaperZDCharacter::OnInteractOverrideAnimEnd(bool bCompleted)
 	EnableInteractBox(false);
 }
 
+//切换技能索引
+void AMyPaperZDCharacter::SwitchSkill(const FInputActionValue& Value)
+{
+	CurrentPlayerState = EPlayerState::Interact;
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("SwitchSkill!")));
+	PlayerSkill->SwitchSkillIndex();
+	CurrentPlayerState = EPlayerState::Idle;
+}
+
 
 // 互动开始重叠
 void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
@@ -700,10 +724,22 @@ void AMyPaperZDCharacter::EnableInteractBox(bool Enabled){
 }
 
 void AMyPaperZDCharacter::UpdateStamina(int Value) {
+	int MaxStamina = 100;
+	int MinStamina = 0;
+
+	if (PlayerSkill->EnduranceSaver.SkillStage) {
+		Value *= 0.9 * PlayerSkill->EnduranceSaver.SkillStage;
+	}
+	if (PlayerSkill->EnduranceStander.SkillStage) {
+		MinStamina += -10* PlayerSkill->EnduranceStander.SkillStage;
+	}
+	if (PlayerSkill->EnduranceMaxMaster.SkillStage) {
+		MaxStamina += 10 * PlayerSkill->EnduranceMaxMaster.SkillStage;
+	}
 	Stamina += Value;
-	if (Stamina > 0) {
-		if (Stamina > 100) {
-			Stamina = 100;
+	if (Stamina > MinStamina) {
+		if (Stamina > MaxStamina) {
+			Stamina = MaxStamina;
 		}
 		if (IsTired) {
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Player is not tired anymore!"));
@@ -727,6 +763,8 @@ void AMyPaperZDCharacter::UpdateStamina(int Value) {
 	}
 	PlayerUIWidget->SetStamina(Stamina);
 	SDGameInstance->SetPlayerStamina(Stamina);
+
+	PlayerSkill->SkillStrucUpdate(SkillType::Endurance, 10);
 }
 
 void AMyPaperZDCharacter::UpdateLevel(int ExValue) {
