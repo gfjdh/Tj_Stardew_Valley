@@ -209,6 +209,11 @@ void UInventory::SwitchItem()
 	{
 		UsingIndex = 0;
 	}
-	FString ItemInfo = FString::Printf(TEXT("Switching to :%d"), UsingIndex);
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::White, ItemInfo);
+	if (Inventory.Num() <= 0) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Inventory Empty"));
+	}
+	else {
+		FString ItemInfo = FString::Printf(TEXT("Switching to :%s"), *Inventory[UsingIndex]->ItemName);
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::White, ItemInfo);
+	}
 }
