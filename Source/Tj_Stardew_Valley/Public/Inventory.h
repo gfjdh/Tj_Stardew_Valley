@@ -24,6 +24,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 MaxInventorySlots = 1000;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UItem* UsingItemSlot;
+
 
 protected:
 	// Called when the game starts
@@ -44,4 +47,12 @@ public:
 	// 打印物品栏内容(Debug用)
 	UFUNCTION()
 	void PrintInventory();
+
+	// 使用物品
+	UFUNCTION()
+	void UseItem(int32 Index);
+
+	// 获取物品
+	UFUNCTION()
+	UItem* GetItem(int32 ItemID);
 };

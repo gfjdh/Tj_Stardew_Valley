@@ -209,7 +209,7 @@ void AMyPaperZDCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	FVector PlayerLocation = GetActorLocation();
 	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Player Location: X=%f, Y=%f, Z=%f"), PlayerLocation.X, PlayerLocation.Y, PlayerLocation.Z));
-	FishGameTick();
+	//FishGameTick();
 }
 
 
@@ -419,7 +419,7 @@ void AMyPaperZDCharacter::Fish(const FInputActionValue& Value)
 	{
 		CurrentPlayerState = EPlayerState::Fish;
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Fish!")));
-		ActivatePlayer(false);
+		//ActivatePlayer(false);
 		EnableInteractBox(true);
 		switch (PlayerDirection)
 		{
@@ -604,7 +604,7 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 	else if (Fish) {
 		if (CurrentPlayerState == EPlayerState::Fish) {
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Fish!"));
-			FishGame();
+			//FishGame();
 		}
 	}
 }
@@ -705,38 +705,38 @@ void AMyPaperZDCharacter::CollectItem(UItem* ItemData) {
 	}
 }
 
-void AMyPaperZDCharacter::FishGameTick()
-{
-	if (FishingWidget) {
-		if (FishingWidget->IsInGame && CurrentPlayerState == EPlayerState::InFishingGame) {
-			//判断绿Zone和鱼是否有相交,若有,则增加percentage
-			float GreenZoneTop = FishingWidget->GreenZonePositionY;
-			float GreenZoneBottom = FishingWidget->GreenZonePositionY + FishingWidget->GreenZoneHeight;
-			float FishTop = FishingWidget->FishPositionY;
-			float FishBottom = FishingWidget->FishPositionY + FishingWidget->FishHeight;
-			float FishingSpeed = FishingWidget->PercentageBarSpeed;
-			if (GreenZoneBottom < FishTop || GreenZoneTop > FishBottom) {
-				FishingSpeed *= -0.4;
-			}
-			//Percentage
-			FishingWidget->SetPercentage(FishingWidget->GamePercentage + FishingSpeed);
-			//更新图片
-			FishingWidget->UpdateProgressBar();
-
-			//每x秒随机鱼位置
-			FishingWidget->SetFishRandomPosition();
-
-			//判断是否钓到鱼或时间到
-			if (FishingWidget->GamePercentage >= 100.0f) {
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Fish Caught!"));
-				FishingWidget->EndFishing();
-				//spawn fish
-
-				ActivatePlayer(true);
-				CanInteract = true;
-				CurrentPlayerState = EPlayerState::Idle;
-				UpdateStamina(-5);
-			}
-		}
-	}
-}
+//void AMyPaperZDCharacter::FishGameTick()
+//{
+//	if (FishingWidget) {
+//		if (FishingWidget->IsInGame && CurrentPlayerState == EPlayerState::InFishingGame) {
+//			//判断绿Zone和鱼是否有相交,若有,则增加percentage
+//			float GreenZoneTop = FishingWidget->GreenZonePositionY;
+//			float GreenZoneBottom = FishingWidget->GreenZonePositionY + FishingWidget->GreenZoneHeight;
+//			float FishTop = FishingWidget->FishPositionY;
+//			float FishBottom = FishingWidget->FishPositionY + FishingWidget->FishHeight;
+//			float FishingSpeed = FishingWidget->PercentageBarSpeed;
+//			if (GreenZoneBottom < FishTop || GreenZoneTop > FishBottom) {
+//				FishingSpeed *= -0.4;
+//			}
+//			//Percentage
+//			FishingWidget->SetPercentage(FishingWidget->GamePercentage + FishingSpeed);
+//			//更新图片
+//			FishingWidget->UpdateProgressBar();
+//
+//			//每x秒随机鱼位置
+//			FishingWidget->SetFishRandomPosition();
+//
+//			//判断是否钓到鱼或时间到
+//			if (FishingWidget->GamePercentage >= 100.0f) {
+//				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Fish Caught!"));
+//				FishingWidget->EndFishing();
+//				//spawn fish
+//
+//				ActivatePlayer(true);
+//				CanInteract = true;
+//				CurrentPlayerState = EPlayerState::Idle;
+//				UpdateStamina(-5);
+//			}
+//		}
+//	}
+//}
