@@ -30,6 +30,7 @@
 #include "CollectableEntity.h"
 #include "AnimalCharacter.h"
 #include "FishSpot.h"
+#include "Inventory.h"
 
 #include "MyPaperZDCharacter.generated.h"
 
@@ -118,6 +119,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UInputAction* CameraDownAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UInputAction* InventoryAction;
 
 	//砍树动画
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -278,6 +282,9 @@ public:
 	void CameraChangeUp(const FInputActionValue& Value);
 
 	void CameraChangeDown(const FInputActionValue& Value);
+
+	//物品栏
+	void Inventory(const FInputActionValue& Value);
 
 	//更新耐力
 	void UpdateStamina(int Value);
