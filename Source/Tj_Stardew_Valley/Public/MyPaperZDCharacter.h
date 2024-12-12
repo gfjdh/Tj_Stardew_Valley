@@ -315,6 +315,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void EnableInteractBox(bool Enabled);
 
+
+
 	void CollectItem(CollectableType ItemType);
 
 	void ActivatePlayer(bool IsActivate);
@@ -322,4 +324,5 @@ public:
 	void FishGame();
 
 	void FishGameTick();
+
 };

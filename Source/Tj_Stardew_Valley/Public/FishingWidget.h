@@ -7,6 +7,8 @@
 #include "Components/TextBlock.h"
 #include "Components/Image.h"
 
+#include "Engine/TimerHandle.h"
+
 #include "FishingWidget.generated.h"
 
 UCLASS()
@@ -74,12 +76,23 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float GreenZoneSpeed = 2.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float FishMovingCoolDown = 4.0f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool CanFishMove = true;
+
+	float FishTargetPositionY = 0.0f;
+
+	FTimerHandle FishMovingCoolDownTimer;
 public:
 	void EnableDisplay(bool IsEnable);
 	void BeginFishing();
 	void EndFishing();
 	void UpdateProgressBar();
 	void SetPercentage(float Percentage);
-	void SetFishPosition(float PositionY);
+	void SetFishPosition(float NewPositionY);
 	void UpdateGreenZonePosition(float NewPositionY);
+	void SetFishRandomPosition();
+	void OnFishMovingCoolDownTimerTimeout();
 };

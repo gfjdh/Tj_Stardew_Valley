@@ -746,20 +746,13 @@ void AMyPaperZDCharacter::FishGameTick()
 			if (GreenZoneBottom < FishTop || GreenZoneTop > FishBottom) {
 				FishingSpeed *= -0.4;
 			}
-			//打印FishingSpeed
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("FishingSpeed: %f"), FishingSpeed));
-			//打印GreenZoneTop
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("GreenZoneTop: %f"), GreenZoneTop));
-			//打印GreenZoneBottom
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("GreenZoneBottom: %f"), GreenZoneBottom));
-			//打印FishTop
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("FishTop: %f"), FishTop));
-			//打印FishBottom
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("FishBottom: %f"), FishBottom));
 			//Percentage
 			FishingWidget->SetPercentage(FishingWidget->GamePercentage + FishingSpeed);
 			//更新图片
 			FishingWidget->UpdateProgressBar();
+
+			//每x秒随机鱼位置
+			FishingWidget->SetFishRandomPosition();
 
 			//判断是否钓到鱼或时间到
 			if (FishingWidget->GamePercentage >= 100.0f) {
