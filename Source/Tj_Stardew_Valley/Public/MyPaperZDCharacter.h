@@ -33,6 +33,7 @@
 #include "FishingWidget.h"
 #include "Inventory.h"
 #include "SkillStates.h"
+#include "FarmLand.h"
 
 
 #include "MyPaperZDCharacter.generated.h"
@@ -265,6 +266,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int Exp = 0;
 
+	UPROPERTY(EditDefaultsOnly)
+	//
+	TSubclassOf<AFarmLand> FarmLandActorToSpawn;
+
 	AMyPaperZDCharacter();
 
 	virtual void BeginPlay() override;
@@ -348,4 +353,7 @@ public:
 	void FishGame();
 
 	void FishGameTick();
+
+	//ÍÚÒ»¿é¸ûµØ
+	void HoeAFarmland();
 };

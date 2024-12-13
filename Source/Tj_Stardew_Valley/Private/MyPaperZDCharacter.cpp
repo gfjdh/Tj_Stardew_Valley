@@ -2,6 +2,7 @@
 #include "TreeStump.h"
 #include "Ores.h"
 #include "Crop.h"
+#include "FarmLand.h"
 
 AMyPaperZDCharacter::AMyPaperZDCharacter()
 {
@@ -468,13 +469,19 @@ void AMyPaperZDCharacter::Hoe()
 		{
 			case EPlayerDirection::Up:
 				GetAnimInstance()->PlayAnimationOverride(HoeAnimSequenceUp, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Hoeing a FarmLand"));
+				GetWorld()->SpawnActor<AFarmLand>(FarmLandActorToSpawn, GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
 				break;
 			case EPlayerDirection::Down:
 				GetAnimInstance()->PlayAnimationOverride(HoeAnimSequenceDown, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Hoeing a FarmLand"));
+				GetWorld()->SpawnActor<AFarmLand>(FarmLandActorToSpawn, GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
 				break;
 			case EPlayerDirection::Left:
 			case EPlayerDirection::Right:
 				GetAnimInstance()->PlayAnimationOverride(HoeAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Hoeing a FarmLand"));
+				GetWorld()->SpawnActor<AFarmLand>(FarmLandActorToSpawn, GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
 				break;
 		}
 
@@ -632,6 +639,7 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 	ATreeStump* TreeStump = Cast<ATreeStump>(OtherActor);
 	AOres* Ores = Cast<AOres>(OtherActor);
 	ACrop* Crop = Cast<ACrop>(OtherActor);
+	AFarmLand* FarmLand = Cast<AFarmLand>(OtherActor);
 	AAnimalCharacter* Animal = Cast<AAnimalCharacter>(OtherActor);
 	AFishSpot* Fish = Cast<AFishSpot>(OtherActor);
 	//ACharacter* NPC = Cast<ACharacter>(OtherActor);
@@ -852,4 +860,9 @@ void AMyPaperZDCharacter::FishGameTick()
 			}
 		}
 	}
+}
+
+void AMyPaperZDCharacter::HoeAFarmland()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, TEXT("Has hoed farmlands"));
 }

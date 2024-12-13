@@ -6,7 +6,10 @@
 #include "GameFramework/Actor.h"
 #include "Components/CapsuleComponent.h"
 #include "PaperSpriteComponent.h"
-#include "Engine/TimerHandle.h"
+#include "EnhancedInputSubsystems.h"
+#include "EnhancedInputComponent.h"
+#include "InputAction.h"
+#include "InputMappingContext.h"
 
 #include "FarmLand.generated.h"
 
