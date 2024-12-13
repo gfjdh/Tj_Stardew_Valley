@@ -465,25 +465,33 @@ void AMyPaperZDCharacter::Hoe()
 		CanMove = false;
 		CanInteract = false;
 		EnableInteractBox(true);
+		FVector SpawnLocation;
 		switch (PlayerDirection)
 		{
 			case EPlayerDirection::Up:
 				GetAnimInstance()->PlayAnimationOverride(HoeAnimSequenceUp, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Hoeing a FarmLand"));
-				GetWorld()->SpawnActor<AFarmLand>(FarmLandActorToSpawn, GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+				//指定方向的耕地生成位置
+				SpawnLocation = InteractionBoxUp->GetComponentLocation();
 				break;
 			case EPlayerDirection::Down:
 				GetAnimInstance()->PlayAnimationOverride(HoeAnimSequenceDown, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Hoeing a FarmLand"));
-				GetWorld()->SpawnActor<AFarmLand>(FarmLandActorToSpawn, GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+				//指定方向的耕地生成位置
+				SpawnLocation = InteractionBoxDown->GetComponentLocation();
 				break;
 			case EPlayerDirection::Left:
+				GetAnimInstance()->PlayAnimationOverride(HoeAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
+				//指定方向的耕地生成位置
+				SpawnLocation = InteractionBoxLeft->GetComponentLocation();
+				break;
 			case EPlayerDirection::Right:
 				GetAnimInstance()->PlayAnimationOverride(HoeAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Hoeing a FarmLand"));
-				GetWorld()->SpawnActor<AFarmLand>(FarmLandActorToSpawn, GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+				//指定方向的耕地生成位置
+				SpawnLocation = InteractionBoxRight->GetComponentLocation();
 				break;
 		}
+		// 强制设置Z轴为0
+		SpawnLocation.Z = 0.0f;
+		GetWorld()->SpawnActor<AFarmLand>(FarmLandActorToSpawn, SpawnLocation, FRotator(0.0f, 0.0f, 0.0f));
 
 		CurrentPlayerState = EPlayerState::Idle;
 		UpdateStamina(-5);
