@@ -744,7 +744,9 @@ void AMyPaperZDCharacter::UpdateStamina(int Value) {
 	int MinStamina = 0;
 
 	if (PlayerSkill->EnduranceSaver.SkillStage) {
-		Value *= 0.9 * PlayerSkill->EnduranceSaver.SkillStage;
+		for (int i = 0; i < PlayerSkill->EnduranceSaver.SkillStage; i++) {
+			Value *= 0.9;
+		}
 	}
 	if (PlayerSkill->EnduranceStander.SkillStage) {
 		MinStamina += -10* PlayerSkill->EnduranceStander.SkillStage;
