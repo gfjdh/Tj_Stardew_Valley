@@ -2,6 +2,7 @@
 
 
 #include "FarmLand.h"
+#include "GameFramework/Character.h"
 
 
 // Sets default values
@@ -12,8 +13,8 @@ AFarmLand::AFarmLand()
 	CapsuleComp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComp"));
 	SetRootComponent(CapsuleComp);
 
-	FarmLandSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("FarmLandSprite"));
-	FarmLandSprite->SetupAttachment(RootComponent);
+	FarmLandSpriteComp = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("FarmLandSprite"));
+	FarmLandSpriteComp->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -27,6 +28,20 @@ void AFarmLand::BeginPlay()
 void AFarmLand::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (WaterLevel > 10) {
+		this->FarmLandSpriteComp->SetSprite(WetFarmLandSprite);
+	}
+	else {
+		this->FarmLandSpriteComp->SetSprite(FarmLandSprite);
+	}
+	if (WaterLevel > 0) {
+		WaterLevel--;
+	}
+}
 
+//½½Ë®
+void AFarmLand::WaterFarmLand()
+{
+	WaterLevel += 50;
 }
 

@@ -660,14 +660,10 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));
 		}
 	}
-	else if (Crop) {
+	else if (FarmLand) {
 		if (CurrentPlayerState == EPlayerState::Water) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Crop is being Watered"));
-			//Crop->Water();
-		}
-		else if (CurrentPlayerState == EPlayerState::Hoe) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Crop is being Hoed"));
-			//Crop->Hoe();
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("1111111"));
+			FarmLand->WaterFarmLand();
 		}
 		else {
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));
@@ -696,7 +692,7 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 	}
 	//当前碰撞盒与FarmSpot重合时，才可能耕地
 	else if(FarmSpot){
-		//在耕地状态时，挖一块耕地，否则高亮显示下一块耕地区域
+		//在耕地状态时，挖一块耕地
 		if (CurrentPlayerState == EPlayerState::Hoe) {
 			FVector SpawnLocation;
 			switch (PlayerDirection)
