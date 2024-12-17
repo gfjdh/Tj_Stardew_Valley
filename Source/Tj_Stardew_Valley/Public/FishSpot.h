@@ -22,4 +22,5 @@ public:
 public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	UBoxComponent* BoxComp;
+
 };

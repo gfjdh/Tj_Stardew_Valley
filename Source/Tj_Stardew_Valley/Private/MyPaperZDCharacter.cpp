@@ -3,6 +3,7 @@
 #include "Ores.h"
 #include "Crop.h"
 #include "FarmLand.h"
+#include "FarmSpot.h"
 
 AMyPaperZDCharacter::AMyPaperZDCharacter()
 {
@@ -465,33 +466,21 @@ void AMyPaperZDCharacter::Hoe()
 		CanMove = false;
 		CanInteract = false;
 		EnableInteractBox(true);
-		FVector SpawnLocation;
 		switch (PlayerDirection)
 		{
 			case EPlayerDirection::Up:
 				GetAnimInstance()->PlayAnimationOverride(HoeAnimSequenceUp, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
-				//指定方向的耕地生成位置
-				SpawnLocation = InteractionBoxUp->GetComponentLocation();
 				break;
 			case EPlayerDirection::Down:
 				GetAnimInstance()->PlayAnimationOverride(HoeAnimSequenceDown, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
-				//指定方向的耕地生成位置
-				SpawnLocation = InteractionBoxDown->GetComponentLocation();
 				break;
 			case EPlayerDirection::Left:
 				GetAnimInstance()->PlayAnimationOverride(HoeAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
-				//指定方向的耕地生成位置
-				SpawnLocation = InteractionBoxLeft->GetComponentLocation();
 				break;
 			case EPlayerDirection::Right:
 				GetAnimInstance()->PlayAnimationOverride(HoeAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
-				//指定方向的耕地生成位置
-				SpawnLocation = InteractionBoxRight->GetComponentLocation();
 				break;
 		}
-		// 强制设置Z轴为0
-		SpawnLocation.Z = 0.0f;
-		GetWorld()->SpawnActor<AFarmLand>(FarmLandActorToSpawn, SpawnLocation, FRotator(0.0f, 0.0f, 0.0f));
 
 		CurrentPlayerState = EPlayerState::Idle;
 		UpdateStamina(-5);
@@ -647,6 +636,7 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 	ATreeStump* TreeStump = Cast<ATreeStump>(OtherActor);
 	AOres* Ores = Cast<AOres>(OtherActor);
 	ACrop* Crop = Cast<ACrop>(OtherActor);
+	AFarmSpot* FarmSpot = Cast<AFarmSpot>(OtherActor);
 	AFarmLand* FarmLand = Cast<AFarmLand>(OtherActor);
 	AAnimalCharacter* Animal = Cast<AAnimalCharacter>(OtherActor);
 	AFishSpot* Fish = Cast<AFishSpot>(OtherActor);
@@ -670,7 +660,6 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));
 		}
 	}
-
 	else if (Crop) {
 		if (CurrentPlayerState == EPlayerState::Water) {
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Crop is being Watered"));
@@ -703,6 +692,44 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 		if (CurrentPlayerState == EPlayerState::Fish) {
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Fish!"));
 			FishGame();
+		}
+	}
+	//当前碰撞盒不与任何其它除玩家外的actor重叠时，可以挖一块耕地
+	else if(FarmSpot){
+		if (CurrentPlayerState == EPlayerState::Hoe) {
+			FVector SpawnLocation;
+			switch (PlayerDirection)
+			{
+			case EPlayerDirection::Up:
+				GetAnimInstance()->PlayAnimationOverride(HoeAnimSequenceUp, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
+				//朝上生成耕地
+				SpawnLocation = InteractionBoxUp->GetComponentLocation();
+				break;
+			case EPlayerDirection::Down:
+				GetAnimInstance()->PlayAnimationOverride(HoeAnimSequenceDown, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
+				//朝下生成耕地
+				SpawnLocation = InteractionBoxDown->GetComponentLocation();
+				break;
+			case EPlayerDirection::Left:
+				GetAnimInstance()->PlayAnimationOverride(HoeAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
+				//朝左生成耕地
+				SpawnLocation = InteractionBoxLeft->GetComponentLocation();
+				break;
+			case EPlayerDirection::Right:
+				GetAnimInstance()->PlayAnimationOverride(HoeAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
+				//朝右生成耕地
+				SpawnLocation = InteractionBoxRight->GetComponentLocation();
+				break;
+			}
+			// 强制设置Z轴为0
+			SpawnLocation.Z = 0.0f;
+			//规整耕地坐标
+			SpawnLocation.X = (float)(((int)SpawnLocation.X - (int)OtherActor->GetActorLocation().X) / 16 * 16+ OtherActor->GetActorLocation().X);
+			SpawnLocation.X = (float)(((int)SpawnLocation.X - (int)OtherActor->GetActorLocation().Y) / 16 * 16 + OtherActor->GetActorLocation().Y);
+			AFarmLand* NewFarmLand = GetWorld()->SpawnActor<AFarmLand>(FarmLandActorToSpawn, SpawnLocation, FRotator(0.0f, 0.0f, 0.0f));
+			if (FarmLand) {
+				FarmLand->Destroy();
+			}
 		}
 	}
 }
