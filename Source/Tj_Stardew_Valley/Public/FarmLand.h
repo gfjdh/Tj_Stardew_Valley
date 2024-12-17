@@ -41,9 +41,6 @@ public:
 	// 每帧调用
 	virtual void Tick(float DeltaTime) override;
 
-	//向当前地块耕地
-	void HoeFarmLand();
-
 	//给耕地浇水
 	void WaterFarmLand();
 

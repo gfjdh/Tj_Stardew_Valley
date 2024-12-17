@@ -694,8 +694,9 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 			FishGame();
 		}
 	}
-	//当前碰撞盒不与任何其它除玩家外的actor重叠时，可以挖一块耕地
+	//当前碰撞盒与FarmSpot重合时，才可能耕地
 	else if(FarmSpot){
+		//在耕地状态时，挖一块耕地，否则高亮显示下一块耕地区域
 		if (CurrentPlayerState == EPlayerState::Hoe) {
 			FVector SpawnLocation;
 			switch (PlayerDirection)
@@ -724,11 +725,14 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 			// 强制设置Z轴为0
 			SpawnLocation.Z = 0.0f;
 			//规整耕地坐标
-			SpawnLocation.X = (float)(((int)SpawnLocation.X - (int)OtherActor->GetActorLocation().X) / 16 * 16+ OtherActor->GetActorLocation().X);
-			SpawnLocation.X = (float)(((int)SpawnLocation.X - (int)OtherActor->GetActorLocation().Y) / 16 * 16 + OtherActor->GetActorLocation().Y);
+			SpawnLocation.X = (float)(std::round((SpawnLocation.X - FarmSpot->GetActorLocation().X) / 16) * 16 + FarmSpot->GetActorLocation().X);
+			SpawnLocation.Y = (float)(std::round((SpawnLocation.Y - FarmSpot->GetActorLocation().Y) / 16) * 16 + FarmSpot->GetActorLocation().Y);
 			AFarmLand* NewFarmLand = GetWorld()->SpawnActor<AFarmLand>(FarmLandActorToSpawn, SpawnLocation, FRotator(0.0f, 0.0f, 0.0f));
-			if (FarmLand) {
-				FarmLand->Destroy();
+			if (std::find(FarmLandLocationList.begin(), FarmLandLocationList.end(), SpawnLocation) != FarmLandLocationList.end()) {
+				NewFarmLand->Destroy();
+			}
+			else {
+				FarmLandLocationList.push_back(SpawnLocation);
 			}
 		}
 	}
@@ -897,9 +901,4 @@ void AMyPaperZDCharacter::FishGameTick()
 			}
 		}
 	}
-}
-
-void AMyPaperZDCharacter::HoeAFarmland()
-{
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, TEXT("Has hoed farmlands"));
 }

@@ -10,7 +10,7 @@ AFarmSpot::AFarmSpot()
 	PrimaryActorTick.bCanEverTick = true;
 	BoxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComp"));
 	SetRootComponent(BoxComp);
-	FVector FarmSpotSize(30.0f, 24.0f, 20.0f);
+	FVector FarmSpotSize(30.0f, 30.0f, 20.0f);
 	BoxComp->SetBoxExtent(FarmSpotSize);
 }
 

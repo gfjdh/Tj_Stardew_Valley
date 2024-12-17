@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include "CoreMinimal.h"
 #include "PaperZDCharacter.h"
 #include "Components/CapsuleComponent.h"
@@ -266,8 +267,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int Exp = 0;
 
+	//生成的耕地
 	UPROPERTY(EditDefaultsOnly)
-	//
 	TSubclassOf<AFarmLand> FarmLandActorToSpawn;
 
 	AMyPaperZDCharacter();
@@ -353,6 +354,8 @@ public:
 	void FishGame();
 
 	void FishGameTick();
+
+	std::vector<FVector> FarmLandLocationList;
 
 	//挖一块耕地
 	void HoeAFarmland();
