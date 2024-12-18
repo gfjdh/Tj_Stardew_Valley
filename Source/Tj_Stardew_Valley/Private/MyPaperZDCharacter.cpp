@@ -263,10 +263,14 @@ void AMyPaperZDCharacter::Move(const FInputActionValue& Value)
 			if (MoveVector.Y > 0.0f)
 			{
 				PlayerDirection = EPlayerDirection::Up;
+				//调整minimap中PlayerIndicator的朝向
+				PlayerIndicatorSprite->SetWorldRotation(FRotator(0.0f, 0.0f, -90.0f));
 			}
 			else
 			{
 				PlayerDirection = EPlayerDirection::Down;
+				//调整minimap中PlayerIndicator的朝向
+				PlayerIndicatorSprite->SetWorldRotation(FRotator(0.0f, 0.0f, 90.0f));
 			}
 
 			AddMovementInput(GetActorRightVector(), -MoveVector.Y);
@@ -278,11 +282,13 @@ void AMyPaperZDCharacter::Move(const FInputActionValue& Value)
 			{
 				GetSprite()->SetWorldScale3D(FVector(1.0f, 1.0f, 1.0f));
 				PlayerDirection = EPlayerDirection::Right;
+				PlayerIndicatorSprite->SetWorldRotation(FRotator(0.0f, 90.0f, -90.0f));
 			}
 			else
 			{
 				GetSprite()->SetWorldScale3D(FVector(-1.0f, 1.0f, 1.0f));
 				PlayerDirection = EPlayerDirection::Left;
+				PlayerIndicatorSprite->SetWorldRotation(FRotator(0.0f, -90.0f, -90.0f));
 			}
 
 			AddMovementInput(GetActorForwardVector(), MoveVector.X);
