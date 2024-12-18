@@ -703,7 +703,6 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 	}
 	else if (Fish) {
 		if (CurrentPlayerState == EPlayerState::Fish) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Fish!"));
 			FishGame();
 		}
 	}
@@ -903,7 +902,6 @@ void AMyPaperZDCharacter::FishGameTick()
 
 			//ÅÐ¶ÏÊÇ·ñµöµ½Óã
 			if (FishingWidget->GamePercentage >= 100.0f) {
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Fish Caught!"));
 				FishingWidget->EndFishing();
 				//spawn fish
 				SpawnFishDelegate.Broadcast();
