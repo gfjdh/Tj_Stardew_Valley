@@ -28,11 +28,13 @@ void AFarmLand::BeginPlay()
 void AFarmLand::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (WaterLevel > 10) {
+	if (WaterLevel > 100) {
 		this->FarmLandSpriteComp->SetSprite(WetFarmLandSprite);
+		WaterStage = 1;
 	}
 	else {
 		this->FarmLandSpriteComp->SetSprite(FarmLandSprite);
+		WaterStage = 0;
 	}
 	if (WaterLevel > 0) {
 		WaterLevel--;
@@ -42,6 +44,6 @@ void AFarmLand::Tick(float DeltaTime)
 //½½Ë®
 void AFarmLand::WaterFarmLand()
 {
-	WaterLevel += 50;
+	WaterLevel += 500;
 }
 
