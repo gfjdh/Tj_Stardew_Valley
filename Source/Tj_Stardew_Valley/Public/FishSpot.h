@@ -5,9 +5,6 @@
 
 #include "Components/BoxComponent.h"
 
-#include "MyPaperZDCharacter.h"
-#include "CollectableEntity.h"
-
 #include "FishSpot.generated.h"
 
 UCLASS()
@@ -23,18 +20,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 public:
-	UFUNCTION()
-	void SpawnFish();
-public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	UBoxComponent* BoxComp;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	AMyPaperZDCharacter* Player;
-
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<ACollectableEntity> FishClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	USoundBase* FishCaughtSound;
 };

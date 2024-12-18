@@ -25,13 +25,6 @@ void UFishingWidget::EndFishing()
 	FishPositionY = InitialFishPositionY;
 	GreenZonePositionY = InitialGreenZonePositionY;
 	CanFishMove = true;
-	//停止计时器
-	GetWorld()->GetTimerManager().ClearTimer(FishMovingCoolDownTimer);
-	//绿条初始值设置
-	GreenZonePositionY = InitialGreenZonePositionY;
-	FishPositionY = InitialFishPositionY;
-	UpdateGreenZonePosition(GreenZonePositionY);
-	//隐藏UI
 	EnableDisplay(false);
 }
 

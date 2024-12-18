@@ -11,7 +11,6 @@
 #include "PaperFlipbook.h"
 #include "PaperZDAnimInstance.h"
 #include "PaperZDAnimationComponent.h"
-
 #include "Components/BoxComponent.h"
 #include "InputAction.h"
 #include "InputMappingContext.h"
@@ -32,6 +31,7 @@
 #include "StardrewGameInstance.h"
 #include "CollectableEntity.h"
 #include "AnimalCharacter.h"
+#include "FishSpot.h"
 #include "FishingWidget.h"
 #include "Inventory.h"
 #include "SkillStates.h"
@@ -40,7 +40,7 @@
 
 #include "MyPaperZDCharacter.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSpawnFishDelegate);
+
 
 UENUM(BlueprintType)
 enum class EPlayerDirection : uint8
@@ -72,7 +72,6 @@ class TJ_STARDEW_VALLEY_API AMyPaperZDCharacter : public APaperZDCharacter
 	GENERATED_BODY()
 
 public:
-	FSpawnFishDelegate SpawnFishDelegate;
 	//基本组件
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	USpringArmComponent* SpringArm;
