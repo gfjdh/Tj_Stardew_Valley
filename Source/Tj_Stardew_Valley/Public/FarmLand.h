@@ -38,9 +38,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UPaperSprite* WetFarmLandSprite;
 
-	//记录当前耕地的浇水等级，分为干、湿、过多水，每帧下降1
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//记录当前耕地的浇水等级，分为干、湿，每帧下降1
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	int WaterLevel = 0;
+
+	//记录当前耕地的浇水状态，分为干、湿
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int WaterStage = 0;
 
 	// 构造函数初始化
 	AFarmLand();
