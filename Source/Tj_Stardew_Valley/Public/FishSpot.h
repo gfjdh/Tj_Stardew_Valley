@@ -6,6 +6,8 @@
 #include "Components/BoxComponent.h"
 
 #include "MyPaperZDCharacter.h"
+#include "CollectableEntity.h"
+
 #include "FishSpot.generated.h"
 
 UCLASS()
@@ -30,5 +32,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	AMyPaperZDCharacter* Player;
 
-
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ACollectableEntity> FishClass;
 };
