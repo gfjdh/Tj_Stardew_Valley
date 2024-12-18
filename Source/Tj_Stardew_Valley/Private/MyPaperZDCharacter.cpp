@@ -4,6 +4,7 @@
 #include "Crop.h"
 #include "FarmLand.h"
 #include "FarmSpot.h"
+#include "FishSpot.h"
 
 AMyPaperZDCharacter::AMyPaperZDCharacter()
 {
@@ -905,7 +906,7 @@ void AMyPaperZDCharacter::FishGameTick()
 				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Fish Caught!"));
 				FishingWidget->EndFishing();
 				//spawn fish
-
+				SpawnFishDelegate.Broadcast();
 				ActivatePlayer(true);
 				CanInteract = true;
 				CurrentPlayerState = EPlayerState::Idle;
