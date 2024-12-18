@@ -21,7 +21,6 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 	SpringArm->TargetArmLength = 500.0f;
 	// 设置 SpringArm 在 Z 轴方向旋转 -90 度
 	SpringArm->SetRelativeRotation(FRotator(-90.0f, -90.0f, 0.0f));
-
 	// 创建一个 Camera 组件，并将其设置为 SpringArm 的子组件
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
@@ -29,6 +28,17 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 	Camera->ProjectionMode = ECameraProjectionMode::Orthographic;
 	// 设置正交宽度为300
 	Camera->OrthoWidth = 300.0f;
+
+	//创建Minimap的springArm和Camera组件
+	MiniMapSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("MiniMapSpringArm"));
+	MiniMapSpringArm->SetupAttachment(RootComponent);
+
+	MiniMapCamera = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("MiniMapCamera"));
+	MiniMapCamera->SetupAttachment(MiniMapSpringArm, USpringArmComponent::SocketName);
+
+	//MiniMap中PlayerIndicator的Sprite
+	PlayerIndicatorSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("PlayerIndicatorSprite"));
+	PlayerIndicatorSprite->SetupAttachment(RootComponent);
 
 	// 创建互动碰撞盒
 	InteractionBoxUp = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionBoxUp"));
@@ -884,7 +894,7 @@ void AMyPaperZDCharacter::FishGameTick()
 			//每x秒随机鱼位置
 			FishingWidget->SetFishRandomPosition();
 
-			//判断是否钓到鱼或时间到
+			//判断是否钓到鱼
 			if (FishingWidget->GamePercentage >= 100.0f) {
 				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Fish Caught!"));
 				FishingWidget->EndFishing();

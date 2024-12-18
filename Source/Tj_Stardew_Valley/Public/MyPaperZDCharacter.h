@@ -17,6 +17,7 @@
 #include "GameFramework/Actor.h"
 #include "GameFramework/CharacterMovementComponent.h" 
 #include "Kismet/GameplayStatics.h"
+#include "Components/SceneCaptureComponent2D.h"
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -78,12 +79,21 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UCameraComponent* Camera;
 
+	//MiniMap×é¼þ
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	USpringArmComponent* MiniMapSpringArm;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	USceneCaptureComponent2D* MiniMapCamera;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPaperSpriteComponent* PlayerIndicatorSprite;
+
 	//»¥¶¯Åö×²ºÐ
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UBoxComponent* InteractionBoxUp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-
 	UBoxComponent* InteractionBoxDown;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
