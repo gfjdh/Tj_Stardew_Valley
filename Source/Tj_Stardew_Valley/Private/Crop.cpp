@@ -42,9 +42,7 @@ void ACrop::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* Other
 
 }
 
-<<<<<<< Updated upstream
 //同样的，这里也可以写出作物的逻辑，比如掉落物品等等
-=======
 //同样的，这里也可以写出作物的逻辑，比如掉落物品等等
 
 //改变当前作物状态的函数
@@ -109,4 +107,3 @@ void ACrop::SpawnProducts()
 	}
 
 }
->>>>>>> Stashed changes

@@ -11,6 +11,7 @@
 #include "InputAction.h"
 #include "InputMappingContext.h"
 #include "GameFramework/Actor.h"
+#include "CollectableEntity.h"
 
 #include "Crop.generated.h"
 
@@ -26,8 +27,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UPaperSpriteComponent* TreeSprite;
 
-<<<<<<< Updated upstream
-=======
 	//决定作物的当前成长状态，并以此来切换外观，和决定收获物
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	int status=0;
@@ -56,7 +55,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Product")
 	TSubclassOf<ACollectableEntity> ProductActor2;
 
->>>>>>> Stashed changes
 	// Sets default values for this actor's properties
 	ACrop();
 
@@ -71,8 +69,6 @@ public:
 	UFUNCTION()
 	void OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-<<<<<<< Updated upstream
-=======
 
 	//改变当前作物状态的函数
 	UFUNCTION()
@@ -85,5 +81,4 @@ public:
 	//生成产品
 	UFUNCTION()
 	void SpawnProducts();
->>>>>>> Stashed changes
 };
