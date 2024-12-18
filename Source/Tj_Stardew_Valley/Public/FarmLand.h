@@ -10,6 +10,8 @@
 #include "EnhancedInputComponent.h"
 #include "InputAction.h"
 #include "InputMappingContext.h"
+#include "PaperFlipbookComponent.h"
+
 
 #include "FarmLand.generated.h"
 
@@ -24,13 +26,25 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UCapsuleComponent* CapsuleComp;
 
-	//初始化耕地Sprite
+	//初始化耕地Sprite组件
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	UPaperSpriteComponent* FarmLandSprite;
+	UPaperSpriteComponent* FarmLandSpriteComp;
 
-	//标记当前挖的地块是否为耕地
+	//显示的耕地Sprite
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPaperSprite* FarmLandSprite;
+
+	//初始化湿耕地Sprite
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPaperSprite* WetFarmLandSprite;
+
+	//记录当前耕地的浇水等级，分为干、湿，每帧下降1
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	bool IsFarmLand = false;
+	int WaterLevel = 0;
+
+	//记录当前耕地的浇水状态，分为干、湿
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int WaterStage = 0;
 
 	// 构造函数初始化
 	AFarmLand();
@@ -41,12 +55,7 @@ public:
 	// 每帧调用
 	virtual void Tick(float DeltaTime) override;
 
-	//向当前地块耕地
-	void HoeFarmLand();
-
 	//给耕地浇水
 	void WaterFarmLand();
 
-	//耕地干燥时间
-	void DryFarmLandTimeOut();
 };

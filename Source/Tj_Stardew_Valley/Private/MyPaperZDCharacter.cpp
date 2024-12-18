@@ -3,6 +3,8 @@
 #include "Ores.h"
 #include "Crop.h"
 #include "FarmLand.h"
+#include "FarmSpot.h"
+#include "FishSpot.h"
 
 AMyPaperZDCharacter::AMyPaperZDCharacter()
 {
@@ -20,7 +22,6 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 	SpringArm->TargetArmLength = 500.0f;
 	// 设置 SpringArm 在 Z 轴方向旋转 -90 度
 	SpringArm->SetRelativeRotation(FRotator(-90.0f, -90.0f, 0.0f));
-
 	// 创建一个 Camera 组件，并将其设置为 SpringArm 的子组件
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
@@ -28,6 +29,17 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 	Camera->ProjectionMode = ECameraProjectionMode::Orthographic;
 	// 设置正交宽度为300
 	Camera->OrthoWidth = 300.0f;
+
+	//创建Minimap的springArm和Camera组件
+	MiniMapSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("MiniMapSpringArm"));
+	MiniMapSpringArm->SetupAttachment(RootComponent);
+
+	MiniMapCamera = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("MiniMapCamera"));
+	MiniMapCamera->SetupAttachment(MiniMapSpringArm, USpringArmComponent::SocketName);
+
+	//MiniMap中PlayerIndicator的Sprite
+	PlayerIndicatorSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("PlayerIndicatorSprite"));
+	PlayerIndicatorSprite->SetupAttachment(RootComponent);
 
 	// 创建互动碰撞盒
 	InteractionBoxUp = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionBoxUp"));
@@ -252,10 +264,14 @@ void AMyPaperZDCharacter::Move(const FInputActionValue& Value)
 			if (MoveVector.Y > 0.0f)
 			{
 				PlayerDirection = EPlayerDirection::Up;
+				//调整minimap中PlayerIndicator的朝向
+				PlayerIndicatorSprite->SetWorldRotation(FRotator(0.0f, 0.0f, -90.0f));
 			}
 			else
 			{
 				PlayerDirection = EPlayerDirection::Down;
+				//调整minimap中PlayerIndicator的朝向
+				PlayerIndicatorSprite->SetWorldRotation(FRotator(0.0f, 0.0f, 90.0f));
 			}
 
 			AddMovementInput(GetActorRightVector(), -MoveVector.Y);
@@ -267,11 +283,13 @@ void AMyPaperZDCharacter::Move(const FInputActionValue& Value)
 			{
 				GetSprite()->SetWorldScale3D(FVector(1.0f, 1.0f, 1.0f));
 				PlayerDirection = EPlayerDirection::Right;
+				PlayerIndicatorSprite->SetWorldRotation(FRotator(0.0f, 90.0f, -90.0f));
 			}
 			else
 			{
 				GetSprite()->SetWorldScale3D(FVector(-1.0f, 1.0f, 1.0f));
 				PlayerDirection = EPlayerDirection::Left;
+				PlayerIndicatorSprite->SetWorldRotation(FRotator(0.0f, -90.0f, -90.0f));
 			}
 
 			AddMovementInput(GetActorForwardVector(), MoveVector.X);
@@ -465,33 +483,21 @@ void AMyPaperZDCharacter::Hoe()
 		CanMove = false;
 		CanInteract = false;
 		EnableInteractBox(true);
-		FVector SpawnLocation;
 		switch (PlayerDirection)
 		{
 			case EPlayerDirection::Up:
 				GetAnimInstance()->PlayAnimationOverride(HoeAnimSequenceUp, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
-				//指定方向的耕地生成位置
-				SpawnLocation = InteractionBoxUp->GetComponentLocation();
 				break;
 			case EPlayerDirection::Down:
 				GetAnimInstance()->PlayAnimationOverride(HoeAnimSequenceDown, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
-				//指定方向的耕地生成位置
-				SpawnLocation = InteractionBoxDown->GetComponentLocation();
 				break;
 			case EPlayerDirection::Left:
 				GetAnimInstance()->PlayAnimationOverride(HoeAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
-				//指定方向的耕地生成位置
-				SpawnLocation = InteractionBoxLeft->GetComponentLocation();
 				break;
 			case EPlayerDirection::Right:
 				GetAnimInstance()->PlayAnimationOverride(HoeAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
-				//指定方向的耕地生成位置
-				SpawnLocation = InteractionBoxRight->GetComponentLocation();
 				break;
 		}
-		// 强制设置Z轴为0
-		SpawnLocation.Z = 0.0f;
-		GetWorld()->SpawnActor<AFarmLand>(FarmLandActorToSpawn, SpawnLocation, FRotator(0.0f, 0.0f, 0.0f));
 
 		CurrentPlayerState = EPlayerState::Idle;
 		UpdateStamina(-5);
@@ -581,11 +587,9 @@ void AMyPaperZDCharacter::PullRod(const FInputActionValue& Value)
 		//按上时 绿zone上升, 按下时 绿zone下降
 		float NewGreenZonePositionY = FishingWidget->GreenZonePositionY;
 		if(Dir > 0.0f){
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Pull Up!"));
 			NewGreenZonePositionY -= FishingWidget->GreenZoneSpeed;
 		}
 		else if (Dir < 0.0f) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Pull Down!"));
 			NewGreenZonePositionY += FishingWidget->GreenZoneSpeed;
 		}
 		FishingWidget->UpdateGreenZonePosition(NewGreenZonePositionY);
@@ -647,6 +651,7 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 	ATreeStump* TreeStump = Cast<ATreeStump>(OtherActor);
 	AOres* Ores = Cast<AOres>(OtherActor);
 	ACrop* Crop = Cast<ACrop>(OtherActor);
+	AFarmSpot* FarmSpot = Cast<AFarmSpot>(OtherActor);
 	AFarmLand* FarmLand = Cast<AFarmLand>(OtherActor);
 	AAnimalCharacter* Animal = Cast<AAnimalCharacter>(OtherActor);
 	AFishSpot* Fish = Cast<AFishSpot>(OtherActor);
@@ -670,15 +675,10 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));
 		}
 	}
-
-	else if (Crop) {
+	else if (FarmLand) {
 		if (CurrentPlayerState == EPlayerState::Water) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Crop is being Watered"));
-			//Crop->Water();
-		}
-		else if (CurrentPlayerState == EPlayerState::Hoe) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Crop is being Hoed"));
-			//Crop->Hoe();
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("1111111"));
+			FarmLand->WaterFarmLand();
 		}
 		else {
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));
@@ -701,8 +701,55 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 	}
 	else if (Fish) {
 		if (CurrentPlayerState == EPlayerState::Fish) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Fish!"));
 			FishGame();
+		}
+	}
+	//当前碰撞盒与FarmSpot重合时，才可能耕地
+	else if(FarmSpot){
+		//在耕地状态时，挖一块耕地
+		if (CurrentPlayerState == EPlayerState::Hoe) {
+			FVector SpawnLocation;
+			switch (PlayerDirection)
+			{
+			case EPlayerDirection::Up:
+				GetAnimInstance()->PlayAnimationOverride(HoeAnimSequenceUp, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
+				//朝上生成耕地
+				SpawnLocation = InteractionBoxUp->GetComponentLocation();
+				break;
+			case EPlayerDirection::Down:
+				GetAnimInstance()->PlayAnimationOverride(HoeAnimSequenceDown, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
+				//朝下生成耕地
+				SpawnLocation = InteractionBoxDown->GetComponentLocation();
+				break;
+			case EPlayerDirection::Left:
+				GetAnimInstance()->PlayAnimationOverride(HoeAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
+				//朝左生成耕地
+				SpawnLocation = InteractionBoxLeft->GetComponentLocation();
+				break;
+			case EPlayerDirection::Right:
+				GetAnimInstance()->PlayAnimationOverride(HoeAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
+				//朝右生成耕地
+				SpawnLocation = InteractionBoxRight->GetComponentLocation();
+				break;
+			}
+			// 强制设置Z轴为0
+			SpawnLocation.Z = 0.0f;
+			//规整耕地坐标
+			SpawnLocation.X = (float)(std::round((SpawnLocation.X - FarmSpot->GetActorLocation().X) / 16) * 16 + FarmSpot->GetActorLocation().X);
+			SpawnLocation.Y = (float)(std::round((SpawnLocation.Y - FarmSpot->GetActorLocation().Y) / 16) * 16 + FarmSpot->GetActorLocation().Y);
+			AFarmLand* NewFarmLand = GetWorld()->SpawnActor<AFarmLand>(FarmLandActorToSpawn, SpawnLocation, FRotator(0.0f, 0.0f, 0.0f));
+			if (std::find(FarmLandLocationList.begin(), FarmLandLocationList.end(), SpawnLocation) != FarmLandLocationList.end()) {
+				NewFarmLand->Destroy();
+			}
+			else {
+				FarmLandLocationList.push_back(SpawnLocation);
+			}
+		}
+	}
+	else if (Crop) {
+		if (CurrentPlayerState == EPlayerState::Hoe) {
+			FVector CropLocation = Crop->GetActorLocation();
+			Crop->Destroy();
 		}
 	}
 }
@@ -857,12 +904,11 @@ void AMyPaperZDCharacter::FishGameTick()
 			//每x秒随机鱼位置
 			FishingWidget->SetFishRandomPosition();
 
-			//判断是否钓到鱼或时间到
+			//判断是否钓到鱼
 			if (FishingWidget->GamePercentage >= 100.0f) {
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Fish Caught!"));
 				FishingWidget->EndFishing();
 				//spawn fish
-
+				SpawnFishDelegate.Broadcast();
 				ActivatePlayer(true);
 				CanInteract = true;
 				CurrentPlayerState = EPlayerState::Idle;
@@ -870,9 +916,4 @@ void AMyPaperZDCharacter::FishGameTick()
 			}
 		}
 	}
-}
-
-void AMyPaperZDCharacter::HoeAFarmland()
-{
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, TEXT("Has hoed farmlands"));
 }
