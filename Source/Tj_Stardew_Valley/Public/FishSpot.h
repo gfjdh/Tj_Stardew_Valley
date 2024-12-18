@@ -34,4 +34,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ACollectableEntity> FishClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USoundBase* FishCaughtSound;
 };

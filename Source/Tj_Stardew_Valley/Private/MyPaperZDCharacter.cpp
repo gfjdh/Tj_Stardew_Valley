@@ -587,11 +587,9 @@ void AMyPaperZDCharacter::PullRod(const FInputActionValue& Value)
 		//按上时 绿zone上升, 按下时 绿zone下降
 		float NewGreenZonePositionY = FishingWidget->GreenZonePositionY;
 		if(Dir > 0.0f){
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Pull Up!"));
 			NewGreenZonePositionY -= FishingWidget->GreenZoneSpeed;
 		}
 		else if (Dir < 0.0f) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Pull Down!"));
 			NewGreenZonePositionY += FishingWidget->GreenZoneSpeed;
 		}
 		FishingWidget->UpdateGreenZonePosition(NewGreenZonePositionY);
