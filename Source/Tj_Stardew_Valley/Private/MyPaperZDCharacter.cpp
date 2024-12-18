@@ -4,6 +4,7 @@
 #include "Crop.h"
 #include "FarmLand.h"
 #include "FarmSpot.h"
+#include "FishSpot.h"
 
 AMyPaperZDCharacter::AMyPaperZDCharacter()
 {
@@ -263,10 +264,14 @@ void AMyPaperZDCharacter::Move(const FInputActionValue& Value)
 			if (MoveVector.Y > 0.0f)
 			{
 				PlayerDirection = EPlayerDirection::Up;
+				//调整minimap中PlayerIndicator的朝向
+				PlayerIndicatorSprite->SetWorldRotation(FRotator(0.0f, 0.0f, -90.0f));
 			}
 			else
 			{
 				PlayerDirection = EPlayerDirection::Down;
+				//调整minimap中PlayerIndicator的朝向
+				PlayerIndicatorSprite->SetWorldRotation(FRotator(0.0f, 0.0f, 90.0f));
 			}
 
 			AddMovementInput(GetActorRightVector(), -MoveVector.Y);
@@ -278,11 +283,13 @@ void AMyPaperZDCharacter::Move(const FInputActionValue& Value)
 			{
 				GetSprite()->SetWorldScale3D(FVector(1.0f, 1.0f, 1.0f));
 				PlayerDirection = EPlayerDirection::Right;
+				PlayerIndicatorSprite->SetWorldRotation(FRotator(0.0f, 90.0f, -90.0f));
 			}
 			else
 			{
 				GetSprite()->SetWorldScale3D(FVector(-1.0f, 1.0f, 1.0f));
 				PlayerDirection = EPlayerDirection::Left;
+				PlayerIndicatorSprite->SetWorldRotation(FRotator(0.0f, -90.0f, -90.0f));
 			}
 
 			AddMovementInput(GetActorForwardVector(), MoveVector.X);
@@ -580,11 +587,9 @@ void AMyPaperZDCharacter::PullRod(const FInputActionValue& Value)
 		//按上时 绿zone上升, 按下时 绿zone下降
 		float NewGreenZonePositionY = FishingWidget->GreenZonePositionY;
 		if(Dir > 0.0f){
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Pull Up!"));
 			NewGreenZonePositionY -= FishingWidget->GreenZoneSpeed;
 		}
 		else if (Dir < 0.0f) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Pull Down!"));
 			NewGreenZonePositionY += FishingWidget->GreenZoneSpeed;
 		}
 		FishingWidget->UpdateGreenZonePosition(NewGreenZonePositionY);
@@ -696,7 +701,6 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 	}
 	else if (Fish) {
 		if (CurrentPlayerState == EPlayerState::Fish) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Fish!"));
 			FishGame();
 		}
 	}
@@ -740,6 +744,12 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 			else {
 				FarmLandLocationList.push_back(SpawnLocation);
 			}
+		}
+	}
+	else if (Crop) {
+		if (CurrentPlayerState == EPlayerState::Hoe) {
+			FVector CropLocation = Crop->GetActorLocation();
+			Crop->Destroy();
 		}
 	}
 }
@@ -896,10 +906,9 @@ void AMyPaperZDCharacter::FishGameTick()
 
 			//判断是否钓到鱼
 			if (FishingWidget->GamePercentage >= 100.0f) {
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Fish Caught!"));
 				FishingWidget->EndFishing();
 				//spawn fish
-
+				SpawnFishDelegate.Broadcast();
 				ActivatePlayer(true);
 				CanInteract = true;
 				CurrentPlayerState = EPlayerState::Idle;
