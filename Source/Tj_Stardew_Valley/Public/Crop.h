@@ -10,6 +10,7 @@
 #include "EnhancedInputComponent.h"
 #include "InputAction.h"
 #include "InputMappingContext.h"
+#include "GameFramework/Actor.h"
 #include "CollectableEntity.h"
 
 #include "Crop.generated.h"
@@ -48,18 +49,20 @@ public:
 	UPaperSprite* CropStageSprite4;
 
 	//作物被收获后生成的两个产物，分别是种子和产品
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Product")
 	TSubclassOf<ACollectableEntity> ProductActor1;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Product")
 	TSubclassOf<ACollectableEntity> ProductActor2;
 
 	// Sets default values for this actor's properties
 	ACrop();
 
+protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -67,13 +70,15 @@ public:
 	void OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-
+	//改变当前作物状态的函数
 	UFUNCTION()
 	void JudgeMaturity();
 
+	//改变当前作物外观
 	UFUNCTION()
 	void SwitchSprite();
 
+	//生成产品
 	UFUNCTION()
 	void SpawnProducts();
 };

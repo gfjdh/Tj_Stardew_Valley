@@ -3,7 +3,6 @@
 
 #include "Crop.h"
 #include "MyPaperZDCharacter.h"
-#include <random>
 
 // Sets default values
 ACrop::ACrop()
@@ -31,8 +30,7 @@ void ACrop::BeginPlay()
 void ACrop::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	JudgeMaturity();
-	SwitchSprite();
+
 }
 
 void ACrop::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
@@ -44,6 +42,7 @@ void ACrop::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* Other
 
 }
 
+//同样的，这里也可以写出作物的逻辑，比如掉落物品等等
 //同样的，这里也可以写出作物的逻辑，比如掉落物品等等
 
 //改变当前作物状态的函数
@@ -69,7 +68,7 @@ void ACrop::JudgeMaturity()
 	}
 }
 
-//改变当前作物
+//改变当前作物外观
 void ACrop::SwitchSprite()
 {
 	switch (status) {
@@ -88,6 +87,7 @@ void ACrop::SwitchSprite()
 	}
 }
 
+//生成产品
 void ACrop::SpawnProducts()
 {
 	FVector CropLocation = this->GetActorLocation();
