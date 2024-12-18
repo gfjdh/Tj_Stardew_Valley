@@ -704,6 +704,14 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 			FishGame();
 		}
 	}
+	else if (Crop) {
+		if (CurrentPlayerState == EPlayerState::Hoe) {
+			FVector CropLocation = Crop->GetActorLocation();
+			Crop->Destroy();
+			Crop->SpawnProducts();
+			return;
+		}
+	}
 	//当前碰撞盒与FarmSpot重合时，才可能耕地
 	else if(FarmSpot){
 		//在耕地状态时，挖一块耕地
