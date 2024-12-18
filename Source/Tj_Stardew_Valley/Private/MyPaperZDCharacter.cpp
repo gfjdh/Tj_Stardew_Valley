@@ -746,12 +746,6 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 			}
 		}
 	}
-	else if (Crop) {
-		if (CurrentPlayerState == EPlayerState::Hoe) {
-			FVector CropLocation = Crop->GetActorLocation();
-			Crop->Destroy();
-		}
-	}
 }
 
 
