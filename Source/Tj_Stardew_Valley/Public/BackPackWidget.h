@@ -32,7 +32,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UInventoryBoxWidget> InventoryBoxClass;
+
+	int IsOpen = false;
 public:
 	UFUNCTION(BlueprintCallable)
 	void InitFlushBackPack();
+
+	UFUNCTION(BlueprintCallable)
+	void EnableDisplay(bool IsVisible);
 };

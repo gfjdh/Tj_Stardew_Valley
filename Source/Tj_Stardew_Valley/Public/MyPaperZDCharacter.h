@@ -26,7 +26,7 @@
 #include "InputActionValue.h"
 #include "GameFramework/Controller.h"
 #include "Sound/SoundBase.h"
-
+#include "BackPackWidget.h"
 
 #include "PlayerUI.h"
 #include "StardrewGameInstance.h"
@@ -62,7 +62,8 @@ enum class EPlayerState : uint8
 	Hoe,
 	Fish,
 	Interact,
-	InFishingGame
+	InFishingGame,
+	BackPackOpened
 };
 
 
@@ -130,6 +131,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UFishingWidget* FishingWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UBackPackWidget* BackPackWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UInputAction* CameraUpAction;
