@@ -66,6 +66,7 @@ enum class EPlayerState : uint8
 <<<<<<< Updated upstream
 	BackPackOpened
 =======
+	Plant
 >>>>>>> Stashed changes
 };
 
@@ -288,6 +289,13 @@ public:
 	//生成的耕地
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AFarmLand> FarmLandActorToSpawn;
+
+	//生成的作物
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ACrop> CarrotToSpawn;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ACrop> WheatToSpawn;
 
 	AMyPaperZDCharacter();
 
