@@ -624,15 +624,18 @@ void AMyPaperZDCharacter::Inventory(const FInputActionValue& Value)
 	PlayerInventory->PrintInventory();
 
 	if (BackPackWidget) {
+		//开背包
 		if (!BackPackWidget->IsOpen) {
 			CurrentPlayerState = EPlayerState::BackPackOpened;
 			ActivatePlayer(false);
-			BackPackWidget->IsOpen = false;
+			BackPackWidget->IsOpen = true;
 			BackPackWidget->EnableDisplay(true);
 		}
+		//关背包
 		else {
 			CurrentPlayerState = EPlayerState::Idle;
 			ActivatePlayer(true);
+			BackPackWidget->IsOpen = false;
 			BackPackWidget->EnableDisplay(false);
 		}
 	}
