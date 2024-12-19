@@ -25,7 +25,6 @@ void ACrop::BeginPlay()
 {
 	Super::BeginPlay();
 	CapsuleComp->OnComponentBeginOverlap.AddDynamic(this, &ACrop::OverlapBegin);
-
 }
 
 // Called every frame
@@ -39,11 +38,16 @@ void ACrop::Tick(float DeltaTime)
 
 void ACrop::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
-	AMyPaperZDCharacter* Player = Cast<AMyPaperZDCharacter>(OtherActor);
-	if (Player) {
-		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Can be watered"));
+	AFarmLand* FarmLand = Cast<AFarmLand>(OtherActor);
+	ACrop* Crop = Cast<ACrop>(OtherActor);
+	if (FarmLand) {
+		if (FarmLand->WaterStage == 0) {
+			IsWet = 0;
+		}
+		else {
+			IsWet = 1;
+		}
 	}
-
 }
 
 //同样的，这里也可以写出作物的逻辑，比如掉落物品等等
@@ -54,7 +58,7 @@ void ACrop::JudgeMaturity()
 	srand(time(0));
 	if (Maturity < 1000) {
 		//作物的生长速度在一定范围内随机
-		//Maturity += (double)(rand() % 5 / 10 + 0.5);
+		Maturity += (double)(rand() % 5 / 10 + 0.5)*IsWet;
 	}
 
 	if (Maturity < 200) {
@@ -94,14 +98,17 @@ void ACrop::SwitchSprite()
 void ACrop::SpawnProducts()
 {
 	FVector CropLocation = this->GetActorLocation();
-	//生成产品
 	srand(time(0));
-	int OffsetX = (rand()-RAND_MAX) % 20;
-	int OffsetY = (rand()-RAND_MAX) % 19;
-	FVector ProductsSpawnLocation = CropLocation + FVector(0, 0, 0);
-	GetWorld()->SpawnActor<ACollectableEntity>(ProductActor1, ProductsSpawnLocation, FRotator(0.0f, 0.0f, 0.0f));
-	//生成种子,一次3个种子
-	for (int i = 1; i < 4; i++) {
+	int OffsetX = (rand() - RAND_MAX) % 20;
+	int OffsetY = (rand() - RAND_MAX) % 19;
+	FVector ProductsSpawnLocation = CropLocation + FVector(OffsetX, OffsetY, 0);
+	//成熟阶段收获，可以生成产品
+	if (status == 3){
+		GetWorld()->SpawnActor<ACollectableEntity>(ProductActor1, ProductsSpawnLocation, FRotator(0.0f, 0.0f, 0.0f));
+	}
+
+	//生成种子,根据status成熟情况生成种子数
+	for (int i = 1; i < status+2; i++) {
 		srand(time(0) + i * 100);
 		OffsetX = (rand() - RAND_MAX) % 20;
 		OffsetY = (rand() - RAND_MAX) % 19;
