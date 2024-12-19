@@ -622,6 +622,20 @@ void AMyPaperZDCharacter::Inventory(const FInputActionValue& Value)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Open!"));
 	PlayerInventory->PrintInventory();
+
+	if (BackPackWidget) {
+		if (!BackPackWidget->IsOpen) {
+			CurrentPlayerState = EPlayerState::BackPackOpened;
+			ActivatePlayer(false);
+			BackPackWidget->IsOpen = false;
+			BackPackWidget->EnableDisplay(true);
+		}
+		else {
+			CurrentPlayerState = EPlayerState::Idle;
+			ActivatePlayer(true);
+			BackPackWidget->EnableDisplay(false);
+		}
+	}
 }
 
 // »¥¶¯¶¯»­½áÊø

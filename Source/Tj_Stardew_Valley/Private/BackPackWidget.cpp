@@ -12,3 +12,11 @@ void UBackPackWidget::InitFlushBackPack()
 		}
 	}
 }
+
+void UBackPackWidget::EnableDisplay(bool IsVisible)
+{
+	if (IsVisible)
+		AddToViewport();
+	else
+		RemoveFromParent();
+}
