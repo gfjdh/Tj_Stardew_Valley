@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Item.h"
+#include "Crop.h"
 
 #include "Inventory.generated.h"
 
@@ -60,4 +61,7 @@ public:
 	// 改变使用物品的序号
 	UFUNCTION()
 	void SwitchItem();
+
+	UFUNCTION()
+	UItem* CurrentItem() { return Inventory[UsingIndex]; }
 };

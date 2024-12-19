@@ -5,6 +5,7 @@
 #include "FarmLand.h"
 #include "FarmSpot.h"
 #include "FishSpot.h"
+#include "Inventory.h"
 
 AMyPaperZDCharacter::AMyPaperZDCharacter()
 {
@@ -329,10 +330,15 @@ void AMyPaperZDCharacter::UseItem(const FInputActionValue& Value)
 				break;
 		}
 	}
-	//else if (UsingItem->ItemType == CollectableType::Seed)
-	//{
-	//	//Plant();
-	//}
+	else if (UsingItem->ItemType == CollectableType::Seed)
+	{
+		//进入种植状态，同时消耗一个种子
+		CurrentPlayerState = EPlayerState::Plant;
+		EnableInteractBox(true);
+		PlayerInventory->RemoveItemByIndex(PlayerInventory->UsingIndex, 1);
+		//回到默认状态
+		CurrentPlayerState = EPlayerState::Idle;
+	}
 	else if (UsingItem->ItemType == CollectableType::Food)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Using type:Food!")));
@@ -694,10 +700,29 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));
 		}
 	}
+	//和耕地交互
 	else if (FarmLand) {
+		//浇水
 		if (CurrentPlayerState == EPlayerState::Water) {
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("1111111"));
 			FarmLand->WaterFarmLand();
+		}
+		//种植
+		else if (CurrentPlayerState == EPlayerState::Plant) {
+			FVector PlantLocation = FarmLand->GetActorLocation();
+			PlantLocation.Z += 0.1f;
+			if (FarmLand->WaterStage == 1) {
+				switch (PlayerInventory->CurrentItem()->ItemID) {
+				case 1002:
+					GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("AAAA"));
+					GetWorld()->SpawnActor<ACrop>(CarrotToSpawn, PlantLocation, FRotator(0.0f, 0.0f, 0.0f));
+					break;
+				case 1003:
+					GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("BBBB"));
+					GetWorld()->SpawnActor<ACrop>(WheatToSpawn, PlantLocation, FRotator(0.0f, 0.0f, 0.0f));
+					break;
+				}
+			}
 		}
 		else {
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));
@@ -871,7 +896,6 @@ void AMyPaperZDCharacter::CollectItem(UItem* ItemData) {
 
 	int HealAmount = FMath::RandRange(10, 20);
 	int GoldAmount = 1;
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("test"));
 	switch (ItemData->ItemType) {
 		case CollectableType::Gold:
 			SDGameInstance->SetPlayerGold(GoldAmount);

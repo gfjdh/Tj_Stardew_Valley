@@ -10,7 +10,6 @@
 #include "EnhancedInputComponent.h"
 #include "InputAction.h"
 #include "InputMappingContext.h"
-#include "GameFramework/Actor.h"
 #include "CollectableEntity.h"
 
 #include "Crop.generated.h"

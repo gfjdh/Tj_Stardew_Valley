@@ -63,7 +63,8 @@ enum class EPlayerState : uint8
 	Fish,
 	Interact,
 	InFishingGame,
-	BackPackOpened
+	BackPackOpened,
+	Plant
 };
 
 
@@ -286,6 +287,13 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AFarmLand> FarmLandActorToSpawn;
 
+	//生成的作物
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ACrop> CarrotToSpawn;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ACrop> WheatToSpawn;
+
 	AMyPaperZDCharacter();
 
 	virtual void BeginPlay() override;
@@ -336,7 +344,7 @@ public:
 
 	//钓鱼模式按键
 	void PullRod(const FInputActionValue& Value);
-
+	
 	//更新耐力
 	void UpdateStamina(int Value);
 
