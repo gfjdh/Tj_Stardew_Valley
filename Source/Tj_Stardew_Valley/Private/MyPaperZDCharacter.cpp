@@ -555,7 +555,7 @@ void AMyPaperZDCharacter::CameraChangeDown(const FInputActionValue& Value)
 // 互动
 void AMyPaperZDCharacter::Interact(const FInputActionValue& Value)
 {
-	if (CurrentPlayerState == EPlayerState::InFishingGame)
+	if (CurrentPlayerState == EPlayerState::InFishingGame || CurrentPlayerState == EPlayerState::BackPackOpened)
 		return;
 	CurrentPlayerState = EPlayerState::Interact;
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Interact!")));
@@ -626,15 +626,15 @@ void AMyPaperZDCharacter::Inventory(const FInputActionValue& Value)
 	if (BackPackWidget) {
 		//开背包
 		if (!BackPackWidget->IsOpen) {
-			CurrentPlayerState = EPlayerState::BackPackOpened;
 			ActivatePlayer(false);
+			CurrentPlayerState = EPlayerState::BackPackOpened;
 			BackPackWidget->IsOpen = true;
 			BackPackWidget->EnableDisplay(true);
 		}
 		//关背包
 		else {
-			CurrentPlayerState = EPlayerState::Idle;
 			ActivatePlayer(true);
+			CurrentPlayerState = EPlayerState::Idle;
 			BackPackWidget->IsOpen = false;
 			BackPackWidget->EnableDisplay(false);
 		}
