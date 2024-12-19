@@ -1,4 +1,5 @@
 #include "InventoryBoxWidget.h"
+#include "Inventory.h"
 
 void UInventoryBoxWidget::UpdateItemDisplay()
 {
@@ -10,6 +11,7 @@ void UInventoryBoxWidget::UpdateItemDisplay()
 		ItemImage->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
+
 
 void UInventoryBoxWidget::SetItemCounts(int32 Counts)
 {
@@ -33,8 +35,31 @@ void UInventoryBoxWidget::SetItemCounts(int32 Counts)
 
 void UInventoryBoxWidget::SetItemImage(UTexture2D* Image)
 {
+	if (ItemImage)
+	{
+		ItemImage->SetBrushFromTexture(Image);
+	}
 }
 
-void UInventoryBoxWidget::OnSelected()
+UTexture2D* UInventoryBoxWidget::GetItemImage(int index)
 {
+	if (Inventory) {
+		if (Inventory->Inventory[index]) {
+			UPaperSprite* CurrentSprite = Inventory->Inventory[index]->ItemSprite;
+			if (CurrentSprite) {
+				return CurrentSprite->GetBakedTexture();
+			}
+		}
+	}
+	return nullptr;
+}
+
+int32 UInventoryBoxWidget::GetItemCounts(int index)
+{
+	if (Inventory) {
+		if (Inventory->Inventory[index]) {
+			return Inventory->Inventory[index]->CurrentAmount;
+		}
+	}
+	return 0;
 }

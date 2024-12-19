@@ -7,6 +7,7 @@
 #include "Components/Image.h"
 #include "Components/Button.h"
 #include "Components/Border.h"
+#include "Inventory.h"
 
 #include "InventoryBoxWidget.generated.h"
 
@@ -30,6 +31,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	bool ItemVisible = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UInventory* Inventory;
 public:
 	UFUNCTION(BlueprintCallable)
 	void UpdateItemDisplay();
@@ -41,5 +45,8 @@ public:
 	void SetItemImage(UTexture2D* Image);
 
 	UFUNCTION(BlueprintCallable)
-	void OnSelected();
+	UTexture2D* GetItemImage(int index);
+
+	UFUNCTION(BlueprintCallable)
+	int32 GetItemCounts(int index);
 };
