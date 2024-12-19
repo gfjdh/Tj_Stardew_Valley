@@ -63,7 +63,10 @@ enum class EPlayerState : uint8
 	Fish,
 	Interact,
 	InFishingGame,
+<<<<<<< Updated upstream
 	BackPackOpened
+=======
+>>>>>>> Stashed changes
 };
 
 
