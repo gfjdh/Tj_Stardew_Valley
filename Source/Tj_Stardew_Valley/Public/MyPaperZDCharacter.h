@@ -63,11 +63,8 @@ enum class EPlayerState : uint8
 	Fish,
 	Interact,
 	InFishingGame,
-<<<<<<< Updated upstream
-	BackPackOpened
-=======
+	BackPackOpened,
 	Plant
->>>>>>> Stashed changes
 };
 
 
@@ -347,7 +344,7 @@ public:
 
 	//钓鱼模式按键
 	void PullRod(const FInputActionValue& Value);
-
+	
 	//更新耐力
 	void UpdateStamina(int Value);
 
