@@ -704,14 +704,6 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 			FishGame();
 		}
 	}
-	else if (Crop) {
-		if (CurrentPlayerState == EPlayerState::Hoe) {
-			FVector CropLocation = Crop->GetActorLocation();
-			Crop->Destroy();
-			Crop->SpawnProducts();
-			return;
-		}
-	}
 	//当前碰撞盒与FarmSpot重合时，才可能耕地
 	else if(FarmSpot){
 		//在耕地状态时，挖一块耕地
@@ -752,6 +744,13 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 			else {
 				FarmLandLocationList.push_back(SpawnLocation);
 			}
+		}
+	}
+	else if (Crop) {
+		if (CurrentPlayerState == EPlayerState::Hoe) {
+			FVector CropLocation = Crop->GetActorLocation();
+			Crop->Destroy();
+			Crop->SpawnProducts();
 		}
 	}
 }
@@ -853,7 +852,7 @@ void AMyPaperZDCharacter::CollectItem(UItem* ItemData) {
 
 	int HealAmount = FMath::RandRange(10, 20);
 	int GoldAmount = 1;
-
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("test"));
 	switch (ItemData->ItemType) {
 		case CollectableType::Gold:
 			SDGameInstance->SetPlayerGold(GoldAmount);

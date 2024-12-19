@@ -3,6 +3,8 @@
 
 #include "Crop.h"
 #include "MyPaperZDCharacter.h"
+#include <random>
+#include <time.h>
 
 // Sets default values
 ACrop::ACrop()
@@ -30,6 +32,8 @@ void ACrop::BeginPlay()
 void ACrop::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	JudgeMaturity();
+	SwitchSprite();
 
 }
 
@@ -42,7 +46,6 @@ void ACrop::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* Other
 
 }
 
-//同样的，这里也可以写出作物的逻辑，比如掉落物品等等
 //同样的，这里也可以写出作物的逻辑，比如掉落物品等等
 
 //改变当前作物状态的函数
@@ -95,7 +98,7 @@ void ACrop::SpawnProducts()
 	srand(time(0));
 	int OffsetX = (rand()-RAND_MAX) % 20;
 	int OffsetY = (rand()-RAND_MAX) % 19;
-	FVector ProductsSpawnLocation = CropLocation + FVector(OffsetX, OffsetY, 0);
+	FVector ProductsSpawnLocation = CropLocation + FVector(0, 0, 0);
 	GetWorld()->SpawnActor<ACollectableEntity>(ProductActor1, ProductsSpawnLocation, FRotator(0.0f, 0.0f, 0.0f));
 	//生成种子,一次3个种子
 	for (int i = 1; i < 4; i++) {
