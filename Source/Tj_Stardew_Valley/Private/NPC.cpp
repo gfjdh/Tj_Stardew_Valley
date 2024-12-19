@@ -4,7 +4,7 @@
 #include "MyPaperZDCharacter.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/TextBlock.h"
-// Sets default values
+
 ANPC::ANPC()
 {
     PrimaryActorTick.bCanEverTick = true;
@@ -99,7 +99,7 @@ void ANPC::DisplayRandomDialogue()
 
         // 确保对话框组件的位置在NPC的头顶
         FVector NPCPosition = GetActorLocation();
-        DialogueWidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 30.0f));
+        DialogueWidgetComponent->SetRelativeLocation(FVector(0.0f, 5.0f, 15.0f));
     }
 }
 
@@ -181,10 +181,10 @@ void ANPC::MoveRandomly(float DeltaTime)
                 CurrentDirection = FVector(-1.0f, 0.0f, 0.0f); // 左
                 break;
             case 1:
-                CurrentDirection = FVector(0.0f, 1.0f, 0.0f); // 上
+                CurrentDirection = FVector(0.0f, -1.0f, 0.0f); // 上
                 break;
             case 0:
-                CurrentDirection = FVector(0.0f, -1.0f, 0.0f); // 下
+                CurrentDirection = FVector(0.0f, 1.0f, 0.0f); // 下
                 break;
         }
         // 设置一个随机时间来改变方向
@@ -246,11 +246,11 @@ void ANPC::UpdateAnimation()
         {
             NPCFlipbookComponent->SetFlipbook(MoveLeftAnimation);
         }
-        else if (CurrentDirection.X == 0 && CurrentDirection.Y > 0)
+        else if (CurrentDirection.X == 0 && CurrentDirection.Y < 0)
         {
             NPCFlipbookComponent->SetFlipbook(MoveUpAnimation);
         }
-        else if (CurrentDirection.X == 0 && CurrentDirection.Y < 0)
+        else if (CurrentDirection.X == 0 && CurrentDirection.Y > 0)
         {
             NPCFlipbookComponent->SetFlipbook(MoveDownAnimation);
         }
