@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-
+#include "Components/WidgetComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "PaperFlipbookComponent.h"
 
@@ -22,7 +22,18 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UPaperFlipbookComponent *NPCFlipbookComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UWidgetComponent *DialogueWidgetComponent;
+	
+	// 添加对话字符串数组
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
+	TArray<FString> DialogueLines;
 
+	// 随机选择一个对话字符串并显示
+	void DisplayRandomDialogue();
+
+	// 检测玩家是否靠近并触发对话
+	void CheckForPlayerInteractionBox();
 
 	ANPC();
 
@@ -74,5 +85,6 @@ public:
 	UPaperFlipbook *MoveRightAnimation;
 
 private:
-	FRandomStream RandomStream;
+	FRandomStream RandomStream;// 随机数生成器
+	bool bIsDialogueVisible;// 对话可见性状态
 };
