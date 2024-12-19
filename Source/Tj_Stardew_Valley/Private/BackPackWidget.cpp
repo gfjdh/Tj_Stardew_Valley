@@ -7,10 +7,10 @@ void UBackPackWidget::NativeConstruct()
 	Super::NativeConstruct();
 	if(ExitButton)
 		ExitButton->OnClicked.AddDynamic(this, &UBackPackWidget::OnExitButtonClicked);
-	InitFlushBackPack();
+	InitFlushBackpack();
 }
 
-void UBackPackWidget::InitFlushBackPack()
+void UBackPackWidget::InitFlushBackpack()
 {
 	if (BackPackGridSlot)
 	{
@@ -19,14 +19,42 @@ void UBackPackWidget::InitFlushBackPack()
 		{
 			UInventoryBoxWidget* InventoryBox = CreateWidget<UInventoryBoxWidget>(this, InventoryBoxClass);
 			BackPackGridSlot->AddChildToGrid(InventoryBox, i / BackPackSizePerRow, i % BackPackSizePerRow);
+			InventoryBox->UpdateItemDisplay();
+		}
+	}
+}
+
+void UBackPackWidget::FlushBackpack(UInventory* Inventory)
+{
+	if (BackPackGridSlot)
+	{
+		for (int i = 0; i < BackPackSize; i++)
+		{
+			UInventoryBoxWidget* InventoryBox = Cast<UInventoryBoxWidget>(BackPackGridSlot->GetChildAt(i));
+			if (InventoryBox)
+			{
+				if (Inventory->Inventory.Num() > i)//不越界时
+				{
+					UPaperSprite* Sprite = Inventory->Inventory[i]->ItemSprite;
+					InventoryBox->SetItemImage(Sprite->GetBakedTexture());
+					InventoryBox->SetItemCounts(Inventory->Inventory[i]->CurrentAmount);
+				}
+				else//越界时(背包物品全部显示完毕,剩下格子用空格渲染)
+				{
+					InventoryBox->SetItemImage(nullptr);
+					InventoryBox->SetItemCounts(0);
+				}
+				InventoryBox->UpdateItemDisplay();
+			}
 		}
 	}
 }
 
 void UBackPackWidget::EnableDisplay(bool IsVisible)
 {
-	if (IsVisible)
+	if (IsVisible) {
 		AddToViewport();
+	}
 	else
 		RemoveFromParent();
 }

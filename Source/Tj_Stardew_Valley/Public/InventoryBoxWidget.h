@@ -16,7 +16,6 @@ class TJ_STARDEW_VALLEY_API UInventoryBoxWidget : public UUserWidget
 {
 	GENERATED_BODY()
 public:
-
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UImage* ItemImage;
 
@@ -44,9 +43,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetItemImage(UTexture2D* Image);
 
-	UFUNCTION(BlueprintCallable)
-	UTexture2D* GetItemImage(int index);
-
-	UFUNCTION(BlueprintCallable)
-	int32 GetItemCounts(int index);
+	UFUNCTION()
+	UTexture2D* SpriteToTexture(UPaperSprite* SpriteImage);
 };

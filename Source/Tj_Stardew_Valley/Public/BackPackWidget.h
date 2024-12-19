@@ -7,6 +7,7 @@
 #include "Components/Image.h"
 #include "Components/Button.h"
 #include "Components/GridPanel.h"
+#include "Inventory.h"
 
 #include "BackPackWidget.generated.h"
 
@@ -18,7 +19,7 @@ public:
 	virtual void NativeConstruct() override;
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	int BackPackSize = 60;
+	int BackPackSize = 84;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	int BackPackSizePerRow = 12;
@@ -38,7 +39,10 @@ public:
 	int IsOpen = false;
 public:
 	UFUNCTION(BlueprintCallable)
-	void InitFlushBackPack();
+	void InitFlushBackpack();
+
+	UFUNCTION(BlueprintCallable)
+	void FlushBackpack(UInventory* Inventory);
 
 	UFUNCTION(BlueprintCallable)
 	void EnableDisplay(bool IsVisible);

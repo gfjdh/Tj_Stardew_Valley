@@ -620,7 +620,8 @@ void AMyPaperZDCharacter::Run(const FInputActionValue& Value)
 //±³°ü
 void AMyPaperZDCharacter::Inventory(const FInputActionValue& Value)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Open!"));
+	if (CurrentPlayerState == EPlayerState::InFishingGame)
+		return;
 	PlayerInventory->PrintInventory();
 
 	if (BackPackWidget) {
@@ -630,6 +631,7 @@ void AMyPaperZDCharacter::Inventory(const FInputActionValue& Value)
 			CurrentPlayerState = EPlayerState::BackPackOpened;
 			BackPackWidget->IsOpen = true;
 			BackPackWidget->EnableDisplay(true);
+			BackPackWidget->FlushBackpack(PlayerInventory);
 		}
 		//¹Ø±³°ü
 		else {
