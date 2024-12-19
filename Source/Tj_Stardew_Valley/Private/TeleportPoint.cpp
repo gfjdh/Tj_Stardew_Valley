@@ -32,7 +32,20 @@ void ATeleportPoint::TeleportAreaOverlapBegin(UPrimitiveComponent* OverlappedCom
 {
 	AMyPaperZDCharacter* Player = Cast<AMyPaperZDCharacter>(OtherActor);
 	if (Player) {
-		Player->SetActorLocation(Target);
+		// 设置延迟执行的函数
+		Player->CanMove = false;
+		Player->CanInteract = false;
+		GetWorld()->GetTimerManager().SetTimer(DelayTimerHandle, [this, Player]()
+			{
+				Teleport(Player);
+			}, 1.0f, false);
 	}
+}
+
+void ATeleportPoint::Teleport(AMyPaperZDCharacter* Player)
+{
+	Player->SetActorLocation(Target);
+	Player->CanMove = true;
+	Player->CanInteract = true;
 }
 

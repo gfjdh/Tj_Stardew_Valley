@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
 #include "MyPaperZDCharacter.h"
+#include "TimerManager.h"
 
 #include "TeleportPoint.generated.h"
 
@@ -29,6 +30,11 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	FVector Target;
+
+	FTimerHandle DelayTimerHandle;
+
+	UFUNCTION()
+	void Teleport(AMyPaperZDCharacter* Player);
 
 	UFUNCTION()
 	void TeleportAreaOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
