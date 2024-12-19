@@ -54,6 +54,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Product")
 	TSubclassOf<ACollectableEntity> ProductActor2;
 
+	//湿耕地才会生长
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool IsWet = 0;
+
 	// Sets default values for this actor's properties
 	ACrop();
 
