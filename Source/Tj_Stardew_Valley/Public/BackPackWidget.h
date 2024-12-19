@@ -15,11 +15,13 @@ class TJ_STARDEW_VALLEY_API UBackPackWidget : public UUserWidget
 {
 	GENERATED_BODY()
 public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	virtual void NativeConstruct() override;
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	int BackPackSize = 60;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	int BackPackSizePerRow = 10;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	int BackPackSizePerRow = 12;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UButton* ExitButton;
@@ -40,4 +42,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void EnableDisplay(bool IsVisible);
+
+	UFUNCTION()
+	void OnExitButtonClicked();
 };
