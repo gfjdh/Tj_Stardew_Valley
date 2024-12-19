@@ -72,4 +72,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 	UPaperFlipbook *MoveRightAnimation;
+
+private:
+	FRandomStream RandomStream;
 };

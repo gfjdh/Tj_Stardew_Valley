@@ -13,11 +13,11 @@ ANPC::ANPC()
     NPCFlipbookComponent = CreateDefaultSubobject<UPaperFlipbookComponent>(TEXT("NPCFlipbookComponent"));
     NPCFlipbookComponent->SetupAttachment(NPCCapsuleComponent);
 
-    MovementAreaCenter = FVector(0.0f, 0.0f, 0.0f);
-    MovementAreaRadius = 500.0f;
-    MovementSpeed = 100.0f;
-    CurrentDirection = FVector::ZeroVector;
-    TimeToChangeDirection = 0.0f;
+    MovementAreaCenter = FVector(-150.0f, -150.0f, 0.0f); // 设置NPC的移动区域中心
+    MovementAreaRadius = 100.0f; // 设置NPC的移动区域半径
+    MovementSpeed = 10.0f; // 设置NPC的移动速度
+    CurrentDirection = FVector::ZeroVector; // 初始化NPC的方向
+    TimeToChangeDirection = 0.0f; // 初始化时间
 
     // 初始化动画指针
     IdleRightAnimation = nullptr;
@@ -28,6 +28,9 @@ ANPC::ANPC()
     MoveLeftAnimation = nullptr;
     MoveUpAnimation = nullptr;
     MoveDownAnimation = nullptr;
+
+    // 初始化随机数生成器
+    RandomStream.Initialize(FDateTime::Now().GetMillisecond());
 }
 
 void ANPC::BeginPlay()
@@ -48,13 +51,25 @@ void ANPC::MoveRandomly(float DeltaTime)
     // 更新NPC的方向
     if (TimeToChangeDirection <= 0.0f)
     {
-        // 设置一个随机方向
-        CurrentDirection = FMath::VRand();
-        CurrentDirection.Z = 0.0f; // 在2D平面上移动
-        CurrentDirection.Normalize();
-
+        // 设置一个随机方向（上、下、左、右）
+        int32 Direction = RandomStream.RandRange(0, 3);
+        switch (Direction)
+        {
+            case 3:
+                CurrentDirection = FVector(1.0f, 0.0f, 0.0f); // 右
+                break;
+            case 2:
+                CurrentDirection = FVector(-1.0f, 0.0f, 0.0f); // 左
+                break;
+            case 1:
+                CurrentDirection = FVector(0.0f, 1.0f, 0.0f); // 上
+                break;
+            case 0:
+                CurrentDirection = FVector(0.0f, -1.0f, 0.0f); // 下
+                break;
+        }
         // 设置一个随机时间来改变方向
-        TimeToChangeDirection = FMath::RandRange(1.0f, 3.0f);
+        TimeToChangeDirection = RandomStream.RandRange(1.0f, 3.0f);
     }
 
     // 移动NPC
@@ -103,28 +118,21 @@ void ANPC::UpdateAnimation()
     }
     else
     {
-        // Move animations
-        if (FMath::Abs(CurrentDirection.X) > FMath::Abs(CurrentDirection.Y))
+        if (CurrentDirection.Y == 0 && CurrentDirection.X > 0)
         {
-            if (CurrentDirection.X > 0)
-            {
-                NPCFlipbookComponent->SetFlipbook(MoveRightAnimation);
-            }
-            else
-            {
-                NPCFlipbookComponent->SetFlipbook(MoveLeftAnimation);
-            }
+            NPCFlipbookComponent->SetFlipbook(MoveRightAnimation);
         }
-        else
+        else if (CurrentDirection.Y == 0 && CurrentDirection.X < 0)
         {
-            if (CurrentDirection.Y > 0)
-            {
-                NPCFlipbookComponent->SetFlipbook(MoveUpAnimation);
-            }
-            else
-            {
-                NPCFlipbookComponent->SetFlipbook(MoveDownAnimation);
-            }
+            NPCFlipbookComponent->SetFlipbook(MoveLeftAnimation);
+        }
+        else if (CurrentDirection.X == 0 && CurrentDirection.Y > 0)
+        {
+            NPCFlipbookComponent->SetFlipbook(MoveUpAnimation);
+        }
+        else if (CurrentDirection.X == 0 && CurrentDirection.Y < 0)
+        {
+            NPCFlipbookComponent->SetFlipbook(MoveDownAnimation);
         }
     }
 }
