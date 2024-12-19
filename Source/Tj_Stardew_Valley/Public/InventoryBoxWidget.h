@@ -42,7 +42,4 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetItemImage(UTexture2D* Image);
-
-	UFUNCTION()
-	UTexture2D* SpriteToTexture(UPaperSprite* SpriteImage);
 };
