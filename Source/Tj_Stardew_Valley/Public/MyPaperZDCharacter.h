@@ -27,6 +27,7 @@
 #include "GameFramework/Controller.h"
 #include "Sound/SoundBase.h"
 #include "BackPackWidget.h"
+#include "CurrentUsingItemWidget.h"
 
 #include "PlayerUI.h"
 #include "StardrewGameInstance.h"
@@ -135,6 +136,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UBackPackWidget* BackPackWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UCurrentUsingItemWidget* CurrentUsingItemWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UInputAction* CameraUpAction;

@@ -42,6 +42,9 @@ void ACollectableEntity::OverlapBegin(UPrimitiveComponent* OverlappedComponent, 
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Picked it!"));
 		ItemData->CreateItemInfo(ItemId);
 		Player->CollectItem(ItemData);
+		//获取物品时刷新背包
+		Player->BackPackWidget->FlushBackpack(Player->PlayerInventory);
+		Player->CurrentUsingItemWidget->FlushSlot(Player->PlayerInventory);
 		Destroy();
 	}
 

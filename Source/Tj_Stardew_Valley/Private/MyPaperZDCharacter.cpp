@@ -169,6 +169,8 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 
 	// 设置默认玩家控制器
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
+
+
 }
 
 void AMyPaperZDCharacter::BeginPlay()
@@ -214,7 +216,11 @@ void AMyPaperZDCharacter::BeginPlay()
 			PlayerUIWidget->SetLevel(Level);
 		}
 	}
-
+	// 显示当前使用物品
+	if (CurrentUsingItemWidget)
+	{
+		CurrentUsingItemWidget->AddToViewport();
+	}
 }
 
 // Called every frame
@@ -376,6 +382,7 @@ void AMyPaperZDCharacter::SwitchItem(const FInputActionValue& Value)
 	CurrentPlayerState = EPlayerState::Interact;
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("SwitchItem!")));
 	PlayerInventory->SwitchItem();
+	CurrentUsingItemWidget->FlushSlot(PlayerInventory);
 	CurrentPlayerState = EPlayerState::Idle;
 }
 
