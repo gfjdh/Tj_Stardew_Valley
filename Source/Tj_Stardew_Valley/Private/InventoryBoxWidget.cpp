@@ -123,6 +123,7 @@ void UInventoryBoxWidget::OnBoxImageDoubleClicked()
 		{
 			AMyPaperZDCharacter* Player = Cast<AMyPaperZDCharacter>(PlayerActor);
 			if (Player) {
+				UGameplayStatics::PlaySound2D(GetWorld(), ChooseSound);
 				Player->PlayerInventory->UsingIndex = Index;
 				Player->CurrentUsingItemWidget->FlushSlot(Player->PlayerInventory);
 			}
@@ -152,6 +153,7 @@ void UInventoryBoxWidget::SwapItem(UInventoryBoxWidget* DraggedWidget, int32 Dra
 		{
 			AMyPaperZDCharacter* Player = Cast<AMyPaperZDCharacter>(PlayerActor);
 			if (Player) {
+				UGameplayStatics::PlaySound2D(GetWorld(), DragSound);
 				UItem* Temp = Player->PlayerInventory->Inventory[Index];
 				Player->PlayerInventory->Inventory[Index] = Player->PlayerInventory->Inventory[DraggedIndex];
 				Player->PlayerInventory->Inventory[DraggedIndex] = Temp;

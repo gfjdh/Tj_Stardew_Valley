@@ -57,6 +57,7 @@ void UBackPackWidget::EnableDisplay(bool IsVisible)
 {
 	if (IsVisible) {
 		AddToViewport();
+		UGameplayStatics::PlaySound2D(GetWorld(), OpenSound);
 	}
 	else
 		RemoveFromParent();

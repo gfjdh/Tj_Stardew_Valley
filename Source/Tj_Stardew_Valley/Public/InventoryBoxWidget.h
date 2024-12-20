@@ -11,7 +11,7 @@
 #include "Inventory.h"
 #include "Item.h"
 #include "SlateCore.h"
-
+#include "Sound/SoundBase.h"
 
 #include "InventoryBoxWidget.generated.h"
 
@@ -46,6 +46,12 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UItem* CurrentItem;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USoundBase* ChooseSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USoundBase* DragSound;
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	bool ItemVisible = false;

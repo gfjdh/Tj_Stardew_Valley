@@ -8,6 +8,7 @@
 #include "Components/Button.h"
 #include "Components/GridPanel.h"
 #include "Inventory.h"
+#include "Sound/SoundBase.h"
 
 #include "BackPackWidget.generated.h"
 
@@ -35,6 +36,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UInventoryBoxWidget> InventoryBoxClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USoundBase* OpenSound;
 
 	int IsOpen = false;
 public:
