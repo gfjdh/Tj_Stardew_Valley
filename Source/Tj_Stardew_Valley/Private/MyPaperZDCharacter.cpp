@@ -368,34 +368,6 @@ void AMyPaperZDCharacter::UseItem(const FInputActionValue& Value)
 		}
 		PlayerInventory->RemoveItemByIndex(PlayerInventory->UsingIndex, 1);
 	}
-	else if (UsingItem->ItemType == CollectableType::Gift)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Using type:Gift!")));
-		//查找前互动框内的NPC
-		TArray<AActor *> OverlappingActors;
-		GetOverlappingActors(OverlappingActors, ANPC::StaticClass());
-		for (AActor *Actor : OverlappingActors)
-		{
-			ANPC *InteractingNPC = Cast<ANPC>(Actor);
-			if (InteractingNPC)
-			{
-				//判断是否在互动框内
-				UBoxComponent *InteractionBox = InteractingNPC->GetPlayerInteractionBox(this);
-				if (InteractionBox && InteractionBox->IsOverlappingActor(this))
-				{
-					//给NPC礼物
-					if (InteractingNPC && UsingItem)
-					{
-						// NPC接收礼物
-						InteractingNPC->ReceiveGift(UsingItem);
-						// 从玩家的背包中移除礼物
-						PlayerInventory->RemoveItem(UsingItem->ItemID, 1);
-					}
-					break;
-				}
-			}
-		}
-	}
 	//else if (UsingItem->ItemType == CollectableType::Other)
 	//{
 	//	//
