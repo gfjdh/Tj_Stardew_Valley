@@ -57,6 +57,7 @@ ANPC::ANPC()
 
     // 初始化好感度
     Favorability = 0;
+	FavorabilityLevel = 0;
 
     // 初始化对话可见性状态
     bIsDialogueVisible = false;
@@ -237,6 +238,27 @@ void ANPC::MoveRandomly(float DeltaTime)
     // 移动NPC
     FVector NewLocation = GetActorLocation() + (CurrentDirection * MovementSpeed * DeltaTime);
 
+    // 碰撞检测
+    FHitResult HitResult;
+    FCollisionQueryParams CollisionParams;
+    CollisionParams.AddIgnoredActor(this);
+
+    bool bHit = GetWorld()->SweepSingleByChannel(
+        HitResult,
+        GetActorLocation(),
+        NewLocation,
+        FQuat::Identity,
+        ECC_Visibility,
+        FCollisionShape::MakeCapsule(NPCCapsuleComponent->GetScaledCapsuleRadius(), NPCCapsuleComponent->GetScaledCapsuleHalfHeight()),
+        CollisionParams
+    );
+
+    if (bHit)
+    {
+        // 碰到障碍物，反转方向
+        CurrentDirection = -CurrentDirection;
+        NewLocation = GetActorLocation() + (CurrentDirection * MovementSpeed * DeltaTime);
+    }
     // 确保NPC不会移出指定的区域
     if (FVector::Dist(NewLocation, MovementAreaCenter) > MovementAreaRadius)
     {
