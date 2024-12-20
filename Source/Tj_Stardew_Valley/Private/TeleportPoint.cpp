@@ -17,14 +17,13 @@ void ATeleportPoint::BeginPlay()
 {
 	Super::BeginPlay();
 	TeleportArea->OnComponentBeginOverlap.AddDynamic(this, &ATeleportPoint::TeleportAreaOverlapBegin);
-	//
 }
 
 // Called every frame
 void ATeleportPoint::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	//
+
 }
 
 void ATeleportPoint::TeleportAreaOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
@@ -35,10 +34,13 @@ void ATeleportPoint::TeleportAreaOverlapBegin(UPrimitiveComponent* OverlappedCom
 		// 设置延迟执行的函数
 		Player->CanMove = false;
 		Player->CanInteract = false;
+		Player->SetScreenBrightness(-10);
+
 		GetWorld()->GetTimerManager().SetTimer(DelayTimerHandle, [this, Player]()
 			{
 				Teleport(Player);
-			}, 1.0f, false);
+				Player->SetScreenBrightness(10);
+			},1.0f, false);
 	}
 }
 
@@ -48,4 +50,3 @@ void ATeleportPoint::Teleport(AMyPaperZDCharacter* Player)
 	Player->CanMove = true;
 	Player->CanInteract = true;
 }
-

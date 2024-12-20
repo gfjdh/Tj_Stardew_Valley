@@ -11,6 +11,8 @@
 #include "PaperFlipbook.h"
 #include "PaperZDAnimInstance.h"
 #include "PaperZDAnimationComponent.h"
+#include "Components/PostProcessComponent.h"
+#include "Engine/World.h"
 
 #include "Components/BoxComponent.h"
 #include "InputAction.h"
@@ -384,6 +386,10 @@ public:
 
 	std::vector<FVector> FarmLandLocationList;
 
-	//ÍÚÒ»¿é¸ûµØ
-	void HoeAFarmland();
+	void SetScreenBrightness(float Brightness);
+
+	float CurrentBrightness=0.0f;
+
+	FTimerHandle Timer;
+	FTimerHandle Timer1;
 };

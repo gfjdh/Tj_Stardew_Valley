@@ -971,3 +971,35 @@ void AMyPaperZDCharacter::FishGameTick()
 		}
 	}
 }
+
+//设置摄像机亮度
+void AMyPaperZDCharacter::SetScreenBrightness(float Brightness)
+{
+
+	// 获取当前的后处理设置
+	FPostProcessSettings& PostProcessSettings = this->Camera->PostProcessSettings;
+
+	// 假设黑屏效果通过设置曝光度来实现
+	// Brightness为0表示黑屏，1表示正常亮度，值可以根据需求调整
+	PostProcessSettings.bOverride_AutoExposureBias = true;
+	//循环调整亮度实现逐渐变暗
+	GetWorld()->GetTimerManager().SetTimer(Timer, [this, Brightness]()
+		{
+			// 判断是否接近目标值，避免超过,接近则相等
+			if (abs(this->CurrentBrightness - Brightness) <= 0.2f) {
+				CurrentBrightness = Brightness;
+			}
+			if (this->CurrentBrightness > Brightness) {
+				this->CurrentBrightness -= 0.1f;
+			}
+			else if(this->CurrentBrightness < Brightness){
+				this->CurrentBrightness += 0.1f;
+			}
+			this->Camera->PostProcessSettings.AutoExposureBias = CurrentBrightness;
+		},0.01f,true,0.01f);
+	//一定时间后清除上面的计时器
+	GetWorld()->GetTimerManager().SetTimer(Timer1, [this]()
+		{
+			this->GetWorld()->GetTimerManager().ClearTimer(this->Timer);
+		}, 1.0f, false);
+}
