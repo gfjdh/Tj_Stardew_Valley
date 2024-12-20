@@ -8,6 +8,7 @@
 #include "Components/Button.h"
 #include "Components/Border.h"
 #include "Inventory.h"
+#include "Item.h"
 
 #include "InventoryBoxWidget.generated.h"
 
@@ -16,6 +17,8 @@ class TJ_STARDEW_VALLEY_API UInventoryBoxWidget : public UUserWidget
 {
 	GENERATED_BODY()
 public:
+	virtual void NativeConstruct() override;
+
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UImage* ItemImage;
 
@@ -26,13 +29,18 @@ public:
 	UTextBlock* ItemCounts;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	int32 CurrentItemCounts = 0;
+	UItem* CurrentItem;
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	bool ItemVisible = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UInventory* Inventory;
+	float DoubleClickDeltaTime = 0.3f;
+
+	float LastClickTime = 0.0f;
+
+	int Index = -1;
+
 public:
 	UFUNCTION(BlueprintCallable)
 	void UpdateItemDisplay();
@@ -42,4 +50,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetItemImage(UTexture2D* Image);
+
+	UFUNCTION()
+	void OnBoxImageClicked();
+
+	UFUNCTION()
+	void OnBoxImageDoubleClicked();
 };

@@ -18,6 +18,7 @@ void UBackPackWidget::InitFlushBackpack()
 		for (int i = 0; i < BackPackSize; i++)
 		{
 			UInventoryBoxWidget* InventoryBox = CreateWidget<UInventoryBoxWidget>(this, InventoryBoxClass);
+			InventoryBox->Index = i;
 			BackPackGridSlot->AddChildToGrid(InventoryBox, i / BackPackSizePerRow, i % BackPackSizePerRow);
 			InventoryBox->UpdateItemDisplay();
 		}
@@ -35,11 +36,13 @@ void UBackPackWidget::FlushBackpack(UInventory* Inventory)
 			{
 				if (Inventory->Inventory.Num() > i)//不越界时
 				{
+					InventoryBox->CurrentItem = (Inventory->Inventory)[i];
 					InventoryBox->SetItemImage(Inventory->Inventory[i]->ItemTexture);
 					InventoryBox->SetItemCounts(Inventory->Inventory[i]->CurrentAmount);
 				}
 				else//越界时(背包物品全部显示完毕,剩下格子用空格渲染)
 				{
+					InventoryBox->CurrentItem = nullptr;
 					InventoryBox->SetItemImage(nullptr);
 					InventoryBox->SetItemCounts(0);
 				}

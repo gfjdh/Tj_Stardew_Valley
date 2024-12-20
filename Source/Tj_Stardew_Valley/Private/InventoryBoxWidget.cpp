@@ -6,6 +6,17 @@
 #include "Engine/TextureRenderTarget2D.h"
 #include "Kismet/KismetRenderingLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/GameplayStatics.h"
+#include "MyPaperZDCharacter.h"
+
+void UInventoryBoxWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+	if (BoxImage)
+	{
+		BoxImage->OnClicked.AddDynamic(this, &UInventoryBoxWidget::OnBoxImageClicked);
+	}
+}
 
 void UInventoryBoxWidget::UpdateItemDisplay()
 {
@@ -21,15 +32,20 @@ void UInventoryBoxWidget::UpdateItemDisplay()
 
 void UInventoryBoxWidget::SetItemCounts(int32 Counts)
 {
-	CurrentItemCounts = Counts;
-	if (CurrentItemCounts >= 2) {
-		ItemCounts->SetText(FText::FromString(FString::FromInt(CurrentItemCounts)));
+	if (!CurrentItem) {
+		ItemCounts->SetText(FText::FromString(""));
+		ItemVisible = false;
+		return;
+	}
+	CurrentItem->CurrentAmount = Counts;
+	if (Counts >= 2) {
+		ItemCounts->SetText(FText::FromString(FString::FromInt(Counts)));
 	}
 	else {
 		ItemCounts->SetText(FText::FromString(""));
 	}
 
-	if (CurrentItemCounts > 0)
+	if (Counts > 0)
 	{
 		ItemVisible = true;
 	}
@@ -44,5 +60,34 @@ void UInventoryBoxWidget::SetItemImage(UTexture2D* Image)
 	if (ItemImage)
 	{
 		ItemImage->SetBrushFromTexture(Image);
+	}
+}
+
+void UInventoryBoxWidget::OnBoxImageClicked()
+{
+	if (UKismetSystemLibrary::GetGameTimeInSeconds(this) - LastClickTime < DoubleClickDeltaTime)
+	{
+		OnBoxImageDoubleClicked();
+	}
+	else
+	{
+		LastClickTime = UKismetSystemLibrary::GetGameTimeInSeconds(this);
+	}
+}
+
+void UInventoryBoxWidget::OnBoxImageDoubleClicked()
+{
+	//将当前物品切换为当前格子的物品
+	if (CurrentItem)
+	{
+		AActor* PlayerActor = UGameplayStatics::GetActorOfClass(GetWorld(), AMyPaperZDCharacter::StaticClass());
+		if (PlayerActor)
+		{
+			AMyPaperZDCharacter* Player = Cast<AMyPaperZDCharacter>(PlayerActor);
+			if (Player) {
+				Player->PlayerInventory->UsingIndex = Index;
+				Player->CurrentUsingItemWidget->FlushSlot(Player->PlayerInventory);
+			}
+		}
 	}
 }

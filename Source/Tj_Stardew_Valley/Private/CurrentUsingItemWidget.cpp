@@ -12,11 +12,13 @@ void UCurrentUsingItemWidget::FlushSlot(UInventory* Inventory)
 	if (Inventory && InventoryBox) {
 		int CurrentIndex = Inventory->UsingIndex;
 		if (Inventory->Inventory.Num() > CurrentIndex) {
+			InventoryBox->CurrentItem = Inventory->Inventory[CurrentIndex];
 			InventoryBox->SetItemImage(Inventory->Inventory[CurrentIndex]->ItemTexture);
 			InventoryBox->SetItemCounts(Inventory->Inventory[CurrentIndex]->CurrentAmount);
 			InventoryBox->UpdateItemDisplay();
 		}
 		else {
+			InventoryBox->CurrentItem = nullptr;
 			InventoryBox->SetItemImage(nullptr);
 			InventoryBox->SetItemCounts(0);
 			InventoryBox->UpdateItemDisplay();
