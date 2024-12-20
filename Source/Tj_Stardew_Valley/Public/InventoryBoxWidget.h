@@ -9,6 +9,8 @@
 #include "Components/Border.h"
 #include "Inventory.h"
 #include "Item.h"
+#include "InventoryDragDropOperation.h"
+
 
 #include "InventoryBoxWidget.generated.h"
 
@@ -56,4 +58,8 @@ public:
 
 	UFUNCTION()
 	void OnBoxImageDoubleClicked();
+
+	//UFUNCTION()
+	//void NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation);
+
 };

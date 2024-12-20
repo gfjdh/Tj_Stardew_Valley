@@ -91,3 +91,15 @@ void UInventoryBoxWidget::OnBoxImageDoubleClicked()
 		}
 	}
 }
+
+//void UInventoryBoxWidget::NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation)
+//{
+//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("DragDetected"));
+//}
+
+//bool UInventoryBoxWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
+//{
+//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Drop"));
+//	
+//	return false;
+//}

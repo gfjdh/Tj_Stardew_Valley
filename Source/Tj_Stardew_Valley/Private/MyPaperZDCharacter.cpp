@@ -371,6 +371,9 @@ void AMyPaperZDCharacter::UseItem(const FInputActionValue& Value)
 	//{
 	//	//
 	//}
+	//Ë¢ÐÂ±³°ü
+	CurrentUsingItemWidget->FlushSlot(PlayerInventory);
+	BackPackWidget->FlushBackpack(PlayerInventory);
 	CurrentPlayerState = EPlayerState::Idle;
 }
 
