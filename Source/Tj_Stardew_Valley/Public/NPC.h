@@ -1,5 +1,4 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -7,7 +6,8 @@
 #include "Components/WidgetComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "PaperFlipbookComponent.h"
-
+#include "MyPaperZDCharacter.h"
+#include <Item.h>
 #include "NPC.generated.h"
 
 USTRUCT(BlueprintType)
@@ -92,6 +92,14 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+	// 送礼物给NPC
+	void ReceiveGift(UItem *GiftItem);
+
+	// 与NPC交易
+	bool TradeWithPlayer(int32 GoldAmount);
+
+	// 获取NPC的碰撞盒
+	UBoxComponent *GetPlayerInteractionBox(AMyPaperZDCharacter *Player);
 private:
 	FRandomStream RandomStream;// 随机数生成器
 	bool bIsDialogueVisible;// 对话可见性状态
@@ -99,7 +107,7 @@ private:
 	// 好感度相关
 	int32 Favorability;
 	int32 FavorabilityLevel;
-	void IncreaseFavorability();
+	void IncreaseFavorability(int value = 1);
 	void CheckFavorabilityLevel();
 
 	// 用于NPC随机移动
@@ -108,7 +116,7 @@ private:
 	void UpdateAnimation();
 
 	// 随机选择一个对话字符串并显示
-	void DisplayRandomDialogue();
+	void DisplayRandomDialogue(int LinesId);
 
 	// 检测玩家是否靠近并触发对话
 	void CheckForPlayerInteractionBox();

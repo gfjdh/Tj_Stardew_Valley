@@ -11,7 +11,6 @@
 #include "Item.generated.h"
 
 
-
 UENUM(BlueprintType)
 enum class CollectableType : uint8
 {
@@ -25,6 +24,7 @@ enum class CollectableType : uint8
 	Tool,
 	Food,
 	Crop,
+	Gift,
 	Other
 };
 USTRUCT(BlueprintType)
