@@ -988,6 +988,7 @@ void AMyPaperZDCharacter::SetScreenBrightness(float Brightness)
 	// 假设黑屏效果通过设置曝光度来实现
 	// Brightness为0表示黑屏，1表示正常亮度，值可以根据需求调整
 	PostProcessSettings.bOverride_AutoExposureBias = true;
+	this->SetMiniMapEnabled(Brightness>0?true:false);
 	//循环调整亮度实现逐渐变暗
 	GetWorld()->GetTimerManager().SetTimer(Timer, [this, Brightness]()
 		{
