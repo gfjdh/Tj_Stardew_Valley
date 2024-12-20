@@ -264,6 +264,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool Running = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool MiniMapEnabled = true;
+
 	//动画结束代理
 	FZDOnAnimationOverrideEndSignature OnInteractOverrideEndDelegate;
 
@@ -387,6 +390,8 @@ public:
 	std::vector<FVector> FarmLandLocationList;
 
 	void SetScreenBrightness(float Brightness);
+
+	void SetMiniMapEnabled(bool Enabled);
 
 	float CurrentBrightness=0.0f;
 

@@ -972,6 +972,11 @@ void AMyPaperZDCharacter::FishGameTick()
 	}
 }
 
+void AMyPaperZDCharacter::SetMiniMapEnabled(bool Enabled)
+{
+	MiniMapEnabled = Enabled;
+}
+
 //ÉèÖÃÉãÏñ»úÁÁ¶È
 void AMyPaperZDCharacter::SetScreenBrightness(float Brightness)
 {
