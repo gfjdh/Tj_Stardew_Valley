@@ -8,33 +8,34 @@
 ANPC::ANPC()
 {
     PrimaryActorTick.bCanEverTick = true;
-	// 创建一个胶囊组件作为根组件
+    // 创建一个胶囊组件作为根组件
     NPCCapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("NPCCapsuleComponent"));
     SetRootComponent(NPCCapsuleComponent);
 
     // 设置碰撞属性
-	NPCCapsuleComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);// 设置碰撞属性为查询和物理
-	NPCCapsuleComponent->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);// 设置碰撞对象类型为Pawn
-	NPCCapsuleComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);// 设置碰撞响应为阻塞
-	// 创建一个Flipbook组件作为NPC的视觉组件
+    NPCCapsuleComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);// 设置碰撞属性为查询和物理
+    NPCCapsuleComponent->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);// 设置碰撞对象类型为Pawn
+    NPCCapsuleComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);// 设置碰撞响应为阻塞
+    // 创建一个Flipbook组件作为NPC的视觉组件
     NPCFlipbookComponent = CreateDefaultSubobject<UPaperFlipbookComponent>(TEXT("NPCFlipbookComponent"));
     NPCFlipbookComponent->SetupAttachment(NPCCapsuleComponent);
-	// 创建一个文本组件用于显示对话
+    // 创建一个文本组件用于显示对话
     DialogueWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("DialogueWidgetComponent"));
-	DialogueWidgetComponent->SetupAttachment(NPCCapsuleComponent);// 设置对话组件的父组件为胶囊组件
-	DialogueWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);// 设置对话组件的空间为屏幕空间
-	DialogueWidgetComponent->SetDrawSize(FVector2D(200.0f, 50.0f));// 设置对话组件的大小
-	DialogueWidgetComponent->SetVisibility(false);// 设置对话组件不可见
-	DialogueWidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 100.0f));// 设置对话组件的位置
-
+    DialogueWidgetComponent->SetupAttachment(NPCCapsuleComponent);// 设置对话组件的父组件为胶囊组件
+    DialogueWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);// 设置对话组件的空间为屏幕空间
+    DialogueWidgetComponent->SetDrawSize(FVector2D(200.0f, 50.0f));// 设置对话组件的大小
+    DialogueWidgetComponent->SetVisibility(false);// 设置对话组件不可见
+    DialogueWidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 100.0f));// 设置对话组件的位置
+    // 初始化性别属性
+    Gender = ENPCGender::Male;
     // 设置自定义Widget类
-	static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Game/BluePrints/NPC/DialogueWidget"));// 设置对话组件的Widget类
-	if (WidgetClass.Succeeded())// 如果找到了Widget类
+    static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Game/BluePrints/NPC/DialogueWidget"));// 设置对话组件的Widget类
+    if (WidgetClass.Succeeded())// 如果找到了Widget类
     {
-		DialogueWidgetComponent->SetWidgetClass(WidgetClass.Class);// 设置对话组件的Widget类
+        DialogueWidgetComponent->SetWidgetClass(WidgetClass.Class);// 设置对话组件的Widget类
     }
 
-	// 设置NPC的移动区域
+    // 设置NPC的移动区域
     MovementAreaCenter = FVector(-150.0f, -150.0f, 0.0f); // 设置NPC的移动区域中心
     MovementAreaRadius = 100.0f; // 设置NPC的移动区域半径
     MovementSpeed = 10.0f; // 设置NPC的移动速度
@@ -54,7 +55,9 @@ ANPC::ANPC()
     // 初始化随机数生成器
     RandomStream.Initialize(FDateTime::Now().GetMillisecond());
 
-	DialogueLines = { TEXT("Hello!"), TEXT("How are you?"), TEXT("Nice weather today!") };
+    // 初始化好感度
+    Favorability = 0;
+
     // 初始化对话可见性状态
     bIsDialogueVisible = false;
 }
@@ -62,6 +65,12 @@ ANPC::ANPC()
 void ANPC::BeginPlay()
 {
     Super::BeginPlay();
+
+    // 初始化对话内容
+    DialogueLines.Add(0, { { TEXT("Hello!"), TEXT("How are you?"), TEXT("Nice weather today!") } });
+    DialogueLines.Add(1, { { TEXT("Hi there!"), TEXT("I'm doing well, thank you!"), TEXT("It's a beautiful day!") } });
+    DialogueLines.Add(2, { { TEXT("Hey!"), TEXT("Great to see you!"), TEXT("What a wonderful day!") } });
+    DialogueLines.Add(3, { { TEXT("Greetings!"), TEXT("How have you been?"), TEXT("It's a perfect day for an adventure!") } });
 }
 
 void ANPC::Tick(float DeltaTime)
@@ -78,30 +87,65 @@ void ANPC::Tick(float DeltaTime)
 // 随机选择一个对话字符串并显示
 void ANPC::DisplayRandomDialogue()
 {
-    if (DialogueLines.Num() > 0)
+    CheckFavorabilityLevel();
+	IncreaseFavorability();
+    if (DialogueLines.Num() > 0 && DialogueLines.Contains(FavorabilityLevel))
     {
-        int32 RandomIndex = RandomStream.RandRange(0, DialogueLines.Num() - 1);
-        FString RandomDialogue = DialogueLines[RandomIndex];
-
-		// 获取对话框组件的UserWidget对象
-        UUserWidget *DialogueWidget = DialogueWidgetComponent->GetUserWidgetObject();
-        if (DialogueWidget)
+        const TArray<FString> &CurrentDialogueLines = DialogueLines[FavorabilityLevel].Lines;
+        if (CurrentDialogueLines.Num() > 0)
         {
-            UTextBlock *DialogueText = Cast<UTextBlock>(DialogueWidget->GetWidgetFromName(TEXT("DialogueText")));
-            if (DialogueText)
+            int32 RandomIndex = RandomStream.RandRange(0, CurrentDialogueLines.Num() - 1);
+            FString RandomDialogue = CurrentDialogueLines[RandomIndex];
+
+            // 获取对话框组件的UserWidget对象
+            UUserWidget *DialogueWidget = DialogueWidgetComponent->GetUserWidgetObject();
+            if (DialogueWidget)
             {
-				DialogueText->SetText(FText::FromString(RandomDialogue));// 设置对话文本
+                UTextBlock *DialogueText = Cast<UTextBlock>(DialogueWidget->GetWidgetFromName(TEXT("DialogueText")));
+                if (DialogueText)
+                {
+                    DialogueText->SetText(FText::FromString(RandomDialogue));// 设置对话文本
+                }
             }
+
+            DialogueWidgetComponent->SetVisibility(true);
+            bIsDialogueVisible = true;
+
+            // 确保对话框组件的位置在NPC的头顶
+            FVector NPCPosition = GetActorLocation();
+            DialogueWidgetComponent->SetRelativeLocation(FVector(0.0f, 5.0f, 15.0f));
         }
-
-        DialogueWidgetComponent->SetVisibility(true);
-        bIsDialogueVisible = true;
-
-        // 确保对话框组件的位置在NPC的头顶
-        FVector NPCPosition = GetActorLocation();
-        DialogueWidgetComponent->SetRelativeLocation(FVector(0.0f, 5.0f, 15.0f));
     }
 }
+
+// 增加好感度
+void ANPC::IncreaseFavorability()
+{
+    Favorability = Favorability + 1;
+}
+//判断好感度等级
+void ANPC::CheckFavorabilityLevel()
+{
+	//输出调试信息Favorability
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Favorability: %d"), Favorability));
+    if (Favorability < 5)
+    {
+        FavorabilityLevel = 0; // 低好感度
+    }
+    else if (Favorability < 10)
+    {
+        FavorabilityLevel = 1; // 中等好感度
+    }
+    else if (Favorability < 20)
+    {
+        FavorabilityLevel = 2; // 高好感度
+    }
+    else
+    {
+        FavorabilityLevel = 3; // 极高好感度
+    }
+}
+
 
 // 检测玩家是否靠近并触发对话
 void ANPC::CheckForPlayerInteractionBox()
@@ -160,8 +204,7 @@ void ANPC::CheckForPlayerInteractionBox()
     }
 }
 
-
-//MoveRandomly()函数用于让NPC在指定的区域内随机移动。
+//用于让NPC在指定的区域内随机移动。
 void ANPC::MoveRandomly(float DeltaTime)
 {
     // 更新NPC的方向
@@ -172,7 +215,7 @@ void ANPC::MoveRandomly(float DeltaTime)
         switch (Direction)
         {
             case 4:
-				CurrentDirection = FVector(0.0f, 0.0f, 0.0f); // 停止
+                CurrentDirection = FVector(0.0f, 0.0f, 0.0f); // 停止
                 break;
             case 3:
                 CurrentDirection = FVector(1.0f, 0.0f, 0.0f); // 右
@@ -207,7 +250,7 @@ void ANPC::MoveRandomly(float DeltaTime)
     TimeToChangeDirection -= DeltaTime;
 }
 
-//UpdateAnimation()函数用于根据NPC的方向来更新NPC的动画。
+//用于根据NPC的方向来更新NPC的动画。
 void ANPC::UpdateAnimation()
 {
     if (CurrentDirection.IsNearlyZero())
