@@ -134,16 +134,29 @@ void UInventoryBoxWidget::SwapItem(UInventoryBoxWidget* DraggedWidget, int32 Dra
 {
 	if (DraggedWidget && DraggedWidget->CurrentItem && CurrentItem)
 	{
-		//交换物品
-		UItem* TempItem = DraggedWidget->CurrentItem;
-		int32 TempAmount = DraggedWidget->CurrentItem->CurrentAmount;
-		DraggedWidget->SetItemImage(CurrentItem->ItemTexture);
-		DraggedWidget->SetItemCounts(CurrentItem->CurrentAmount);
-		DraggedWidget->CurrentItem = CurrentItem;
-		DraggedWidget->Index = Index;
-		SetItemImage(TempItem->ItemTexture);
-		SetItemCounts(TempAmount);
-		CurrentItem = TempItem;
-		Index = DraggedIndex;
+		////交换物品
+		//UItem* TempItem = DraggedWidget->CurrentItem;
+		//int32 TempAmount = DraggedWidget->CurrentItem->CurrentAmount;
+		//DraggedWidget->SetItemImage(CurrentItem->ItemTexture);
+		//DraggedWidget->SetItemCounts(CurrentItem->CurrentAmount);
+		//DraggedWidget->CurrentItem = CurrentItem;
+		//DraggedWidget->Index = Index;
+		//SetItemImage(TempItem->ItemTexture);
+		//SetItemCounts(TempAmount);
+		//CurrentItem = TempItem;
+		//Index = DraggedIndex;
+
+		//更新Inventory的UItem Array
+		AActor* PlayerActor = UGameplayStatics::GetActorOfClass(GetWorld(), AMyPaperZDCharacter::StaticClass());
+		if (PlayerActor)
+		{
+			AMyPaperZDCharacter* Player = Cast<AMyPaperZDCharacter>(PlayerActor);
+			if (Player) {
+				UItem* Temp = Player->PlayerInventory->Inventory[Index];
+				Player->PlayerInventory->Inventory[Index] = Player->PlayerInventory->Inventory[DraggedIndex];
+				Player->PlayerInventory->Inventory[DraggedIndex] = Temp;
+				FlushBackpackDelegate.Broadcast(Player->PlayerInventory);
+			}
+		}
 	}
 }

@@ -15,11 +15,15 @@
 
 #include "InventoryBoxWidget.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FFlushBackpackDelegate, UInventory*, Inventory);
+
 UCLASS()
 class TJ_STARDEW_VALLEY_API UInventoryBoxWidget : public UUserWidget
 {
 	GENERATED_BODY()
 public:
+	FFlushBackpackDelegate FlushBackpackDelegate;
+
 	virtual void NativeConstruct() override;
 
 	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;

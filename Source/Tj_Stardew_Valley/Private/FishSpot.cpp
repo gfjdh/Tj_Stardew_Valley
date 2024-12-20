@@ -28,8 +28,6 @@ void AFishSpot::Tick(float DeltaTime)
 
 void AFishSpot::SpawnFish()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("SpawnFish!"));
-
 	//始位置
 	FVector FishSpawnLocation = GetActorLocation();
 	//生成位置x,y朝着远离Player的方向偏离10-20

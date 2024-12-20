@@ -18,6 +18,7 @@ void UBackPackWidget::InitFlushBackpack()
 		for (int i = 0; i < BackPackSize; i++)
 		{
 			UInventoryBoxWidget* InventoryBox = CreateWidget<UInventoryBoxWidget>(this, InventoryBoxClass);
+			InventoryBox->FlushBackpackDelegate.AddDynamic(this, &UBackPackWidget::FlushBackpack);
 			InventoryBox->Index = i;
 			BackPackGridSlot->AddChildToGrid(InventoryBox, i / BackPackSizePerRow, i % BackPackSizePerRow);
 			InventoryBox->UpdateItemDisplay();
