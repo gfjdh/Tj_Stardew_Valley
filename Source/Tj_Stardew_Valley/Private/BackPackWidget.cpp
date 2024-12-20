@@ -35,8 +35,7 @@ void UBackPackWidget::FlushBackpack(UInventory* Inventory)
 			{
 				if (Inventory->Inventory.Num() > i)//不越界时
 				{
-					UPaperSprite* Sprite = Inventory->Inventory[i]->ItemSprite;
-					InventoryBox->SetItemImage(Sprite->GetBakedTexture());
+					InventoryBox->SetItemImage(Inventory->Inventory[i]->ItemTexture);
 					InventoryBox->SetItemCounts(Inventory->Inventory[i]->CurrentAmount);
 				}
 				else//越界时(背包物品全部显示完毕,剩下格子用空格渲染)

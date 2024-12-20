@@ -45,6 +45,9 @@ struct FItemData : public FTableRowBase
 	UPaperSprite* ItemSprite;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* ItemTexture;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 CurrentAmount;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -79,6 +82,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UPaperSprite* ItemSprite;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* ItemTexture;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 CurrentAmount;
