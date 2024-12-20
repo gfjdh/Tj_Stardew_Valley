@@ -2,5 +2,7 @@
 
 UInventoryDragDropOperation::UInventoryDragDropOperation()
 {
-    BoxPayload = nullptr;
+	BoxPayload = nullptr;
+	DraggedWidget = nullptr;
+	DraggedIndex = -1;
 }

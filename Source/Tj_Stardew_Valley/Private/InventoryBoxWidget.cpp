@@ -8,6 +8,8 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "MyPaperZDCharacter.h"
+#include "InventoryDragDropOperation.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 
 void UInventoryBoxWidget::NativeConstruct()
 {
@@ -92,14 +94,43 @@ void UInventoryBoxWidget::OnBoxImageDoubleClicked()
 	}
 }
 
-//void UInventoryBoxWidget::NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation)
-//{
-//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("DragDetected"));
-//}
+void UInventoryBoxWidget::OnBoxDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+	if (CurrentItem)
+	{
+		UInventoryDragDropOperation* DragDropOperation = NewObject<UInventoryDragDropOperation>();
+		DragDropOperation->DraggedWidget = this;
+		DragDropOperation->DraggedIndex = Index;
 
-//bool UInventoryBoxWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
-//{
-//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Drop"));
-//	
-//	return false;
-//}
+		UWidgetBlueprintLibrary::CreateDragDropOperation(UInventoryDragDropOperation::StaticClass());
+		UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::LeftMouseButton);
+	}
+}
+
+void UInventoryBoxWidget::OnBoxDropped(UDragDropOperation* Operation)
+{
+	UInventoryDragDropOperation* DragDropOperation = Cast<UInventoryDragDropOperation>(Operation);
+	if (DragDropOperation && DragDropOperation->DraggedWidget)
+	{
+		SwapItem(DragDropOperation->DraggedIndex);
+	}
+}
+
+void UInventoryBoxWidget::SwapItem(int DragIndex)
+{
+	if (CurrentItem)
+	{
+		AActor* PlayerActor = UGameplayStatics::GetActorOfClass(GetWorld(), AMyPaperZDCharacter::StaticClass());
+		if (PlayerActor)
+		{
+			AMyPaperZDCharacter* Player = Cast<AMyPaperZDCharacter>(PlayerActor);
+			if (Player) {
+				UInventory* Inventory = Player->PlayerInventory;
+				UItem* TempItem = Inventory->Inventory[DragIndex];
+				Inventory->Inventory[DragIndex] = CurrentItem;
+				CurrentItem = TempItem;
+				UpdateItemDisplay();
+			}
+		}
+	}
+}

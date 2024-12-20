@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/DragDropOperation.h"
-
+#include "InventoryBoxWidget.h"
 
 #include "InventoryDragDropOperation.generated.h"
 
@@ -16,5 +16,11 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DragDrop")
 	UObject* BoxPayload;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DragDrop")
+	UInventoryBoxWidget* DraggedWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DragDrop")
+	int32 DraggedIndex = -1;
 };
 

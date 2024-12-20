@@ -7,9 +7,10 @@
 #include "Components/Image.h"
 #include "Components/Button.h"
 #include "Components/Border.h"
+#include "Components/CanvasPanel.h"
 #include "Inventory.h"
 #include "Item.h"
-#include "InventoryDragDropOperation.h"
+#include "SlateCore.h"
 
 
 #include "InventoryBoxWidget.generated.h"
@@ -20,6 +21,8 @@ class TJ_STARDEW_VALLEY_API UInventoryBoxWidget : public UUserWidget
 	GENERATED_BODY()
 public:
 	virtual void NativeConstruct() override;
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UCanvasPanel* Canvas;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UImage* ItemImage;
@@ -59,7 +62,11 @@ public:
 	UFUNCTION()
 	void OnBoxImageDoubleClicked();
 
-	//UFUNCTION()
-	//void NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation);
+	UFUNCTION()
+	void OnBoxDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent);
 
+	UFUNCTION()
+	void OnBoxDropped(UDragDropOperation* Operation);
+
+	void SwapItem(int DragIndex);
 };
