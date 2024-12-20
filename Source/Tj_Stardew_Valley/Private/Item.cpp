@@ -26,6 +26,7 @@ void UItem::CreateItemInfo(int32 InItemID)
             ItemName = ItemData->ItemName;
             ItemType = ItemData->ItemType;
             ItemSprite = ItemData->ItemSprite;
+			ItemTexture = ItemData->ItemTexture;
             MaxStackAmount = ItemData->MaxStackAmount;
             CurrentAmount = ItemData->CurrentAmount;
             bIsConsumable = ItemData->bIsConsumable;

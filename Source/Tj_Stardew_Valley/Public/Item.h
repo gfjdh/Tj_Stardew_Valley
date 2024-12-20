@@ -107,17 +107,19 @@ public:
 		ItemName = TEXT("None");
 		ItemType = CollectableType::None;
 		ItemSprite = nullptr;
+		ItemTexture = nullptr;
 		CurrentAmount = 0;
 		MaxStackAmount = 99;
 		bIsConsumable = false;
 		bIsEquippable = false;
 	}
-	UItem(int32 ID, FString Name, CollectableType Type, UPaperSprite* Sprite, int32 Amount, int32 MaxAmount, bool Consumable, bool Equippable)
+	UItem(int32 ID, FString Name, CollectableType Type, UPaperSprite* Sprite, UTexture2D* Texture, int32 Amount, int32 MaxAmount, bool Consumable, bool Equippable)
 	{
 		ItemID = ID;
 		ItemName = Name;
 		ItemType = Type;
 		ItemSprite = Sprite;
+		ItemTexture = Texture;
 		CurrentAmount = Amount;
 		MaxStackAmount = MaxAmount;
 		bIsConsumable = Consumable;
