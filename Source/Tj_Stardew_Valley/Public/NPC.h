@@ -10,6 +10,22 @@
 
 #include "NPC.generated.h"
 
+USTRUCT(BlueprintType)
+struct FDialogueLines
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
+	TArray<FString> Lines;
+};
+
+UENUM(BlueprintType)
+enum class ENPCGender : uint8
+{
+	Male UMETA(DisplayName = "Male"),
+	Female UMETA(DisplayName = "Female")
+};
+
 UCLASS()
 class TJ_STARDEW_VALLEY_API ANPC : public AActor
 {
@@ -27,24 +43,10 @@ public:
 	
 	// 添加对话字符串数组
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
-	TArray<FString> DialogueLines;
+	TMap<int32, FDialogueLines> DialogueLines;
 
-	// 随机选择一个对话字符串并显示
-	void DisplayRandomDialogue();
-
-	// 检测玩家是否靠近并触发对话
-	void CheckForPlayerInteractionBox();
-
-	ANPC();
-
-	virtual void BeginPlay() override;
-
-	virtual void Tick(float DeltaTime) override;
-
-	// 用于NPC随机移动
-	void MoveRandomly(float DeltaTime);
-
-	void UpdateAnimation();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue", meta = (AllowPrivateAccess = "true"))
+	ENPCGender Gender;
 
 	// 定义NPC移动区域的中心和半径
 	UPROPERTY(EditAnywhere, Category = "Movement")
@@ -84,7 +86,30 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 	UPaperFlipbook *MoveRightAnimation;
 
+	ANPC();
+
+	virtual void BeginPlay() override;
+
+	virtual void Tick(float DeltaTime) override;
+
 private:
 	FRandomStream RandomStream;// 随机数生成器
 	bool bIsDialogueVisible;// 对话可见性状态
+
+	// 好感度相关
+	int32 Favorability;
+	int32 FavorabilityLevel;
+	void IncreaseFavorability();
+	void CheckFavorabilityLevel();
+
+	// 用于NPC随机移动
+	void MoveRandomly(float DeltaTime);
+
+	void UpdateAnimation();
+
+	// 随机选择一个对话字符串并显示
+	void DisplayRandomDialogue();
+
+	// 检测玩家是否靠近并触发对话
+	void CheckForPlayerInteractionBox();
 };
