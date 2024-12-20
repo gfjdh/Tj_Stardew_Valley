@@ -21,6 +21,13 @@ class TJ_STARDEW_VALLEY_API UInventoryBoxWidget : public UUserWidget
 	GENERATED_BODY()
 public:
 	virtual void NativeConstruct() override;
+
+	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+
+	virtual void NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation) override;
+
+	virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
+
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UCanvasPanel* Canvas;
 
@@ -61,12 +68,6 @@ public:
 
 	UFUNCTION()
 	void OnBoxImageDoubleClicked();
-
-	UFUNCTION()
-	void OnBoxDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent);
-
-	UFUNCTION()
-	void OnBoxDropped(UDragDropOperation* Operation);
 
 	void SwapItem(int DragIndex);
 };

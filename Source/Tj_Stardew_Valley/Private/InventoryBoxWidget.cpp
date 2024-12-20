@@ -20,6 +20,42 @@ void UInventoryBoxWidget::NativeConstruct()
 	}
 }
 
+FReply UInventoryBoxWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+	Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("NativeOnMouseButtonDown"));
+	return UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::RightMouseButton).NativeReply;
+}
+
+void UInventoryBoxWidget::NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation)
+{
+	if (CurrentItem)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("NativeOnDragDetected"));
+		UInventoryDragDropOperation* DragDropOperation = NewObject<UInventoryDragDropOperation>();
+		DragDropOperation->DraggedWidget = this;
+		DragDropOperation->DraggedIndex = Index;
+		DragDropOperation->Payload = this;
+		DragDropOperation->Pivot = EDragPivot::MouseDown;
+		//拖拽样式
+		DragDropOperation->DefaultDragVisual = this;
+		DragDropOperation->Offset = FVector2D(0.0f, 0.0f);
+		OutOperation = DragDropOperation;
+	}
+}
+
+bool UInventoryBoxWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("NativeOnDrop"));
+	UInventoryDragDropOperation* DragDropOperation = Cast<UInventoryDragDropOperation>(InOperation);
+	if (DragDropOperation && DragDropOperation->DraggedWidget)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Swap Item"));
+		SwapItem(DragDropOperation->DraggedIndex);
+	}
+	return Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
+}
+
 void UInventoryBoxWidget::UpdateItemDisplay()
 {
 	//显示或隐藏ItemImage
@@ -91,28 +127,6 @@ void UInventoryBoxWidget::OnBoxImageDoubleClicked()
 				Player->CurrentUsingItemWidget->FlushSlot(Player->PlayerInventory);
 			}
 		}
-	}
-}
-
-void UInventoryBoxWidget::OnBoxDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
-{
-	if (CurrentItem)
-	{
-		UInventoryDragDropOperation* DragDropOperation = NewObject<UInventoryDragDropOperation>();
-		DragDropOperation->DraggedWidget = this;
-		DragDropOperation->DraggedIndex = Index;
-
-		UWidgetBlueprintLibrary::CreateDragDropOperation(UInventoryDragDropOperation::StaticClass());
-		UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::LeftMouseButton);
-	}
-}
-
-void UInventoryBoxWidget::OnBoxDropped(UDragDropOperation* Operation)
-{
-	UInventoryDragDropOperation* DragDropOperation = Cast<UInventoryDragDropOperation>(Operation);
-	if (DragDropOperation && DragDropOperation->DraggedWidget)
-	{
-		SwapItem(DragDropOperation->DraggedIndex);
 	}
 }
 

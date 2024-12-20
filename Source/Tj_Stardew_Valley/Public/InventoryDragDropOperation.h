@@ -15,9 +15,6 @@ public:
 	UInventoryDragDropOperation();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DragDrop")
-	UObject* BoxPayload;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DragDrop")
 	UInventoryBoxWidget* DraggedWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DragDrop")
