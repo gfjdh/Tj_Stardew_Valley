@@ -1,9 +1,10 @@
 #include "NPC.h"
 #include "GameFramework/Actor.h"
 #include "Math/UnrealMathUtility.h"
-#include "MyPaperZDCharacter.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/TextBlock.h"
+
+const int DialogueOfTrade = 5;
 
 ANPC::ANPC()
 {
@@ -68,10 +69,21 @@ void ANPC::BeginPlay()
     Super::BeginPlay();
 
     // 初始化对话内容
-    DialogueLines.Add(0, { { TEXT("Hello!"), TEXT("How are you?"), TEXT("Nice weather today!") } });
-    DialogueLines.Add(1, { { TEXT("Hi there!"), TEXT("I'm doing well, thank you!"), TEXT("It's a beautiful day!") } });
-    DialogueLines.Add(2, { { TEXT("Hey!"), TEXT("Great to see you!"), TEXT("What a wonderful day!") } });
-    DialogueLines.Add(3, { { TEXT("Greetings!"), TEXT("How have you been?"), TEXT("It's a perfect day for an adventure!") } });
+    if (Gender == ENPCGender::Male) {
+        DialogueLines.Add(0, { { TEXT("Hey, buddy!"), TEXT("How have you been?"), TEXT("The weather is great today, perfect for a walk!") } });
+        DialogueLines.Add(1, { { TEXT("Hi!"), TEXT("I'm good, how about you?"), TEXT("Today is a great day for playing ball!") } });
+        DialogueLines.Add(2, { { TEXT("Yo!"), TEXT("Good to see you!"), TEXT("What a beautiful day, isn't it?") } });
+        DialogueLines.Add(3, { { TEXT("Hey, bro!"), TEXT("What have you been up to?"), TEXT("Today is a great day for an adventure!") } });
+        DialogueLines.Add(DialogueOfTrade, { { TEXT("Thank you very much"), TEXT("Thanks!"), TEXT("You're a good person!") } });
+    }
+    else {
+        DialogueLines.Add(0, { { TEXT("Hi!"), TEXT("How have you been?"), TEXT("The weather is great today, perfect for shopping!") } });
+        DialogueLines.Add(1, { { TEXT("Hello!"), TEXT("I'm good, thank you!"), TEXT("Today is a great day for shopping!") } });
+        DialogueLines.Add(2, { { TEXT("Hey!"), TEXT("Good to see you!"), TEXT("What a beautiful day, isn't it?") } });
+        DialogueLines.Add(3, { { TEXT("Hi, dear!"), TEXT("What have you been up to?"), TEXT("Today is a great day for a date!") } });
+        DialogueLines.Add(DialogueOfTrade, { { TEXT("Wow! This is my favorite gift!"), TEXT("Thank you!"), TEXT("You're a good person!") } });
+    }
+
 }
 
 void ANPC::Tick(float DeltaTime)
@@ -86,13 +98,11 @@ void ANPC::Tick(float DeltaTime)
 }
 
 // 随机选择一个对话字符串并显示
-void ANPC::DisplayRandomDialogue()
+void ANPC::DisplayRandomDialogue(int LinesId)
 {
-    CheckFavorabilityLevel();
-	IncreaseFavorability();
-    if (DialogueLines.Num() > 0 && DialogueLines.Contains(FavorabilityLevel))
+    if (DialogueLines.Num() > 0 && DialogueLines.Contains(LinesId))
     {
-        const TArray<FString> &CurrentDialogueLines = DialogueLines[FavorabilityLevel].Lines;
+        const TArray<FString> &CurrentDialogueLines = DialogueLines[LinesId].Lines;
         if (CurrentDialogueLines.Num() > 0)
         {
             int32 RandomIndex = RandomStream.RandRange(0, CurrentDialogueLines.Num() - 1);
@@ -119,10 +129,40 @@ void ANPC::DisplayRandomDialogue()
     }
 }
 
-// 增加好感度
-void ANPC::IncreaseFavorability()
+void ANPC::ReceiveGift(UItem *GiftItem)
 {
-    Favorability = Favorability + 1;
+    if (GiftItem)
+    {
+        // 根据礼物类型和ID增加好感度
+        int32 FavorabilityIncrease = 0;
+        switch (GiftItem->ItemID)
+        {
+            case 70:
+                FavorabilityIncrease = 50;
+                break;
+            default:
+                FavorabilityIncrease = 10;
+                break;
+        }
+        IncreaseFavorability(FavorabilityIncrease);
+        DisplayRandomDialogue(DialogueOfTrade);
+    }
+}
+
+bool ANPC::TradeWithPlayer(int32 GoldAmount)
+{
+    if (GoldAmount > 0)
+    {
+        
+        return true;
+    }
+    return false;
+}
+// 增加好感度
+void ANPC::IncreaseFavorability(int value)
+{
+    Favorability = Favorability + value;
+    CheckFavorabilityLevel();
 }
 //判断好感度等级
 void ANPC::CheckFavorabilityLevel()
@@ -146,9 +186,30 @@ void ANPC::CheckFavorabilityLevel()
         FavorabilityLevel = 3; // 极高好感度
     }
 }
+// 获取NPC的碰撞盒
+UBoxComponent *ANPC::GetPlayerInteractionBox(AMyPaperZDCharacter *Player)
+{
+    if (!Player) return nullptr;
 
-
-// 检测玩家是否靠近并触发对话
+    UBoxComponent *InteractionBox = nullptr;
+    switch (Player->PlayerDirection)
+    {
+        case EPlayerDirection::Up:
+            InteractionBox = Player->InteractionBoxUp;
+            break;
+        case EPlayerDirection::Down:
+            InteractionBox = Player->InteractionBoxDown;
+            break;
+        case EPlayerDirection::Left:
+            InteractionBox = Player->InteractionBoxLeft;
+            break;
+        case EPlayerDirection::Right:
+            InteractionBox = Player->InteractionBoxRight;
+            break;
+    }
+    return InteractionBox;
+}
+// 检测玩家是否靠近
 void ANPC::CheckForPlayerInteractionBox()
 {
     static float DialogueCooldown = 0.0f;
@@ -169,31 +230,30 @@ void ANPC::CheckForPlayerInteractionBox()
         AMyPaperZDCharacter *Player = Cast<AMyPaperZDCharacter>(Actor);
         if (Player)
         {
+			// 检查玩家是否使用了物品
+            UItem *UsingItem = Player->PlayerInventory->UseItem();
             // 获取玩家的互动碰撞箱
-            UBoxComponent *InteractionBox = nullptr;
-            switch (Player->PlayerDirection)
-            {
-                case EPlayerDirection::Up:
-                    InteractionBox = Player->InteractionBoxUp;
+            UBoxComponent *InteractionBox = GetPlayerInteractionBox(Player);
+            if (InteractionBox && InteractionBox->IsOverlappingActor(this)) {
+                if (UsingItem == nullptr || UsingItem->ItemType != CollectableType::Gift) {
+                    IncreaseFavorability();
+                    DisplayRandomDialogue(FavorabilityLevel);
+                    CurrentDirection = FVector::ZeroVector;
+                    bPlayerNearby = true;
+                    DialogueCooldown = 3.0f; // 设置冷却时间为3秒
                     break;
-                case EPlayerDirection::Down:
-                    InteractionBox = Player->InteractionBoxDown;
+                }
+                else if (UsingItem->ItemType == CollectableType::Gift) {
+                    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Using type:Gift!")));
+                    CurrentDirection = FVector::ZeroVector;
+                    bPlayerNearby = true;
+                    DialogueCooldown = 3.0f; // 设置冷却时间为3秒
+                    // NPC接收礼物
+                    this->ReceiveGift(UsingItem);
+                    // 从玩家的背包中移除礼物
+                    Player->PlayerInventory->RemoveItemByIndex(Player->PlayerInventory->UsingIndex, 1);
                     break;
-                case EPlayerDirection::Left:
-                    InteractionBox = Player->InteractionBoxLeft;
-                    break;
-                case EPlayerDirection::Right:
-                    InteractionBox = Player->InteractionBoxRight;
-                    break;
-            }
-
-            if (InteractionBox && InteractionBox->IsOverlappingActor(this))
-            {
-                DisplayRandomDialogue();
-                CurrentDirection = FVector::ZeroVector;
-                bPlayerNearby = true;
-                DialogueCooldown = 3.0f; // 设置冷却时间为5秒
-                break;
+                }
             }
         }
     }

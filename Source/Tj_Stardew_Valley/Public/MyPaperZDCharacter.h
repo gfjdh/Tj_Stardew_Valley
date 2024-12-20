@@ -376,24 +376,24 @@ public:
 
 	//互动碰撞盒结束重叠
 	UFUNCTION(BlueprintCallable)
-	void EnableInteractBox(bool Enabled);
+	void EnableInteractBox(bool Enabled);//启用互动碰撞盒
 
 
-	void CollectItem(UItem* ItemData);
+	void CollectItem(UItem *ItemData);//收集物品
 
-	void ActivatePlayer(bool IsActivate);
+	void ActivatePlayer(bool IsActivate);//激活玩家
 
-	void FishGame();
+	void FishGame();//钓鱼
 
-	void FishGameTick();
+	void FishGameTick();//钓鱼游戏
 
 	std::vector<FVector> FarmLandLocationList;
 
-	void SetScreenBrightness(float Brightness);
+	void SetScreenBrightness(float Brightness);//设置屏幕亮度
 
-	void SetMiniMapEnabled(bool Enabled);
+	void SetMiniMapEnabled(bool Enabled);//设置小地图是否可见
 
-	float CurrentBrightness=0.0f;
+	float CurrentBrightness = 0.0f;//当前屏幕亮度
 
 	FTimerHandle Timer;
 	FTimerHandle Timer1;
