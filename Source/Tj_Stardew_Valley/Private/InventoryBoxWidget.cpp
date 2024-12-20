@@ -51,7 +51,7 @@ bool UInventoryBoxWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragD
 	if (DragDropOperation && DragDropOperation->DraggedWidget)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Swap Item"));
-		SwapItem(DragDropOperation->DraggedIndex);
+		SwapItem(DragDropOperation->DraggedWidget, DragDropOperation->DraggedIndex);
 	}
 	return Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
 }
@@ -130,21 +130,20 @@ void UInventoryBoxWidget::OnBoxImageDoubleClicked()
 	}
 }
 
-void UInventoryBoxWidget::SwapItem(int DragIndex)
+void UInventoryBoxWidget::SwapItem(UInventoryBoxWidget* DraggedWidget, int32 DraggedIndex)
 {
-	if (CurrentItem)
+	if (DraggedWidget && DraggedWidget->CurrentItem && CurrentItem)
 	{
-		AActor* PlayerActor = UGameplayStatics::GetActorOfClass(GetWorld(), AMyPaperZDCharacter::StaticClass());
-		if (PlayerActor)
-		{
-			AMyPaperZDCharacter* Player = Cast<AMyPaperZDCharacter>(PlayerActor);
-			if (Player) {
-				UInventory* Inventory = Player->PlayerInventory;
-				UItem* TempItem = Inventory->Inventory[DragIndex];
-				Inventory->Inventory[DragIndex] = CurrentItem;
-				CurrentItem = TempItem;
-				UpdateItemDisplay();
-			}
-		}
+		//½»»»ÎïÆ·
+		UItem* TempItem = DraggedWidget->CurrentItem;
+		int32 TempAmount = DraggedWidget->CurrentItem->CurrentAmount;
+		DraggedWidget->SetItemImage(CurrentItem->ItemTexture);
+		DraggedWidget->SetItemCounts(CurrentItem->CurrentAmount);
+		DraggedWidget->CurrentItem = CurrentItem;
+		DraggedWidget->Index = Index;
+		SetItemImage(TempItem->ItemTexture);
+		SetItemCounts(TempAmount);
+		CurrentItem = TempItem;
+		Index = DraggedIndex;
 	}
 }

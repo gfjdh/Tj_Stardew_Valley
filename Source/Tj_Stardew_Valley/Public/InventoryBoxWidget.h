@@ -69,5 +69,5 @@ public:
 	UFUNCTION()
 	void OnBoxImageDoubleClicked();
 
-	void SwapItem(int DragIndex);
+	void SwapItem(UInventoryBoxWidget* DraggedWidget, int32 DraggedIndex);
 };
