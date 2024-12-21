@@ -20,6 +20,8 @@ ACrop::ACrop()
 
 	DefectedSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("DefectedSprite"));
 	DefectedSprite -> SetupAttachment(RootComponent);
+	DefectedSprite->SetRelativeRotation(FRotator(0.0f, 0.0f, -90.0f));
+	DefectedSprite->SetRelativeLocation(FVector(0.0f, -20.0f, 0.0f)); // ÉèÖÃ³õÊ¼Î»ÖÃ
 }
 
 // Called when the game starts or when spawned
@@ -130,6 +132,7 @@ void ACrop::GetDefect() {
 		{
 			IsDefected = true;
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Crop has been defected!"));
+			DefectedSprite->SetSprite(Buff_Defected);
 
 		}
 	}
