@@ -269,6 +269,7 @@ void AMyPaperZDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(CameraDownAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::CameraChangeDown);
 		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::Inventory);
 		EnhancedInputComponent->BindAction(SwitchSkillAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::SwitchSkill);
+		EnhancedInputComponent->BindAction(SkillAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::CheckTask);
 	}
 }
 
@@ -632,6 +633,27 @@ void AMyPaperZDCharacter::PullRod(const FInputActionValue& Value)
 			NewGreenZonePositionY += FishingWidget->GreenZoneSpeed;
 		}
 		FishingWidget->UpdateGreenZonePosition(NewGreenZonePositionY);
+	}
+}
+
+void AMyPaperZDCharacter::CheckTask(const FInputActionValue& Value)
+{
+	if (CurrentPlayerState == EPlayerState::InFishingGame || CurrentPlayerState == EPlayerState::Cook)
+		return;
+	if (TaskWidget) {
+		if (!TaskWidget->IsOpened) {
+			ActivatePlayer(false);
+			CurrentPlayerState = EPlayerState::Task;
+			TaskWidget->IsOpened = true;
+			TaskWidget->AddToViewport();
+			//ÏÔÊ¾ÈÎÎñ
+		}
+		else {
+			ActivatePlayer(true);
+			CurrentPlayerState = EPlayerState::Idle;
+			TaskWidget->IsOpened = false;
+			TaskWidget->RemoveFromParent();
+		}
 	}
 }
 

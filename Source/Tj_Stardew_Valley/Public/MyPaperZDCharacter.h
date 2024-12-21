@@ -41,6 +41,7 @@
 #include "Inventory.h"
 #include "SkillStates.h"
 #include "FarmLand.h"
+#include "TaskWidget.h"
 
 
 #include "MyPaperZDCharacter.generated.h"
@@ -70,7 +71,8 @@ enum class EPlayerState : uint8
 	InFishingGame,
 	BackPackOpened,
 	Plant,
-	Cook
+	Cook,
+	Task
 };
 
 USTRUCT(BlueprintType)
@@ -177,6 +179,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UCookWidget* CookWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTaskWidget* TaskWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UInputAction* CameraUpAction;
@@ -390,6 +395,9 @@ public:
 	//钓鱼模式按键
 	void PullRod(const FInputActionValue& Value);
 	
+	//查看任务列表
+	void CheckTask(const FInputActionValue& Value);
+
 	//更新耐力
 	void UpdateStamina(int Value);
 
