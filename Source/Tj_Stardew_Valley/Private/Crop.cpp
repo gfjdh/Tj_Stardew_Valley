@@ -53,31 +53,34 @@ void ACrop::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* Other
 	}
 }
 
-//同样的，这里也可以写出作物的逻辑，比如掉落物品等等
 
 //改变当前作物状态的函数
 void ACrop::JudgeMaturity()
 {
+	int temp_stat = status;
 	srand(time(0));
 	if (Maturity < 1000) {
 		//作物的生长速度在一定范围内随机
-		Maturity += (double)(rand() % 5 / 10 + 0.5)*IsWet;
+		if (!IsDefected && !IsDry) {
+			Maturity += (double)(rand() % 5 / 10 + 0.5) * IsWet;
+		}
 	}
-
 	if (Maturity < 200) {
 		status = 0;
 	}
-	else if (Maturity >= 200&&Maturity<500) {
+	else if (Maturity >= 200 && Maturity < 500) {
 		status = 1;
 	}
-	else if(Maturity>=500 && Maturity<1000){
+	else if (Maturity >= 500 && Maturity < 1000) {
 		status = 2;
 	}
 	else {
 		status = 3;
 	}
-
-	GetDefect();
+	if (temp_stat < status) {
+		GetDefect();
+		GetDry();
+	}
 }
 
 //改变当前作物外观
@@ -125,7 +128,7 @@ void ACrop::SpawnProducts()
 
 
 void ACrop::GetDefect() {
-	if (!IsDefected) {
+	if (!IsDefected && !IsDry) {
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Crop has not been defected!"));
 		int RandomValue = FMath::RandRange(0, 100);
 		if (RandomValue <= DefectRate)
@@ -136,4 +139,30 @@ void ACrop::GetDefect() {
 
 		}
 	}
+}
+
+
+void ACrop::GetDry() {
+	if (!IsDry && !IsDefected) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Crop has not been dryed!"));
+		int RandomValue = FMath::RandRange(0, 100);
+		if (RandomValue <= DryRate)
+		{
+			IsDry = true;
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Crop has been dryed!"));
+			DefectedSprite->SetSprite(Buff_NeedWater);
+
+		}
+	}
+}
+
+void ACrop::HealDef() {
+	IsDefected = false;
+	DefectedSprite->SetSprite(Buff_Empty);
+}
+
+
+void ACrop::HealDry() {
+	IsDry = false;
+	DefectedSprite->SetSprite(Buff_Empty);
 }

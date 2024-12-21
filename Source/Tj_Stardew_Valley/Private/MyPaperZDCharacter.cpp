@@ -359,7 +359,6 @@ void AMyPaperZDCharacter::UseItem(const FInputActionValue& Value)
 	}
 	else if (UsingItem->ItemType == CollectableType::Seed)
 	{
-		//进入种植状态，同时消耗一个种子
 		CurrentPlayerState = EPlayerState::Plant;
 		EnableInteractBox(true);
 		//回到默认状态
@@ -387,10 +386,18 @@ void AMyPaperZDCharacter::UseItem(const FInputActionValue& Value)
 		}
 		PlayerInventory->RemoveItemByIndex(PlayerInventory->UsingIndex, 1);
 	}
-	//else if (UsingItem->ItemType == CollectableType::Other)
-	//{
-	//	//
-	//}
+	else if (UsingItem->ItemType == CollectableType::Other)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Using type:Other!")));
+		switch (UsingItem->ItemID)
+		{
+			case 83:
+				CurrentPlayerState = EPlayerState::Heal;
+				EnableInteractBox(true);
+				CurrentPlayerState = EPlayerState::Idle;
+				break;
+		}
+	}
 	//刷新背包
 	CurrentUsingItemWidget->FlushSlot(PlayerInventory);
 	BackPackWidget->FlushBackpack(PlayerInventory);
@@ -684,7 +691,7 @@ void AMyPaperZDCharacter::Inventory(const FInputActionValue& Value)
 {
 	if (CurrentPlayerState == EPlayerState::InFishingGame || CurrentPlayerState == EPlayerState::Cook)
 		return;
-	PlayerInventory->PrintInventory();
+	//PlayerInventory->PrintInventory();
 
 	if (BackPackWidget) {
 		//开背包
@@ -789,6 +796,7 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 					break;
 				}
 				PlayerInventory->RemoveItemByIndex(PlayerInventory->UsingIndex, 1);
+				CurrentPlayerState = EPlayerState::Idle;
 			}
 		}
 	}
@@ -805,6 +813,7 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 					if (PlayerInventory->CurrentItem()->ItemID == Animal->FoodId) {
 						//Item--
 						PlayerInventory->RemoveItemByIndex(PlayerInventory->UsingIndex, 1);
+						CurrentPlayerState = EPlayerState::Idle;
 						//刷新背包
 						CurrentUsingItemWidget->FlushSlot(PlayerInventory);
 						Animal->EatFood();
@@ -868,6 +877,18 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 			FVector CropLocation = Crop->GetActorLocation();
 			Crop->Destroy();
 			Crop->SpawnProducts();
+		}
+		if (CurrentPlayerState == EPlayerState::Heal) {
+			if (Crop->IsDefected) {
+				Crop->HealDef();
+				PlayerInventory->RemoveItemByIndex(PlayerInventory->UsingIndex, 1);
+				CurrentPlayerState = EPlayerState::Idle;
+			}
+		}
+		if (CurrentPlayerState == EPlayerState::Water) {
+			if (Crop->IsDry) {
+				Crop->HealDry();
+			}
 		}
 	}
 	else if (CookPot) {
