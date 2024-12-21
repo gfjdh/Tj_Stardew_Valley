@@ -50,6 +50,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UPaperSprite* CropStageSprite4;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPaperSprite* Buff_Empty;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPaperSprite* Buff_Defected;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPaperSprite* Buff_NeedWater;
+
 	//作物被收获后生成的两个产物，分别是种子和产品
 	UPROPERTY(EditDefaultsOnly, Category = "Product")
 	TSubclassOf<ACollectableEntity> ProductActor1;
