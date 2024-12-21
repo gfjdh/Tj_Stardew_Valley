@@ -127,19 +127,11 @@ bool UInventory::RemoveItem(int32 ItemID, int32 Amount)
 	{
 		return false;
 	}
-	for (auto& i : Inventory)
+	for (int32 Index = 0; Index < Inventory.Num(); ++Index)
 	{
-		if (i->ItemID == ItemID)
+		if (Inventory[Index]->ItemID == ItemID)
 		{
-			if (i->CurrentAmount >= Amount)
-			{
-				i->CurrentAmount -= Amount;
-				if (i->CurrentAmount <= 0)
-				{
-					Inventory.Remove(i);
-				}
-				return true;
-			}
+			return RemoveItemByIndex(Index, Amount);
 		}
 	}
 	return false;
