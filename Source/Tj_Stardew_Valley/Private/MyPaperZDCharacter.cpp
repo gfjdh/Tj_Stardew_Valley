@@ -206,7 +206,7 @@ void AMyPaperZDCharacter::BeginPlay()
 	}
 
 	//获取GameMode
-	GameMode = Cast<ACGameMode>(GetWorld()->GetAuthGameMode());s
+	GameMode = Cast<ACGameMode>(GetWorld()->GetAuthGameMode());
 
 	// 创建玩家UI
 	if (PlayerUIClass)
