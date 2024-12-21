@@ -47,4 +47,6 @@ public:
 	int TimeFlowSpeedRate = 1;
 
 	int CurrentTicks;	//ticks
+public:
+	void SkipToday();
 };

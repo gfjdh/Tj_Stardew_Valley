@@ -6,6 +6,7 @@ void UDayStateFilterWidget::SetFilterTransparency()
 	{
 		return;
 	}
-	Transparency = GameMode->CurrentTime / 24.0f / 2.0f;
-	DayStateImage->SetOpacity(255 * Transparency);
+	//CurrentTime = 12ʱΪ0,24ʱΪ0.6
+	Transparency = fabs(GameMode->CurrentTime - 12) / 24 * 0.8;
+	DayStateImage->SetRenderOpacity(Transparency);
 }

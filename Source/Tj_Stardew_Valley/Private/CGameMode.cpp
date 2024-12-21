@@ -66,3 +66,30 @@ void ACGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 
 }
+
+void ACGameMode::SkipToday()
+{
+	CurrentTime = 24;
+	CurrentTicks = 0;
+	CurrentDay++;
+	if (CurrentDay >= 30) {
+		CurrentDay = 0;
+		switch (CurrentSeason)
+		{
+			case ESeason::Spring:
+				CurrentSeason = ESeason::Summer;
+				break;
+			case ESeason::Summer:
+				CurrentSeason = ESeason::Fall;
+				break;
+			case ESeason::Fall:
+				CurrentSeason = ESeason::Winter;
+				break;
+			case ESeason::Winter:
+				CurrentSeason = ESeason::Spring;
+				break;
+			default:
+				break;
+		}
+	}
+}

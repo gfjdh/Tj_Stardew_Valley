@@ -18,7 +18,7 @@ public:
 	UImage* DayStateImage;
 	
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	float Transparency = 0.0f;
+	float Transparency = 0.4f;
 public:
 	void SetFilterTransparency();
 };
