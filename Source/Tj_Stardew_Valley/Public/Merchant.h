@@ -1,7 +1,7 @@
 #pragma once
-
 #include "CoreMinimal.h"
 #include "NPC.h"
+#include "Item.h"
 #include "Merchant.generated.h"
 
 UENUM(BlueprintType)
@@ -18,18 +18,18 @@ struct FItemForSale
 
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-    UTexture2D *ItemTexture;
+    FItemData FItemData;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
     int32 Price;
 
     FItemForSale()
-        : ItemTexture(nullptr), Price(0)
+        : FItemData(), Price(0)
     {
     }
 
-    FItemForSale(UTexture2D *InItem, int32 InPrice)
-        : ItemTexture(InItem), Price(InPrice)
+    FItemForSale(int32 InPrice)
+        : FItemData(), Price(InPrice)
     {
     }
 };
@@ -105,4 +105,11 @@ public:
     // 商品列表
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Merchant")
     TArray<FItemForSale> ItemsForSale;
+
+    UPROPERTY(EditDefaultsOnly)
+    TSubclassOf<ACollectableEntity> CollectableEntityClass1;
+    UPROPERTY(EditDefaultsOnly)
+    TSubclassOf<ACollectableEntity> CollectableEntityClass2;
+    UPROPERTY(EditDefaultsOnly)
+    TSubclassOf<ACollectableEntity> CollectableEntityClass3;
 };

@@ -69,19 +69,19 @@ void UMerchantWidget::SetMerchant(AMerchant *Merchant)
         // 设置商品图片和价格
         if (ItemImage1 && ItemPrice1)
         {
-            ItemImage1->SetBrushFromTexture(CurrentMerchant->ItemsForSale[0].ItemTexture);
+            ItemImage1->SetBrushFromTexture(CurrentMerchant->ItemsForSale[0].FItemData.ItemTexture);
             ItemPrice1->SetText(FText::FromString(FString::FromInt(CurrentMerchant->ItemsForSale[0].Price)));
         }
 
         if (ItemImage2 && ItemPrice2)
         {
-            ItemImage2->SetBrushFromTexture(CurrentMerchant->ItemsForSale[1].ItemTexture);
+            ItemImage2->SetBrushFromTexture(CurrentMerchant->ItemsForSale[1].FItemData.ItemTexture);
             ItemPrice2->SetText(FText::FromString(FString::FromInt(CurrentMerchant->ItemsForSale[1].Price)));
         }
 
         if (ItemImage3 && ItemPrice3)
         {
-            ItemImage3->SetBrushFromTexture(CurrentMerchant->ItemsForSale[2].ItemTexture);
+            ItemImage3->SetBrushFromTexture(CurrentMerchant->ItemsForSale[2].FItemData.ItemTexture);
             ItemPrice3->SetText(FText::FromString(FString::FromInt(CurrentMerchant->ItemsForSale[2].Price)));
         }
     }

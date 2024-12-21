@@ -45,9 +45,9 @@ AMerchant::AMerchant()
     }
 
     // 初始化商品数据
-    ItemsForSale.Add({ nullptr, 10 }); // Health Potion
-    ItemsForSale.Add({ nullptr, 15 }); // Mana Potion
-    ItemsForSale.Add({ nullptr, 50 }); // Sword
+    ItemsForSale.Add(10);
+    ItemsForSale.Add(15);
+    ItemsForSale.Add(50);
 }
 
 void AMerchant::BeginPlay()

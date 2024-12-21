@@ -195,15 +195,6 @@ void ANPC::ReceiveGift(UItem *GiftItem)
     }
 }
 
-bool ANPC::TradeWithPlayer(int32 GoldAmount)
-{
-    if (GoldAmount > 0)
-    {
-        
-        return true;
-    }
-    return false;
-}
 // 增加好感度
 void ANPC::IncreaseFavorability(int value)
 {
@@ -314,14 +305,7 @@ void ANPC::CheckForPlayerInteractionBox()
                     // 如果好感度达到最高且当天还没有赠送过苹果
                     else if (FavorabilityLevel == 3 && !bHasGivenAppleToday)
                     {
-                        //始位置
-                        FVector AppleSpawnLocation = GetActorLocation();
-                        //生成位置x,y朝着Player的反方向偏离20
-                        FVector PlayerLocation = Player->GetActorLocation();
-                        FVector Direction = (AppleSpawnLocation - PlayerLocation).GetSafeNormal();
-                        AppleSpawnLocation += Direction * 20.0f;
-                        // 生成苹果
-                        ACollectableEntity *CollectableEntity = GetWorld()->SpawnActor<ACollectableEntity>(CollectableEntityClass, AppleSpawnLocation, FRotator::ZeroRotator);
+                        SpawnItemForPlayer(Player, CollectableEntityClass);
                         bHasGivenAppleToday = true;
                         DisplayRandomDialogue(DialogueOfGiveApple);
                     }
@@ -354,6 +338,21 @@ void ANPC::CheckForPlayerInteractionBox()
         bIsDialogueVisible = false;
     }
 }
+// 生成苹果
+void ANPC::SpawnItemForPlayer(AMyPaperZDCharacter *Player, TSubclassOf<ACollectableEntity> NameOfCollectableEntityClass)
+{
+    // 使用this->明确引用类成员变量
+    this->CollectableEntityClass = NameOfCollectableEntityClass;
+    //始位置
+    FVector AppleSpawnLocation = GetActorLocation();
+    //生成位置x,y朝着Player的反方向偏离20
+    FVector PlayerLocation = Player->GetActorLocation();
+    FVector Direction = (AppleSpawnLocation - PlayerLocation).GetSafeNormal();
+    AppleSpawnLocation += Direction * 20.0f;
+    // 生成苹果
+    ACollectableEntity *CollectableEntity = GetWorld()->SpawnActor<ACollectableEntity>(NameOfCollectableEntityClass, AppleSpawnLocation, FRotator::ZeroRotator);
+}
+// 检查任务是否完成
 int ANPC::CheckCompleteQuest()
 {
     for (int32 i = 0; i < AvailableQuests.Num(); i++)
