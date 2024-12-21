@@ -91,7 +91,7 @@ public:
 	TArray<FQuest> AvailableQuests;
 	
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<ACollectableEntity> AppleClass;
+	TSubclassOf<ACollectableEntity> CollectableEntityClass;
 	// ∑÷≈‰»ŒŒÒ
 	UFUNCTION(BlueprintCallable, Category = "Quest")
 	void AssignQuest(AMyPaperZDCharacter *Player, const FQuest &Quest);

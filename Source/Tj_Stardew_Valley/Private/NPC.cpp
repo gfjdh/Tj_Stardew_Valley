@@ -321,7 +321,7 @@ void ANPC::CheckForPlayerInteractionBox()
                         FVector Direction = (AppleSpawnLocation - PlayerLocation).GetSafeNormal();
                         AppleSpawnLocation += Direction * 20.0f;
                         // Éú³ÉÆ»¹û
-                        ACollectableEntity *Apple = GetWorld()->SpawnActor<ACollectableEntity>(AppleClass, AppleSpawnLocation, FRotator::ZeroRotator);
+                        ACollectableEntity *CollectableEntity = GetWorld()->SpawnActor<ACollectableEntity>(CollectableEntityClass, AppleSpawnLocation, FRotator::ZeroRotator);
                         bHasGivenAppleToday = true;
                         DisplayRandomDialogue(DialogueOfGiveApple);
                     }
