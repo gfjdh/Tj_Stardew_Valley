@@ -73,7 +73,8 @@ enum class EPlayerState : uint8
 	Plant,
 	Cook,
 	Task,
-	Heal
+	Heal,
+	Fert
 };
 
 USTRUCT(BlueprintType)

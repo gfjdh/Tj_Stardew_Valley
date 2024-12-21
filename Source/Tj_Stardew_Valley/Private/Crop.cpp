@@ -126,6 +126,9 @@ void ACrop::SpawnProducts()
 
 }
 
+void ACrop::Fert() {
+	Maturity += 500;
+}
 
 void ACrop::GetDefect() {
 	if (!IsDefected && !IsDry) {

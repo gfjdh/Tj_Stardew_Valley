@@ -396,6 +396,10 @@ void AMyPaperZDCharacter::UseItem(const FInputActionValue& Value)
 				EnableInteractBox(true);
 				CurrentPlayerState = EPlayerState::Idle;
 				break;
+			case 84:
+				CurrentPlayerState = EPlayerState::Fert;
+				EnableInteractBox(true);
+				CurrentPlayerState = EPlayerState::Idle;
 		}
 	}
 	//Ë¢ÐÂ±³°ü
@@ -872,11 +876,17 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 				CurrentPlayerState = EPlayerState::Idle;
 			}
 		}
+		if (CurrentPlayerState == EPlayerState::Fert) {
+			Crop->Fert();
+			PlayerInventory->RemoveItemByIndex(PlayerInventory->UsingIndex, 1);
+			CurrentPlayerState = EPlayerState::Idle;
+		}
 		if (CurrentPlayerState == EPlayerState::Water) {
 			if (Crop->IsDry) {
 				Crop->HealDry();
 			}
 		}
+
 	}
 	else if (CookPot) {
 		if (CurrentPlayerState == EPlayerState::Interact) {

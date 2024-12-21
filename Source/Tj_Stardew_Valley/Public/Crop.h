@@ -123,4 +123,7 @@ public:
 
 	UFUNCTION()
 	void HealDry();
+
+	UFUNCTION()
+	void Fert();
 };
