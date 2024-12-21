@@ -21,7 +21,8 @@ enum class SkillType : uint8
 	Cooking,
 	Interacting,
 	Foraging,
-	Crafting
+	Crafting,
+	Tool
 };
 
 

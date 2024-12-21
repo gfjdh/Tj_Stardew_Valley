@@ -72,6 +72,19 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USkillsTypes* Chopping;
 
+	//工具技能
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FSkillData ToolExpert;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FSkillData ToolHarvest;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FSkillData ToolSaver;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USkillsTypes* Tool;
+
 	//挖矿技能
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FSkillData MiningExpert;

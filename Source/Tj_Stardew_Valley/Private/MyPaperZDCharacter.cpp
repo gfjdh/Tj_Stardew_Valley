@@ -1242,35 +1242,90 @@ void AMyPaperZDCharacter::DisplaySkillBoard()
 UFUNCTION()
 void AMyPaperZDCharacter::OnCookSkillLevel1Clicked()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired!"));
+	if (PlayerSkill->Cooking->Level > 1) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Level Wrong!"));
+	}
+	else {
+		PlayerSkill->Cooking->Level++;
+		PlayerSkill->SkillLevelUp(PlayerSkill->CookingExpert);
+		PlayerSkill->SkillLevelUp(PlayerSkill->CookingHarvest);
+		PlayerSkill->SkillLevelUp(PlayerSkill->FastCooker);
+	}
 }
 
 UFUNCTION()
 void AMyPaperZDCharacter::OnCookSkillLevel2Clicked()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired!"));
+	if (PlayerSkill->Cooking->Level > 2) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Level Wrong!"));
+	}
+	else {
+		PlayerSkill->Cooking->Level++;
+		PlayerSkill->SkillLevelUp(PlayerSkill->CookingExpert);
+		PlayerSkill->SkillLevelUp(PlayerSkill->CookingHarvest);
+		PlayerSkill->SkillLevelUp(PlayerSkill->FastCooker);
+
+	}
 }
 
 UFUNCTION()
 void AMyPaperZDCharacter::OnFarmingSkillLevel1Clicked()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired!"));
+	if (PlayerSkill->Farming->Level > 1) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Level Wrong!"));
+	}
+	else {
+		PlayerSkill->Farming->Level++;
+		PlayerSkill->SkillLevelUp(PlayerSkill->FarmingExpert);
+		PlayerSkill->SkillLevelUp(PlayerSkill->FarmingHarvest);
+		PlayerSkill->SkillLevelUp(PlayerSkill->FarmingEndurancer);
+
+	}
 }
 
 UFUNCTION()
 void AMyPaperZDCharacter::OnFarmingSkillLevel2Clicked()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired!"));
+	if (PlayerSkill->Farming->Level > 2) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Level Wrong!"));
+	}
+	else {
+		PlayerSkill->Farming->Level++;
+		PlayerSkill->SkillLevelUp(PlayerSkill->FarmingExpert);
+		PlayerSkill->SkillLevelUp(PlayerSkill->FarmingHarvest);
+		PlayerSkill->SkillLevelUp(PlayerSkill->FarmingEndurancer);
+
+	}
 }
 
 UFUNCTION()
 void AMyPaperZDCharacter::OnToolSkillLevel1Clicked()
 {
+	if (PlayerSkill->Tool->Level > 1) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Level Wrong!"));
+	}
+	else {
+		PlayerSkill->Tool->Level++;
+		PlayerSkill->SkillLevelUp(PlayerSkill->ToolExpert);
+		PlayerSkill->SkillLevelUp(PlayerSkill->ToolHarvest);
+		PlayerSkill->SkillLevelUp(PlayerSkill->ToolSaver);
+
+	}
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired!"));
 }
 
 UFUNCTION()
 void AMyPaperZDCharacter::OnToolSkillLevel2Clicked()
 {
-	UE_LOG(LogTemp, Warning, TEXT("UserWidgetClass is not set."));
+	if (PlayerSkill->Tool->Level > 2) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Level Wrong!"));
+	}
+	else {
+		PlayerSkill->Tool->Level++;
+		PlayerSkill->SkillLevelUp(PlayerSkill->ToolExpert);
+		PlayerSkill->SkillLevelUp(PlayerSkill->ToolHarvest);
+		PlayerSkill->SkillLevelUp(PlayerSkill->ToolSaver);
+
+	}
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired!"));
 }
