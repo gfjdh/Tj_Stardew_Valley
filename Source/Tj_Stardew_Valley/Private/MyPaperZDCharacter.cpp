@@ -1085,7 +1085,7 @@ void AMyPaperZDCharacter::CompleteQuest(int32 QuestIndex)
 			// 移除所需物品
 			for (int32 ItemID : Quests[QuestIndex].RequiredItemIDs)
 			{
-				PlayerInventory->RemoveItem(ItemID, 1);//会导致闪退
+				PlayerInventory->RemoveItem(ItemID, 1);
 			}
 
 			// 奖励玩家
