@@ -6,7 +6,7 @@
 #include "Engine/TimerHandle.h"
 #include "PaperFlipbookComponent.h"
 #include "CollectableEntity.h"
-
+#include "Sound/SoundBase.h"
 #include "AnimalCharacter.generated.h"
 
 UENUM(BlueprintType)
@@ -40,6 +40,12 @@ public:
 	virtual void Tick(float DeltaTime) override;
 //成员变量
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USoundBase* EatSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USoundBase* ProduceSound;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool IsAlive = true;
 
@@ -69,6 +75,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<ACollectableEntity> ProductClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int FoodId;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AnimalType Type;
