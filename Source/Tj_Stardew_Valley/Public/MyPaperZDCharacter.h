@@ -41,6 +41,8 @@
 #include "Inventory.h"
 #include "SkillStates.h"
 #include "FarmLand.h"
+#include "TaskWidget.h"
+#include "SkillWidget.h"
 
 
 #include "MyPaperZDCharacter.generated.h"
@@ -70,7 +72,8 @@ enum class EPlayerState : uint8
 	InFishingGame,
 	BackPackOpened,
 	Plant,
-	Cook
+	Cook,
+	Task
 };
 
 USTRUCT(BlueprintType)
@@ -178,6 +181,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UCookWidget* CookWidget;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTaskWidget* TaskWidget;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UInputAction* CameraUpAction;
 
@@ -271,6 +277,15 @@ public:
 	//技能
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	USkillStates* PlayerSkill;
+
+	//技能buff
+	bool Skilling=0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	TSubclassOf<USkillWidget> SkillWidgetClass;
+
+	UPROPERTY()
+	USkillWidget* SkillWidget;
 
 	//音效
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -387,9 +402,15 @@ public:
 	//切换技能
 	void SwitchSkill(const FInputActionValue& Value);
 
+	//展示技能面板
+	void DisplaySkillBoard(const FInputActionValue& Value);
+
 	//钓鱼模式按键
 	void PullRod(const FInputActionValue& Value);
 	
+	//查看任务列表
+	void CheckTask(const FInputActionValue& Value);
+
 	//更新耐力
 	void UpdateStamina(int Value);
 

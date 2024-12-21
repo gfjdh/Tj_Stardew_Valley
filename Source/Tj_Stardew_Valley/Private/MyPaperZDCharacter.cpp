@@ -8,6 +8,7 @@
 #include "Inventory.h"
 #include "CookPot.h"
 #include "NPC.h"
+#include "SkillWidget.h"
 
 AMyPaperZDCharacter::AMyPaperZDCharacter()
 {
@@ -269,6 +270,8 @@ void AMyPaperZDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(CameraDownAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::CameraChangeDown);
 		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::Inventory);
 		EnhancedInputComponent->BindAction(SwitchSkillAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::SwitchSkill);
+		EnhancedInputComponent->BindAction(SkillAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::DisplaySkillBoard);
+		EnhancedInputComponent->BindAction(SkillAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::CheckTask);
 	}
 }
 
@@ -619,7 +622,7 @@ void AMyPaperZDCharacter::Interact(const FInputActionValue& Value)
 //钓鱼游戏
 void AMyPaperZDCharacter::PullRod(const FInputActionValue& Value)
 {
-	if (CurrentPlayerState == EPlayerState::InFishingGame || CurrentPlayerState == EPlayerState::Cook) {
+	if (CurrentPlayerState == EPlayerState::InFishingGame) {
 		//将Value转化为float
 		float Dir = Value.Get<float>();
 		//按上时 绿zone上升, 按下时 绿zone下降
@@ -631,6 +634,27 @@ void AMyPaperZDCharacter::PullRod(const FInputActionValue& Value)
 			NewGreenZonePositionY += FishingWidget->GreenZoneSpeed;
 		}
 		FishingWidget->UpdateGreenZonePosition(NewGreenZonePositionY);
+	}
+}
+
+void AMyPaperZDCharacter::CheckTask(const FInputActionValue& Value)
+{
+	if (CurrentPlayerState == EPlayerState::InFishingGame || CurrentPlayerState == EPlayerState::Cook)
+		return;
+	if (TaskWidget) {
+		if (!TaskWidget->IsOpened) {
+			ActivatePlayer(false);
+			CurrentPlayerState = EPlayerState::Task;
+			TaskWidget->IsOpened = true;
+			TaskWidget->AddToViewport();
+			//显示任务
+		}
+		else {
+			ActivatePlayer(true);
+			CurrentPlayerState = EPlayerState::Idle;
+			TaskWidget->IsOpened = false;
+			TaskWidget->RemoveFromParent();
+		}
 	}
 }
 
@@ -698,6 +722,18 @@ void AMyPaperZDCharacter::SwitchSkill(const FInputActionValue& Value)
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("SwitchSkill!")));
 	PlayerSkill->SwitchSkillIndex();
 	CurrentPlayerState = EPlayerState::Idle;
+}
+
+//使用技能，一定时间内会有一个Skilling的buff
+void AMyPaperZDCharacter::DisplaySkillBoard(const FInputActionValue& Value)
+{
+	if (SkillWidgetClass)
+	{
+		// 创建 Widget
+		SkillWidget = CreateWidget<USkillWidget>(this,SkillWidgetClass);
+		// 将 widget 添加到视图中
+		SkillWidget->AddToViewport();
+	}
 }
 
 
