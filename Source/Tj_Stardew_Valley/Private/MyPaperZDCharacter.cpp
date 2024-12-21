@@ -1020,8 +1020,9 @@ void AMyPaperZDCharacter::SetTimeWidgetImage()
 		default:
 			break;
 	}
-	float Degree = CurrentTime * GameMode->TimeFlowSpeedRate / 24 * 360;
+	float Degree = CurrentTime / 12 * 360;
 	TimeWidget->SetClockPointer(Degree);
+	TimeWidget->SetTimeText(GameMode->CurrentDay, CurrentTime);
 }
 
 //ÉèÖÃÉãÏñ»úÁÁ¶È

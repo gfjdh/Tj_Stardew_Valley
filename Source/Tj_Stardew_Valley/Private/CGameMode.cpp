@@ -37,7 +37,7 @@ void ACGameMode::Tick(float DeltaTime)
 			CurrentTime = 0;
 			CurrentDay++;
 			if (CurrentDay >= 30) {
-				CurrentDay = 0;
+				CurrentDay = 1;
 				switch (CurrentSeason)
 				{
 					case ESeason::Spring:

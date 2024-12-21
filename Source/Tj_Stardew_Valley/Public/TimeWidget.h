@@ -27,4 +27,5 @@ public:
 public:
 	void SetSeasonImage(UTexture2D* Texture);
 	void SetClockPointer(float DeltaDegree);
+	void SetTimeText(int Day, float CurrentTime);
 };
