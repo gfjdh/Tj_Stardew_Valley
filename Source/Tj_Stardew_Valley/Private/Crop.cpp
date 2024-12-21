@@ -77,7 +77,7 @@ void ACrop::JudgeMaturity()
 	else {
 		status = 3;
 	}
-	if (temp_stat < status) {
+	if (temp_stat < status && status != 3) {
 		GetDefect();
 		GetDry();
 	}
