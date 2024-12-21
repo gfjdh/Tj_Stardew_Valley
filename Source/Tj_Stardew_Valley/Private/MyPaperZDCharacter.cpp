@@ -620,7 +620,7 @@ void AMyPaperZDCharacter::Interact(const FInputActionValue& Value)
 //钓鱼游戏
 void AMyPaperZDCharacter::PullRod(const FInputActionValue& Value)
 {
-	if (CurrentPlayerState == EPlayerState::InFishingGame || CurrentPlayerState == EPlayerState::Cook) {
+	if (CurrentPlayerState == EPlayerState::InFishingGame) {
 		//将Value转化为float
 		float Dir = Value.Get<float>();
 		//按上时 绿zone上升, 按下时 绿zone下降
