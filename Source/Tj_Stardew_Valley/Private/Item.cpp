@@ -15,8 +15,6 @@ void UItem::CreateItemInfo(int32 InItemID)
     {
         FString LocalContextString;
         FName ItemRowName = FName(*FString::FromInt(InItemID));
-        //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow,
-            //FString::Printf(TEXT("Looking for Item ID %d with RowName %s"), InItemID, *ItemRowName.ToString()));
 
         FItemData* ItemData = ItemDataTable->FindRow<FItemData>(ItemRowName, LocalContextString);
 
@@ -31,19 +29,19 @@ void UItem::CreateItemInfo(int32 InItemID)
             CurrentAmount = ItemData->CurrentAmount;
             bIsConsumable = ItemData->bIsConsumable;
             bIsEquippable = ItemData->bIsEquippable;
-            GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green,
-                FString::Printf(TEXT("Item ID %d found in DataTable"), InItemID));
+            /*GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green,
+                FString::Printf(TEXT("Item ID %d found in DataTable"), InItemID));*/
         }
         else
         {
-            GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,
-                FString::Printf(TEXT("Item ID %d not found in DataTable"), InItemID));
+            /*GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,
+                FString::Printf(TEXT("Item ID %d not found in DataTable"), InItemID));*/
         }
     }
     else
     {
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,
-            TEXT("Failed to load Item DataTable"));
+        /*GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,
+            TEXT("Failed to load Item DataTable"));*/
     }
 }
 

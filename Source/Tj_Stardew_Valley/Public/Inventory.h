@@ -43,7 +43,6 @@ public:
 	bool AddItem(const UItem* ItemToAdd);
 
 	bool AddItemByIndex(const UItem* ItemToAdd);
-
 	// ÒÆ³ýÎïÆ·
 	UFUNCTION()
 	bool RemoveItem(int32 ItemID, int32 Amount);

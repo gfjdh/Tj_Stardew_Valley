@@ -1,4 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 #pragma once
 
 #include "CoreMinimal.h"
@@ -8,6 +7,7 @@
 #include "PaperFlipbookComponent.h"
 #include "MyPaperZDCharacter.h"
 #include <Item.h>
+#include "CollectableEntity.h"
 #include "NPC.generated.h"
 
 USTRUCT(BlueprintType)
@@ -89,6 +89,9 @@ public:
 	// 任务数组
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest")
 	TArray<FQuest> AvailableQuests;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ACollectableEntity> AppleClass;
 	// 分配任务
 	UFUNCTION(BlueprintCallable, Category = "Quest")
 	void AssignQuest(AMyPaperZDCharacter *Player, const FQuest &Quest);
@@ -111,7 +114,10 @@ protected:
 	FRandomStream RandomStream;// 随机数生成器
 	bool bIsDialogueVisible;// 对话可见性状态
 	bool bQuestCompleted;// 任务完成状态
-
+	bool bHasGivenAppleToday;
+	int32 LastGiftDay;
+	ACGameMode *GameMode;
+	FDateTime LastGiftDate;
 	// 好感度相关
 	int32 Favorability;
 	int32 FavorabilityLevel;

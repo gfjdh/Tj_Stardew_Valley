@@ -1095,6 +1095,7 @@ void AMyPaperZDCharacter::CompleteQuest(int32 QuestIndex)
 			for (int32 ItemID : Quests[QuestIndex].RequiredItemIDs)
 			{
 				PlayerInventory->RemoveItem(ItemID, 1);
+				CurrentUsingItemWidget->FlushSlot(PlayerInventory);
 			}
 
 			// ½±ÀøÍæ¼Ò

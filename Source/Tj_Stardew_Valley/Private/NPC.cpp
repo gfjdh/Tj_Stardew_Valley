@@ -3,10 +3,11 @@
 #include "Math/UnrealMathUtility.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/TextBlock.h"
-
+#include "CGameMode.h"
 const int DialogueOfTrade = 5;
 const int DialogueOfCopleteQuest = 6;
 const int DialogueOfAcceptQuest = 7;
+const int DialogueOfGiveApple = 8;
 const int LowFavorabilityThreshold = 5;
 const int MediumFavorabilityThreshold = 10;
 const int HighFavorabilityThreshold = 20;
@@ -66,7 +67,7 @@ ANPC::ANPC()
     RandomStream.Initialize(FDateTime::Now().GetMillisecond());
 
     // 初始化好感度
-    Favorability = 0;
+    Favorability = 18;
 	FavorabilityLevel = 0;
 
     // 初始化对话可见性状态
@@ -97,12 +98,17 @@ ANPC::ANPC()
 	Quest3.RewardGold = 50;
 	Quest3.bIsCompleted = false;
 	AvailableQuests.Add(Quest3);
+
+	bHasGivenAppleToday = false;// 初始化今天没有给过苹果
+	LastGiftDay = -1;// 初始化上次送礼物的日期
+    GameMode = nullptr;
 }
 
 void ANPC::BeginPlay()
 {
     Super::BeginPlay();
-
+    // 获取GameMode的引用
+    GameMode = Cast<ACGameMode>(GetWorld()->GetAuthGameMode());
     // 初始化对话内容
     if (Gender == ENPCGender::Male) {
         DialogueLines.Add(0, { { TEXT("Hey, buddy!"), TEXT("How have you been?"), TEXT("The weather is great today, perfect for a walk!") } });
@@ -112,6 +118,7 @@ void ANPC::BeginPlay()
         DialogueLines.Add(DialogueOfTrade, { { TEXT("Thank you very much"), TEXT("Thanks!"), TEXT("You're a good person!") } });
         DialogueLines.Add(DialogueOfCopleteQuest, { { TEXT("Thank you very much"), TEXT("Thanks!"), TEXT("You're a good person!") } });
 		DialogueLines.Add(DialogueOfAcceptQuest, { { TEXT("Please help me!") } });
+		DialogueLines.Add(DialogueOfGiveApple, { { TEXT("This is for you!" } }));
     }
     else {
         DialogueLines.Add(0, { { TEXT("Hi!"), TEXT("How have you been?"), TEXT("The weather is great today, perfect for shopping!") } });
@@ -121,8 +128,8 @@ void ANPC::BeginPlay()
         DialogueLines.Add(DialogueOfTrade, { { TEXT("Wow! This is my favorite gift!"), TEXT("Thank you!"), TEXT("You're a good person!") } });
         DialogueLines.Add(DialogueOfCopleteQuest, { { TEXT("Thank you very much"), TEXT("Thanks!"), TEXT("You're a good person!") } });
         DialogueLines.Add(DialogueOfAcceptQuest, { { TEXT("Please help me!") } });
+        DialogueLines.Add(DialogueOfGiveApple, { { TEXT("This is for you!" } }));
     }
-
 }
 
 void ANPC::Tick(float DeltaTime)
@@ -253,7 +260,6 @@ UBoxComponent *ANPC::GetPlayerInteractionBox(AMyPaperZDCharacter *Player)
     }
     return InteractionBox;
 }
-// 检测玩家是否靠近
 void ANPC::CheckForPlayerInteractionBox()
 {
     static float DialogueCooldown = 0.0f;
@@ -274,39 +280,59 @@ void ANPC::CheckForPlayerInteractionBox()
         AMyPaperZDCharacter *Player = Cast<AMyPaperZDCharacter>(Actor);
         if (Player)
         {
-			// 检查玩家是否使用了物品
+            // 检查是否是新的一天
+            if (GameMode)
+            {
+                int32 CurrentDay = GameMode->GetCurrentDay();
+                if (CurrentDay != LastGiftDay)
+                {
+                    bHasGivenAppleToday = false;
+                    LastGiftDay = CurrentDay;
+                }
+            }
+            // 检查玩家是否使用了物品
             UItem *UsingItem = Player->PlayerInventory->UseItem();
             // 获取玩家的互动碰撞箱
             UBoxComponent *InteractionBox = GetPlayerInteractionBox(Player);
             if (InteractionBox && InteractionBox->IsOverlappingActor(this)) {
                 if (UsingItem == nullptr || UsingItem->ItemType != CollectableType::Gift) {
-					if (FavorabilityLevel == -1)
-					{
+                    if (FavorabilityLevel == -1)
+                    {
                         if (AvailableQuests.Num() > 0 && bQuestCompleted)
                         {
                             AssignQuest(Player, AvailableQuests[0]);
                             bQuestCompleted = false;
                         }
-						else if (Player->Quests[0].bIsCompleted) {
-							IncreaseFavorability(1);
-							//删除完成的任务
-							AvailableQuests.RemoveAt(0);
-							bQuestCompleted = true;
-							DisplayRandomDialogue(DialogueOfCopleteQuest);
+                        else if (Player->Quests[0].bIsCompleted) {
+                            IncreaseFavorability(1);
+                            //删除完成的任务
+                            AvailableQuests.RemoveAt(0);
+                            bQuestCompleted = true;
+                            DisplayRandomDialogue(DialogueOfCopleteQuest);
                         }
-                        CurrentDirection = FVector::ZeroVector;
-                        bPlayerNearby = true;
-                        DialogueCooldown = 3.0f; // 设置冷却时间为3秒
-						break;
-					}
+                    }
+                    // 如果好感度达到最高且当天还没有赠送过苹果
+                    else if (FavorabilityLevel == 3 && !bHasGivenAppleToday)
+                    {
+                        //始位置
+                        FVector AppleSpawnLocation = GetActorLocation();
+                        //生成位置x,y朝着Player的反方向偏离20
+                        FVector PlayerLocation = Player->GetActorLocation();
+                        FVector Direction = (AppleSpawnLocation - PlayerLocation).GetSafeNormal();
+                        AppleSpawnLocation += Direction * 20.0f;
+                        // 生成苹果
+                        ACollectableEntity *Apple = GetWorld()->SpawnActor<ACollectableEntity>(AppleClass, AppleSpawnLocation, FRotator::ZeroRotator);
+                        bHasGivenAppleToday = true;
+                        DisplayRandomDialogue(DialogueOfGiveApple);
+                    }
                     else {
                         IncreaseFavorability(1);
                         DisplayRandomDialogue(FavorabilityLevel);
-                        CurrentDirection = FVector::ZeroVector;
-                        bPlayerNearby = true;
-                        DialogueCooldown = 3.0f; // 设置冷却时间为3秒
-                        break;
                     }
+                    CurrentDirection = FVector::ZeroVector;
+                    bPlayerNearby = true;
+                    DialogueCooldown = 3.0f; // 设置冷却时间为3秒
+                    break;
                 }
                 else if (UsingItem->ItemType == CollectableType::Gift) {
                     GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Using type:Gift!")));
