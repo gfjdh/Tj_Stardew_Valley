@@ -205,6 +205,9 @@ void AMyPaperZDCharacter::BeginPlay()
 		Stamina = SDGameInstance->Stamina;
 	}
 
+	//获取GameMode
+	GameMode = Cast<ACGameMode>(GetWorld()->GetAuthGameMode());
+
 	// 创建玩家UI
 	if (PlayerUIClass)
 	{
@@ -222,6 +225,17 @@ void AMyPaperZDCharacter::BeginPlay()
 	{
 		CurrentUsingItemWidget->AddToViewport();
 	}
+	// 一天的时间滤镜
+	if (DayStateFilterWidget)
+	{
+		DayStateFilterWidget->AddToViewport();
+		DayStateFilterWidget->GameMode = GameMode;
+	}
+	//TimeWidget
+	if (TimeWidget)
+	{
+		TimeWidget->AddToViewport();
+	}
 }
 
 // Called every frame
@@ -231,6 +245,8 @@ void AMyPaperZDCharacter::Tick(float DeltaTime)
 	FVector PlayerLocation = GetActorLocation();
 	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Player Location: X=%f, Y=%f, Z=%f"), PlayerLocation.X, PlayerLocation.Y, PlayerLocation.Z));
 	FishGameTick();
+	DayStateFilterWidget->SetFilterTransparency();
+	SetTimeWidgetImage();
 }
 
 
@@ -977,6 +993,36 @@ void AMyPaperZDCharacter::FishGameTick()
 void AMyPaperZDCharacter::SetMiniMapEnabled(bool Enabled)
 {
 	MiniMapEnabled = Enabled;
+}
+
+void AMyPaperZDCharacter::SetTimeWidgetImage()
+{
+	auto CurrentSeason = GameMode->CurrentSeason;
+	auto CurrentTime = GameMode->CurrentTime;
+
+	if (!TimeWidget)
+	{
+		return;
+	}
+	switch (CurrentSeason)
+	{
+		case ESeason::Spring:
+			TimeWidget->SetSeasonImage(GameMode->SpringTexture);
+			break;
+		case ESeason::Summer:
+			TimeWidget->SetSeasonImage(GameMode->SummerTexture);
+			break;
+		case ESeason::Fall:
+			TimeWidget->SetSeasonImage(GameMode->AutumnTexture);
+			break;
+		case ESeason::Winter:
+			TimeWidget->SetSeasonImage(GameMode->WinterTexture);
+			break;
+		default:
+			break;
+	}
+	float Degree = CurrentTime * GameMode->TimeFlowSpeedRate / 24 * 360;
+	TimeWidget->SetClockPointer(Degree);
 }
 
 //设置摄像机亮度
