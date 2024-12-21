@@ -93,3 +93,8 @@ void ACGameMode::SkipToday()
 		}
 	}
 }
+
+int32 ACGameMode::GetCurrentDay() const
+{
+	return CurrentDay;
+}
