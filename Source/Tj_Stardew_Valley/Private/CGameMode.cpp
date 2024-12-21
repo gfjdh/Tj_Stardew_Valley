@@ -15,10 +15,22 @@ void ACGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	CurrentTicks++;
-	if (CurrentTicks >= 60 * 30) //30s = 游戏内一分钟
+	if (CurrentTicks >= 30 * 30) //900s = 游戏内0.5h
 	{
 		CurrentTicks = 0;
-		CurrentTime += 1;
+		CurrentTime += 0.5;
+		if (CurrentTime >= 0 && CurrentTime < 12)
+		{
+			CurrentDayState = EDayState::Day;
+		}
+		else if (CurrentTime >= 12 && CurrentTime < 18)
+		{
+			CurrentDayState = EDayState::Afternoon;
+		}
+		else
+		{
+			CurrentDayState = EDayState::Night;
+		}
 		if (CurrentTime >= 24) {
 			CurrentTime = 0;
 			CurrentDay++;

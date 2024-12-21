@@ -14,6 +14,13 @@ enum class ESeason : uint8 {
 	Winter
 };
 
+UENUM(BlueprintType)
+enum class EDayState : uint8 {
+	Day,
+	Afternoon,
+	Night
+};
+
 UCLASS()
 class TJ_STARDEW_VALLEY_API ACGameMode : public AGameModeBase
 {
@@ -26,13 +33,16 @@ public:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 public:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
-	float CurrentTime;	//hours
+	float CurrentTime = 0.0f;	//hours
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	int CurrentDay;		//days
+	int CurrentDay = 1;		//days
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	ESeason CurrentSeason;	//seasons
+	ESeason CurrentSeason = ESeason::Spring;	//seasons
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	EDayState CurrentDayState = EDayState::Day;	//day state
 
 	int CurrentTicks;	//ticks
 };
