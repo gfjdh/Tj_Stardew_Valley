@@ -26,6 +26,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UPaperSpriteComponent* TreeSprite;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPaperSpriteComponent* DefectedSprite;
+
 	//决定作物的当前成长状态，并以此来切换外观，和决定收获物
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	int status=0;

@@ -18,6 +18,8 @@ ACrop::ACrop()
 	TreeSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("TreeSprite"));
 	TreeSprite->SetupAttachment(RootComponent);
 
+	DefectedSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("DefectedSprite"));
+	DefectedSprite -> SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned

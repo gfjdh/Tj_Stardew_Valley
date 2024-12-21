@@ -8,7 +8,7 @@
 #include "Inventory.h"
 #include "CookPot.h"
 #include "NPC.h"
-#include "SkillWidget.h"
+//#include "SkillWidget.h"
 
 AMyPaperZDCharacter::AMyPaperZDCharacter()
 {
@@ -270,7 +270,7 @@ void AMyPaperZDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(CameraDownAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::CameraChangeDown);
 		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::Inventory);
 		EnhancedInputComponent->BindAction(SwitchSkillAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::SwitchSkill);
-		EnhancedInputComponent->BindAction(SkillAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::DisplaySkillBoard);
+		//EnhancedInputComponent->BindAction(SkillAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::DisplaySkillBoard);
 		EnhancedInputComponent->BindAction(SkillAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::CheckTask);
 	}
 }
@@ -725,16 +725,16 @@ void AMyPaperZDCharacter::SwitchSkill(const FInputActionValue& Value)
 }
 
 //使用技能，一定时间内会有一个Skilling的buff
-void AMyPaperZDCharacter::DisplaySkillBoard(const FInputActionValue& Value)
-{
-	if (SkillWidgetClass)
-	{
-		// 创建 Widget
-		SkillWidget = CreateWidget<USkillWidget>(this,SkillWidgetClass);
-		// 将 widget 添加到视图中
-		SkillWidget->AddToViewport();
-	}
-}
+//void AMyPaperZDCharacter::DisplaySkillBoard(const FInputActionValue& Value)
+//{
+//	if (SkillWidgetClass)
+//	{
+//		// 创建 Widget
+//		SkillWidget = CreateWidget<USkillWidget>(this,SkillWidgetClass);
+//		// 将 widget 添加到视图中
+//		SkillWidget->AddToViewport();
+//	}
+//}
 
 
 // 互动开始重叠

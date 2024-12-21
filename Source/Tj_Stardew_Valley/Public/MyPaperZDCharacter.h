@@ -42,7 +42,7 @@
 #include "SkillStates.h"
 #include "FarmLand.h"
 #include "TaskWidget.h"
-#include "SkillWidget.h"
+//#include "SkillWidget.h"
 
 
 #include "MyPaperZDCharacter.generated.h"
@@ -279,13 +279,14 @@ public:
 	USkillStates* PlayerSkill;
 
 	//技能buff
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool Skilling=0;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
-	TSubclassOf<USkillWidget> SkillWidgetClass;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	//TSubclassOf<USkillWidget> SkillWidgetClass;
 
-	UPROPERTY()
-	USkillWidget* SkillWidget;
+	//UPROPERTY()
+	//USkillWidget* SkillWidget;
 
 	//音效
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -403,7 +404,7 @@ public:
 	void SwitchSkill(const FInputActionValue& Value);
 
 	//展示技能面板
-	void DisplaySkillBoard(const FInputActionValue& Value);
+	//void DisplaySkillBoard(const FInputActionValue& Value);
 
 	//钓鱼模式按键
 	void PullRod(const FInputActionValue& Value);
