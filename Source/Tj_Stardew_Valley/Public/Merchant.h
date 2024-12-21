@@ -45,8 +45,9 @@ public:
     virtual void BeginPlay() override;
     virtual void Tick(float DeltaTime) override;
 
+    UBoxComponent *GetPlayerInteractionBox(AMyPaperZDCharacter *Player);
     // 检查玩家是否靠近并触发对话
-    void CheckForPlayerInteractionBox();
+    virtual void CheckForPlayerInteractionBox() override;
 
 	// 商品数据
     void HandlePurchase(int32 ItemIndex);
@@ -54,6 +55,8 @@ public:
     TSubclassOf<ACollectableEntity> GetCollectableEntityClass(int32 Index);
 	// 退出交易
     void HandleExit();
+
+    UCapsuleComponent *AMerchantCapsuleComponent;
     // 商人类型
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Merchant")
     EMerchantType MerchantType;
@@ -119,4 +122,5 @@ public:
 
 private:
 	AMyPaperZDCharacter *CurrentPlayer = nullptr;
+	bool bTrading = false;
 };

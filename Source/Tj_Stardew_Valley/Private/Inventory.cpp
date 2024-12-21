@@ -138,6 +138,9 @@ bool UInventory::RemoveItemByIndex(int32 Index, int32 Amount) {
 		if (Inventory[Index]->CurrentAmount <= 0)
 		{
 			Inventory.RemoveAt(Index);
+			if (Index == UsingIndex) {
+				UsingIndex = 0;
+			}
 		}
 		return true;
 	}

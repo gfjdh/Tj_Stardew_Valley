@@ -73,7 +73,9 @@ enum class EPlayerState : uint8
 	BackPackOpened,
 	Plant,
 	Cook,
-	Task
+	Task,
+	Heal,
+	Fert
 };
 
 USTRUCT(BlueprintType)

@@ -51,4 +51,5 @@ public:
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	void Chop(AActor* OtherActor);
+
 };
