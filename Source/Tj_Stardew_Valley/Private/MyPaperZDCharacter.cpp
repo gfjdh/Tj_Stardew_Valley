@@ -6,6 +6,7 @@
 #include "FarmSpot.h"
 #include "FishSpot.h"
 #include "Inventory.h"
+#include "CookPot.h"
 #include "NPC.h"
 
 AMyPaperZDCharacter::AMyPaperZDCharacter()
@@ -537,6 +538,7 @@ void AMyPaperZDCharacter::Hoe()
 	}
 }
 
+
 // 钓鱼
 void AMyPaperZDCharacter::Fish(const FInputActionValue& Value)
 {
@@ -564,6 +566,8 @@ void AMyPaperZDCharacter::Fish(const FInputActionValue& Value)
 	}
 }
 
+
+
 // 切换相机
 void AMyPaperZDCharacter::CameraChangeUp(const FInputActionValue& Value)
 {
@@ -588,7 +592,8 @@ void AMyPaperZDCharacter::CameraChangeDown(const FInputActionValue& Value)
 // 互动
 void AMyPaperZDCharacter::Interact(const FInputActionValue& Value)
 {
-	if (CurrentPlayerState == EPlayerState::InFishingGame || CurrentPlayerState == EPlayerState::BackPackOpened)
+	if (CurrentPlayerState == EPlayerState::InFishingGame || CurrentPlayerState == EPlayerState::BackPackOpened 
+		|| CurrentPlayerState == EPlayerState::Cook)
 		return;
 	CurrentPlayerState = EPlayerState::Interact;
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Interact!")));
@@ -615,7 +620,7 @@ void AMyPaperZDCharacter::Interact(const FInputActionValue& Value)
 //钓鱼游戏
 void AMyPaperZDCharacter::PullRod(const FInputActionValue& Value)
 {
-	if (CurrentPlayerState == EPlayerState::InFishingGame) {
+	if (CurrentPlayerState == EPlayerState::InFishingGame || CurrentPlayerState == EPlayerState::Cook) {
 		//将Value转化为float
 		float Dir = Value.Get<float>();
 		//按上时 绿zone上升, 按下时 绿zone下降
@@ -654,7 +659,7 @@ void AMyPaperZDCharacter::Run(const FInputActionValue& Value)
 //背包
 void AMyPaperZDCharacter::Inventory(const FInputActionValue& Value)
 {
-	if (CurrentPlayerState == EPlayerState::InFishingGame)
+	if (CurrentPlayerState == EPlayerState::InFishingGame || CurrentPlayerState == EPlayerState::Cook)
 		return;
 	PlayerInventory->PrintInventory();
 
@@ -708,6 +713,7 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 	AFarmLand* FarmLand = Cast<AFarmLand>(OtherActor);
 	AAnimalCharacter* Animal = Cast<AAnimalCharacter>(OtherActor);
 	AFishSpot* Fish = Cast<AFishSpot>(OtherActor);
+	ACookPot* CookPot = Cast<ACookPot>(OtherActor);
 	//ACharacter* NPC = Cast<ACharacter>(OtherActor);
 
 	if (TreeStump) {
@@ -832,6 +838,14 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 			FVector CropLocation = Crop->GetActorLocation();
 			Crop->Destroy();
 			Crop->SpawnProducts();
+		}
+	}
+	else if (CookPot) {
+		if (CurrentPlayerState == EPlayerState::Interact) {
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Cooking"));
+			ActivatePlayer(false);
+			CurrentPlayerState = EPlayerState::Cook;
+			CookPot->OpenCookMenu(this);
 		}
 	}
 }
