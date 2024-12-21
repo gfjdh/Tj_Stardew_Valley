@@ -18,7 +18,7 @@ void UTimeWidget::SetClockPointer(float DeltaDegree)
 void UTimeWidget::SetTimeText(int Day, float CurrentTime)
 {
 	FString TimeString;
-	if(CurrentTime <= 10.0)
+	if(CurrentTime < 10.0)
 		TimeString = FString::Printf(TEXT("Day %d 0%d:%d0"), Day, (int)CurrentTime, ((int)(CurrentTime * 10) - ((int)CurrentTime)*10) / 5 * 3);
 	else
 		TimeString = FString::Printf(TEXT("Day %d %d:%d0"), Day, (int)CurrentTime, ((int)(CurrentTime * 10) - ((int)CurrentTime) * 10) / 5 * 3);
