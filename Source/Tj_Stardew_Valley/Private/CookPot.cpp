@@ -29,7 +29,7 @@ void ACookPot::OpenCookMenu(AActor* OtherActor)
 	if (Player) {
 		//´ò¿ªÅëâ¿²Ëµ¥
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Open Cook Menu"));
-		Player->CookWidget->SetVisibility(true);
+		Player->CookWidget->DisplayWidget(true);
 	}
 }
 

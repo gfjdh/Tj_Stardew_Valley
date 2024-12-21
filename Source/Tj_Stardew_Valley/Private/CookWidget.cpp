@@ -8,16 +8,23 @@ void UCookWidget::NativeConstruct()
 
 void UCookWidget::OnCloseButtonClicked()
 {
-	SetVisibility(false);
+	DisplayWidget(false);
 }
 
-void UCookWidget::SetVisibility(bool bIsVisible)
+void UCookWidget::DisplayWidget(bool bIsVisible)
 {
 	if (bIsVisible) {
 		AddToViewport();
 	}
 	else {
 		RemoveFromParent();
+	}
+}
+
+void UCookWidget::EnableCookMenuRow(int Index, bool bIsEnable)
+{
+	if (Index < CookMenuRow.Num()) {
+		CookMenuRow[Index]->SetVisibility(bIsEnable ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
 	}
 }
 

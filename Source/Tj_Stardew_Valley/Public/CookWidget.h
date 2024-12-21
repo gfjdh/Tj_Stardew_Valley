@@ -6,6 +6,7 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
+#include "CookMenuRow.h"
 
 #include "CookWidget.generated.h"
 
@@ -22,11 +23,16 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* TitleText;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	TArray<UCookMenuRow*> CookMenuRow;
 public:
 	virtual void NativeConstruct() override;
 
 	UFUNCTION()
 	void OnCloseButtonClicked();
 
-	void SetVisibility(bool bIsVisible);
+	void DisplayWidget(bool bIsVisible);
+
+	void EnableCookMenuRow(int Index, bool bIsEnable);
 };

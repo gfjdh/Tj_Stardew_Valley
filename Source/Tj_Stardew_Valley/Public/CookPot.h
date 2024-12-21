@@ -27,8 +27,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UPaperSpriteComponent* PotSprite;
 
-
-
 public:
 	void OpenCookMenu(AActor* OtherActor);
 };
