@@ -2,6 +2,7 @@
 
 
 #include "MonkeyGold.h"
+#include "MyPaperZDCharacter.h"
 
 // Sets default values
 AMonkeyGold::AMonkeyGold()
@@ -18,7 +19,7 @@ AMonkeyGold::AMonkeyGold()
 void AMonkeyGold::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	CapsuleComp->OnComponentBeginOverlap.AddDynamic(this, &AMonkeyGold::OverlapBegin);
 }
 
 // Called every frame
@@ -28,3 +29,13 @@ void AMonkeyGold::Tick(float DeltaTime)
 
 }
 
+void AMonkeyGold::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
+	AMyPaperZDCharacter* Player = Cast<AMyPaperZDCharacter>(OtherActor);
+	if (Player) {
+		Player->UpdateStamina(-50);
+		Player->SDGameInstance->SetPlayerGold(100);
+		Player->PlayerUIWidget->SetGold(Player->SDGameInstance->GoldWealth);
+	}
+
+}
