@@ -1160,7 +1160,7 @@ void AMyPaperZDCharacter::DisplaySkillBoard()
 	if (SkillWidgetClass&&!SkillBoardIsOpen)
 	{
 		// 创建用户界面实例
-		SkillWidgetInstance = CreateWidget<UUserWidget>(GetWorld(), SkillWidgetClass);
+		SkillWidgetInstance = CreateWidget<UCSkillWidget>(GetWorld(), SkillWidgetClass);
 
 		// 确保实例已成功创建
 		if (SkillWidgetInstance)
@@ -1168,6 +1168,30 @@ void AMyPaperZDCharacter::DisplaySkillBoard()
 			// 将用户界面添加到视图中
 			SkillWidgetInstance->AddToViewport();
 			SkillBoardIsOpen = true;
+			if (SkillWidgetInstance->FarmingSkillLevel1)
+			{
+				SkillWidgetInstance->FarmingSkillLevel1->OnClicked.AddDynamic(this, &AMyPaperZDCharacter::OnFarmingSkillLevel1Clicked);
+			}
+			if (SkillWidgetInstance->FarmingSkillLevel2)
+			{
+				SkillWidgetInstance->FarmingSkillLevel2->OnClicked.AddDynamic(this, &AMyPaperZDCharacter::OnFarmingSkillLevel2Clicked);
+			}
+			if (SkillWidgetInstance->ToolSkillLevel1)
+			{
+				SkillWidgetInstance->ToolSkillLevel1->OnClicked.AddDynamic(this, &AMyPaperZDCharacter::OnToolSkillLevel1Clicked);
+			}
+			if (SkillWidgetInstance->ToolSkillLevel2)
+			{
+				SkillWidgetInstance->ToolSkillLevel2->OnClicked.AddDynamic(this, &AMyPaperZDCharacter::OnToolSkillLevel2Clicked);
+			}
+			if (SkillWidgetInstance->CookSkillLevel1)
+			{
+				SkillWidgetInstance->CookSkillLevel1->OnClicked.AddDynamic(this, &AMyPaperZDCharacter::OnCookSkillLevel1Clicked);
+			}
+			if (SkillWidgetInstance->CookSkillLevel2)
+			{
+				SkillWidgetInstance->CookSkillLevel1->OnClicked.AddDynamic(this, &AMyPaperZDCharacter::OnCookSkillLevel2Clicked);
+			}
 		}
 		else
 		{
@@ -1182,4 +1206,40 @@ void AMyPaperZDCharacter::DisplaySkillBoard()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("UserWidgetClass is not set."));
 	}
+}
+
+UFUNCTION()
+void AMyPaperZDCharacter::OnCookSkillLevel1Clicked()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired!"));
+}
+
+UFUNCTION()
+void AMyPaperZDCharacter::OnCookSkillLevel2Clicked()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired!"));
+}
+
+UFUNCTION()
+void AMyPaperZDCharacter::OnFarmingSkillLevel1Clicked()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired!"));
+}
+
+UFUNCTION()
+void AMyPaperZDCharacter::OnFarmingSkillLevel2Clicked()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired!"));
+}
+
+UFUNCTION()
+void AMyPaperZDCharacter::OnToolSkillLevel1Clicked()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired!"));
+}
+
+UFUNCTION()
+void AMyPaperZDCharacter::OnToolSkillLevel2Clicked()
+{
+	UE_LOG(LogTemp, Warning, TEXT("UserWidgetClass is not set."));
 }

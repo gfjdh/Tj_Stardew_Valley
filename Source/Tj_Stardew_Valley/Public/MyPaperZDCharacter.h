@@ -42,6 +42,7 @@
 #include "SkillStates.h"
 #include "FarmLand.h"
 #include "TaskWidget.h"
+#include "CSkillWidget.h"
 
 
 #include "MyPaperZDCharacter.generated.h"
@@ -472,12 +473,12 @@ public:
 	FTimerHandle Timer1;
 
 	// 指向用户界面类的指针
-	UPROPERTY(EditAnywhere, Category = "UI")
-	TSubclassOf<UUserWidget> SkillWidgetClass;
+	UPROPERTY(EditAnywhere,BluePrintReadWrite, Category = "UI")
+	TSubclassOf<UCSkillWidget> SkillWidgetClass;
 
 	// 指向当前用户界面实例的指针
-	UPROPERTY(EditAnywhere, Category = "UI")
-	UUserWidget* SkillWidgetInstance;
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "UI")
+	UCSkillWidget* SkillWidgetInstance;
 
 	//用来开关技能面板
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -485,4 +486,23 @@ public:
 
 	UFUNCTION()
 	void DisplaySkillBoard();
+
+	//技能面版各种按钮触发事件
+	UFUNCTION()
+	void OnCookSkillLevel1Clicked();
+
+	UFUNCTION()
+	void OnCookSkillLevel2Clicked();
+
+	UFUNCTION()
+	void OnFarmingSkillLevel1Clicked();
+
+	UFUNCTION()
+	void OnFarmingSkillLevel2Clicked();
+
+	UFUNCTION()
+	void OnToolSkillLevel1Clicked();
+
+	UFUNCTION()
+	void OnToolSkillLevel2Clicked();
 };
