@@ -3,6 +3,7 @@
 #include "Blueprint/UserWidget.h"
 #include "MyPaperZDCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "MerchantWidget.h"
 
 AMerchant::AMerchant()
 {
@@ -30,18 +31,23 @@ AMerchant::AMerchant()
     TradeOptions.Add(TEXT("Buy Sword (50 Gold)"));
 
     // 初始化小游戏界面类
-    static ConstructorHelpers::FClassFinder<UUserWidget> GameWidget(TEXT("/Game/UI/GameWidget"));
+    static ConstructorHelpers::FClassFinder<UUserWidget> GameWidget(TEXT("/Game/BluePrints/NPC/GameWidget"));
     if (GameWidget.Succeeded())
     {
         GameWidgetClass = GameWidget.Class;
     }
 
     // 初始化交易界面类
-    static ConstructorHelpers::FClassFinder<UUserWidget> TradeWidget(TEXT("/Game/UI/TradeWidget"));
+    static ConstructorHelpers::FClassFinder<UUserWidget> TradeWidget(TEXT("/Game/BluePrints/NPC/TradeWidget"));
     if (TradeWidget.Succeeded())
     {
         TradeWidgetClass = TradeWidget.Class;
     }
+
+    // 初始化商品数据
+    ItemsForSale.Add({ nullptr, 10 }); // Health Potion
+    ItemsForSale.Add({ nullptr, 15 }); // Mana Potion
+    ItemsForSale.Add({ nullptr, 50 }); // Sword
 }
 
 void AMerchant::BeginPlay()
@@ -63,9 +69,10 @@ void AMerchant::ShowTradeMenu()
 {
     if (TradeWidgetClass)
     {
-        CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), TradeWidgetClass);
+        CurrentWidget = CreateWidget<UMerchantWidget>(GetWorld(), TradeWidgetClass);
         if (CurrentWidget)
         {
+            Cast<UMerchantWidget>(CurrentWidget)->SetMerchant(this);
             CurrentWidget->AddToViewport();
             APlayerController *PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
             if (PlayerController)
@@ -83,6 +90,7 @@ void AMerchant::ShowGameMenu()
         CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), GameWidgetClass);
         if (CurrentWidget)
         {
+            Cast<UMerchantWidget>(CurrentWidget)->SetMerchant(this);
             CurrentWidget->AddToViewport();
             APlayerController *PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
             if (PlayerController)
@@ -207,4 +215,28 @@ int32 AMerchant::GetPlayerGold() const
         return Player->SDGameInstance->GoldWealth;
     }
     return 0;
+}
+
+void AMerchant::HandlePurchase(int32 ItemIndex)
+{
+    if (ItemIndex >= 0 && ItemIndex < ItemsForSale.Num())
+    {
+        int32 ItemPrice = ItemsForSale[ItemIndex].Price;
+        if (CheckPlayerGold(ItemPrice))
+        {
+            UpdatePlayerGold(-ItemPrice);
+            // 给玩家添加物品
+            // PlayerInventory->AddItem(ItemsForSale[ItemIndex].Item);
+            GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Purchase successful!"));
+        }
+        else
+        {
+            GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Not enough gold!"));
+        }
+    }
+}
+
+void AMerchant::HandleExit()
+{
+    CloseCurrentMenu();
 }

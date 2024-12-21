@@ -11,6 +11,29 @@ enum class EMerchantType : uint8
     GameHost  // 游戏商人
 };
 
+USTRUCT(BlueprintType)
+struct FItemForSale
+{
+    GENERATED_BODY()
+
+public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+    UTexture2D *ItemTexture;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+    int32 Price;
+
+    FItemForSale()
+        : ItemTexture(nullptr), Price(0)
+    {
+    }
+
+    FItemForSale(UTexture2D *InItem, int32 InPrice)
+        : ItemTexture(InItem), Price(InPrice)
+    {
+    }
+};
+
 UCLASS()
 class TJ_STARDEW_VALLEY_API AMerchant : public ANPC
 {
@@ -19,10 +42,14 @@ class TJ_STARDEW_VALLEY_API AMerchant : public ANPC
 public:
     AMerchant();
 
-protected:
     virtual void BeginPlay() override;
     virtual void Tick(float DeltaTime) override;
 
+
+	// 商品数据
+    void HandlePurchase(int32 ItemIndex);
+	// 退出交易
+    void HandleExit();
     // 商人类型
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Merchant")
     EMerchantType MerchantType;
@@ -74,4 +101,8 @@ protected:
     // 获取玩家金币
     UFUNCTION(BlueprintCallable, Category = "Merchant")
     int32 GetPlayerGold() const;
+
+    // 商品列表
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Merchant")
+    TArray<FItemForSale> ItemsForSale;
 };
