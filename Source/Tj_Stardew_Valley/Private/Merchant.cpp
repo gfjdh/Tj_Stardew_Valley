@@ -26,9 +26,9 @@ AMerchant::AMerchant()
     MerchantType = EMerchantType::Vendor;
 
     // 初始化交易选项
-    TradeOptions.Add(TEXT("Buy Health Potion (10 Gold)"));
-    TradeOptions.Add(TEXT("Buy Mana Potion (15 Gold)"));
-    TradeOptions.Add(TEXT("Buy Sword (50 Gold)"));
+    TradeOptions.Add(TEXT("Buy woods (10 Gold)"));
+    TradeOptions.Add(TEXT("Buy apples (15 Gold)"));
+    TradeOptions.Add(TEXT("Buy rings (50 Gold)"));
 
     // 初始化小游戏界面类
     static ConstructorHelpers::FClassFinder<UUserWidget> GameWidget(TEXT("/Game/BluePrints/NPC/GameWidget"));
@@ -45,9 +45,11 @@ AMerchant::AMerchant()
     }
 
     // 初始化商品数据
-    ItemsForSale.Add({ nullptr, 10 }); // Health Potion
-    ItemsForSale.Add({ nullptr, 15 }); // Mana Potion
-    ItemsForSale.Add({ nullptr, 50 }); // Sword
+    ItemsForSale.Add(10);
+    ItemsForSale.Add(15);
+    ItemsForSale.Add(50);
+
+    CurrentPlayer = nullptr;
 }
 
 void AMerchant::BeginPlay()
@@ -101,55 +103,76 @@ void AMerchant::ShowGameMenu()
     }
 }
 
-void AMerchant::HandleTrade(int32 OptionIndex)
+void AMerchant::CheckForPlayerInteractionBox()
 {
-    if (OptionIndex >= 0 && OptionIndex < TradeOptions.Num())
+    static float DialogueCooldown = 0.0f;
+    if (DialogueCooldown > 0.0f)
     {
-        FString Option = TradeOptions[OptionIndex];
-        if (Option.Contains(TEXT("Health Potion")))
+        DialogueCooldown -= GetWorld()->GetDeltaSeconds();
+        return;
+    }
+    TArray<AActor *> OverlappingActors;
+    GetOverlappingActors(OverlappingActors, AMyPaperZDCharacter::StaticClass());
+
+    bool bPlayerNearby = false;
+
+    for (AActor *Actor : OverlappingActors)
+    {
+        AMyPaperZDCharacter *Player = Cast<AMyPaperZDCharacter>(Actor);
+        if (Player)
         {
-            if (CheckPlayerGold(10))
-            {
-                UpdatePlayerGold(-10);
-                // 给玩家添加物品
-                // PlayerInventory->AddItem(HealthPotionItem);
-                GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("You bought a Health Potion!"));
-            }
-            else
-            {
-                GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Not enough gold!"));
-            }
-        }
-        else if (Option.Contains(TEXT("Mana Potion")))
-        {
-            if (CheckPlayerGold(15))
-            {
-                UpdatePlayerGold(-15);
-                // 给玩家添加物品
-                // PlayerInventory->AddItem(ManaPotionItem);
-                GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("You bought a Mana Potion!"));
-            }
-            else
-            {
-                GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Not enough gold!"));
-            }
-        }
-        else if (Option.Contains(TEXT("Sword")))
-        {
-            if (CheckPlayerGold(50))
-            {
-                UpdatePlayerGold(-50);
-                // 给玩家添加物品
-                // PlayerInventory->AddItem(SwordItem);
-                GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("You bought a Sword!"));
-            }
-            else
-            {
-                GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Not enough gold!"));
+            // 获取玩家的互动碰撞箱
+            UBoxComponent *InteractionBox = GetPlayerInteractionBox(Player);
+            if (InteractionBox && InteractionBox->IsOverlappingActor(this)) {
+                CurrentPlayer = Player;
+				//输出调试信息
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("ShowGameMenu!"));
+                this->ShowGameMenu();
             }
         }
     }
+    if (!bPlayerNearby && bIsDialogueVisible)
+    {
+        DialogueWidgetComponent->SetVisibility(false);
+        bIsDialogueVisible = false;
+    }
+}
+
+void AMerchant::HandleTrade(int32 OptionIndex, AMyPaperZDCharacter *Player)
+{
+    if (OptionIndex >= 0 && OptionIndex < ItemsForSale.Num())
+    {
+        FItemForSale Option = ItemsForSale[OptionIndex];
+		if (CheckPlayerGold(ItemsForSale[OptionIndex].Price))
+        {
+            UpdatePlayerGold(-1 * ItemsForSale[OptionIndex].Price);
+            // 给玩家添加物品
+            SpawnItemForPlayer(Player, GetCollectableEntityClass(OptionIndex));
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("You bought a %Item!"));
+        }
+        else
+        {
+            GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Not enough gold!"));
+        }
+    }
     CloseCurrentMenu();
+}
+
+TSubclassOf<ACollectableEntity> AMerchant::GetCollectableEntityClass(int32 Index)
+{
+	if (Index == 0)
+	{
+		return CollectableEntityClass1;
+	}
+	else if (Index == 1)
+	{
+		return CollectableEntityClass2;
+	}
+	else if (Index == 2)
+	{
+		return CollectableEntityClass3;
+	}
+	return nullptr;
 }
 
 void AMerchant::HandleGame()
@@ -219,21 +242,7 @@ int32 AMerchant::GetPlayerGold() const
 
 void AMerchant::HandlePurchase(int32 ItemIndex)
 {
-    if (ItemIndex >= 0 && ItemIndex < ItemsForSale.Num())
-    {
-        int32 ItemPrice = ItemsForSale[ItemIndex].Price;
-        if (CheckPlayerGold(ItemPrice))
-        {
-            UpdatePlayerGold(-ItemPrice);
-            // 给玩家添加物品
-            // PlayerInventory->AddItem(ItemsForSale[ItemIndex].Item);
-            GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Purchase successful!"));
-        }
-        else
-        {
-            GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Not enough gold!"));
-        }
-    }
+	HandleTrade(ItemIndex, CurrentPlayer);
 }
 
 void AMerchant::HandleExit()
