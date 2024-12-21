@@ -608,6 +608,7 @@ void AMyPaperZDCharacter::Interact(const FInputActionValue& Value)
 			GetAnimInstance()->PlayAnimationOverride(InteractAnimSequenceSide, FName("DefaultSlot"), 1.0f, 0.0f, OnInteractOverrideEndDelegate);
 			break;
 	}
+	CheckAndCompleteQuest();
 	CurrentPlayerState = EPlayerState::Idle;
 }
 
@@ -1056,4 +1057,59 @@ void AMyPaperZDCharacter::SetScreenBrightness(float Brightness)
 		{
 			this->GetWorld()->GetTimerManager().ClearTimer(this->Timer);
 		}, 1.0f, false);
+}
+
+void AMyPaperZDCharacter::ReceiveQuest(const FQuest &NewQuest)
+{
+	Quests.Add(NewQuest);
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Received Quest: %s"), *NewQuest.QuestName));
+}
+
+void AMyPaperZDCharacter::CompleteQuest(int32 QuestIndex)
+{
+	if (Quests.IsValidIndex(QuestIndex) && !Quests[QuestIndex].bIsCompleted)
+	{
+		// 检查玩家是否拥有所有所需物品
+		bool bHasAllItems = true;
+		for (int32 ItemID : Quests[QuestIndex].RequiredItemIDs)
+		{
+			if (!PlayerInventory->HasItem(ItemID))
+			{
+				bHasAllItems = false;
+				break;
+			}
+		}
+
+		if (bHasAllItems)
+		{
+			// 移除所需物品
+			for (int32 ItemID : Quests[QuestIndex].RequiredItemIDs)
+			{
+				PlayerInventory->RemoveItem(ItemID, 1);//会导致闪退
+			}
+
+			// 奖励玩家
+			SDGameInstance->SetPlayerGold(SDGameInstance->GoldWealth + Quests[QuestIndex].RewardGold);
+			PlayerUIWidget->SetGold(SDGameInstance->GoldWealth);
+
+			// 标记任务为已完成
+			Quests[QuestIndex].bIsCompleted = true;
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Completed Quest: %s"), *Quests[QuestIndex].QuestName));
+		}
+		else
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("You don't have all the required items!"));
+		}
+	}
+}
+
+void AMyPaperZDCharacter::CheckAndCompleteQuest()
+{
+	for (int32 i = 0; i < Quests.Num(); i++)
+	{
+		if (!Quests[i].bIsCompleted)
+		{
+			CompleteQuest(i);
+		}
+	}
 }

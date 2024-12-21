@@ -5,6 +5,11 @@
 #include "Components/TextBlock.h"
 
 const int DialogueOfTrade = 5;
+const int DialogueOfCopleteQuest = 6;
+const int DialogueOfAcceptQuest = 7;
+const int LowFavorabilityThreshold = 5;
+const int MediumFavorabilityThreshold = 10;
+const int HighFavorabilityThreshold = 20;
 
 ANPC::ANPC()
 {
@@ -17,9 +22,11 @@ ANPC::ANPC()
     NPCCapsuleComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);// 设置碰撞属性为查询和物理
     NPCCapsuleComponent->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);// 设置碰撞对象类型为Pawn
     NPCCapsuleComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);// 设置碰撞响应为阻塞
+
     // 创建一个Flipbook组件作为NPC的视觉组件
     NPCFlipbookComponent = CreateDefaultSubobject<UPaperFlipbookComponent>(TEXT("NPCFlipbookComponent"));
     NPCFlipbookComponent->SetupAttachment(NPCCapsuleComponent);
+
     // 创建一个文本组件用于显示对话
     DialogueWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("DialogueWidgetComponent"));
     DialogueWidgetComponent->SetupAttachment(NPCCapsuleComponent);// 设置对话组件的父组件为胶囊组件
@@ -27,8 +34,10 @@ ANPC::ANPC()
     DialogueWidgetComponent->SetDrawSize(FVector2D(200.0f, 50.0f));// 设置对话组件的大小
     DialogueWidgetComponent->SetVisibility(false);// 设置对话组件不可见
     DialogueWidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 100.0f));// 设置对话组件的位置
+
     // 初始化性别属性
     Gender = ENPCGender::Male;
+
     // 设置自定义Widget类
     static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Game/BluePrints/NPC/DialogueWidget"));// 设置对话组件的Widget类
     if (WidgetClass.Succeeded())// 如果找到了Widget类
@@ -62,6 +71,32 @@ ANPC::ANPC()
 
     // 初始化对话可见性状态
     bIsDialogueVisible = false;
+	bQuestCompleted = true;
+
+    // 初始化任务
+    FQuest Quest1;
+	Quest1.QuestName = TEXT("collect 1 pieces of wood");
+	Quest1.Description = TEXT("please help me collect 1 pieces of wood.");
+    Quest1.RequiredItemIDs = { 100 }; // 木材的ID是100
+    Quest1.RewardGold = 100;
+    Quest1.bIsCompleted = false;
+    AvailableQuests.Add(Quest1);
+
+    FQuest Quest2;
+	Quest2.QuestName = TEXT("collect 1 Apple");
+	Quest2.Description = TEXT("please help me collect 1 Apple.");
+	Quest2.RequiredItemIDs = { 60 }; // 苹果的ID是60
+    Quest2.RewardGold = 50;
+    Quest2.bIsCompleted = false;
+    AvailableQuests.Add(Quest2);
+
+	FQuest Quest3;
+    Quest3.QuestName = TEXT("collect 1 Apple");
+    Quest3.Description = TEXT("please help me collect 1 Apple.");
+    Quest3.RequiredItemIDs = { 60 }; // 苹果的ID是60
+	Quest3.RewardGold = 50;
+	Quest3.bIsCompleted = false;
+	AvailableQuests.Add(Quest3);
 }
 
 void ANPC::BeginPlay()
@@ -75,6 +110,8 @@ void ANPC::BeginPlay()
         DialogueLines.Add(2, { { TEXT("Yo!"), TEXT("Good to see you!"), TEXT("What a beautiful day, isn't it?") } });
         DialogueLines.Add(3, { { TEXT("Hey, bro!"), TEXT("What have you been up to?"), TEXT("Today is a great day for an adventure!") } });
         DialogueLines.Add(DialogueOfTrade, { { TEXT("Thank you very much"), TEXT("Thanks!"), TEXT("You're a good person!") } });
+        DialogueLines.Add(DialogueOfCopleteQuest, { { TEXT("Thank you very much"), TEXT("Thanks!"), TEXT("You're a good person!") } });
+		DialogueLines.Add(DialogueOfAcceptQuest, { { TEXT("Please help me!") } });
     }
     else {
         DialogueLines.Add(0, { { TEXT("Hi!"), TEXT("How have you been?"), TEXT("The weather is great today, perfect for shopping!") } });
@@ -82,6 +119,8 @@ void ANPC::BeginPlay()
         DialogueLines.Add(2, { { TEXT("Hey!"), TEXT("Good to see you!"), TEXT("What a beautiful day, isn't it?") } });
         DialogueLines.Add(3, { { TEXT("Hi, dear!"), TEXT("What have you been up to?"), TEXT("Today is a great day for a date!") } });
         DialogueLines.Add(DialogueOfTrade, { { TEXT("Wow! This is my favorite gift!"), TEXT("Thank you!"), TEXT("You're a good person!") } });
+        DialogueLines.Add(DialogueOfCopleteQuest, { { TEXT("Thank you very much"), TEXT("Thanks!"), TEXT("You're a good person!") } });
+        DialogueLines.Add(DialogueOfAcceptQuest, { { TEXT("Please help me!") } });
     }
 
 }
@@ -168,16 +207,20 @@ void ANPC::IncreaseFavorability(int value)
 void ANPC::CheckFavorabilityLevel()
 {
 	//输出调试信息Favorability
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Favorability: %d"), Favorability));
-    if (Favorability < 5)
+    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Favorability: %d"), Favorability));
+	if (Favorability == LowFavorabilityThreshold || Favorability == MediumFavorabilityThreshold || Favorability == HighFavorabilityThreshold)
+	{
+		FavorabilityLevel = -1; // 好感度分界点，等待任务
+    }
+    else if (Favorability <= LowFavorabilityThreshold)
     {
         FavorabilityLevel = 0; // 低好感度
     }
-    else if (Favorability < 10)
+    else if (Favorability <= MediumFavorabilityThreshold)
     {
         FavorabilityLevel = 1; // 中等好感度
     }
-    else if (Favorability < 20)
+    else if (Favorability <= HighFavorabilityThreshold)
     {
         FavorabilityLevel = 2; // 高好感度
     }
@@ -186,6 +229,7 @@ void ANPC::CheckFavorabilityLevel()
         FavorabilityLevel = 3; // 极高好感度
     }
 }
+
 // 获取NPC的碰撞盒
 UBoxComponent *ANPC::GetPlayerInteractionBox(AMyPaperZDCharacter *Player)
 {
@@ -236,12 +280,33 @@ void ANPC::CheckForPlayerInteractionBox()
             UBoxComponent *InteractionBox = GetPlayerInteractionBox(Player);
             if (InteractionBox && InteractionBox->IsOverlappingActor(this)) {
                 if (UsingItem == nullptr || UsingItem->ItemType != CollectableType::Gift) {
-                    IncreaseFavorability();
-                    DisplayRandomDialogue(FavorabilityLevel);
-                    CurrentDirection = FVector::ZeroVector;
-                    bPlayerNearby = true;
-                    DialogueCooldown = 3.0f; // 设置冷却时间为3秒
-                    break;
+					if (FavorabilityLevel == -1)
+					{
+                        if (AvailableQuests.Num() > 0 && bQuestCompleted)
+                        {
+                            AssignQuest(Player, AvailableQuests[0]);
+                            bQuestCompleted = false;
+                        }
+						else if (Player->Quests[0].bIsCompleted) {
+							IncreaseFavorability(1);
+							//删除完成的任务
+							AvailableQuests.RemoveAt(0);
+							bQuestCompleted = true;
+							DisplayRandomDialogue(DialogueOfCopleteQuest);
+                        }
+                        CurrentDirection = FVector::ZeroVector;
+                        bPlayerNearby = true;
+                        DialogueCooldown = 3.0f; // 设置冷却时间为3秒
+						break;
+					}
+                    else {
+                        IncreaseFavorability(1);
+                        DisplayRandomDialogue(FavorabilityLevel);
+                        CurrentDirection = FVector::ZeroVector;
+                        bPlayerNearby = true;
+                        DialogueCooldown = 3.0f; // 设置冷却时间为3秒
+                        break;
+                    }
                 }
                 else if (UsingItem->ItemType == CollectableType::Gift) {
                     GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Using type:Gift!")));
@@ -257,14 +322,32 @@ void ANPC::CheckForPlayerInteractionBox()
             }
         }
     }
-
     if (!bPlayerNearby && bIsDialogueVisible)
     {
         DialogueWidgetComponent->SetVisibility(false);
         bIsDialogueVisible = false;
     }
 }
-
+int ANPC::CheckCompleteQuest()
+{
+    for (int32 i = 0; i < AvailableQuests.Num(); i++)
+    {
+        if (!AvailableQuests[i].bIsCompleted)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+// 分配任务
+void ANPC::AssignQuest(AMyPaperZDCharacter *Player, const FQuest &Quest)
+{
+    if (Player)
+    {
+        DisplayRandomDialogue(DialogueOfAcceptQuest);
+        Player->ReceiveQuest(Quest);
+    }
+}
 //用于让NPC在指定的区域内随机移动。
 void ANPC::MoveRandomly(float DeltaTime)
 {
@@ -381,3 +464,4 @@ void ANPC::UpdateAnimation()
         }
     }
 }
+

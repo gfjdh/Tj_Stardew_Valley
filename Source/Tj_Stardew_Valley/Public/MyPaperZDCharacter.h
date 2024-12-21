@@ -71,6 +71,27 @@ enum class EPlayerState : uint8
 	Plant
 };
 
+USTRUCT(BlueprintType)
+struct FQuest
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest")
+	FString QuestName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest")
+	FString Description;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest")
+	TArray<int32> RequiredItemIDs;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest")
+	int32 RewardGold;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest")
+	bool bIsCompleted;
+};
+
 
 UCLASS()
 class TJ_STARDEW_VALLEY_API AMyPaperZDCharacter : public APaperZDCharacter
@@ -402,6 +423,20 @@ public:
 	void SetScreenBrightness(float Brightness);//设置屏幕亮度
 
 	void SetMiniMapEnabled(bool Enabled);//设置小地图是否可见
+
+	// 任务列表
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest")
+	TArray<FQuest> Quests;
+
+	// 接收任务
+	UFUNCTION(BlueprintCallable, Category = "Quest")
+	void ReceiveQuest(const FQuest &NewQuest);
+
+	// 完成任务
+	UFUNCTION(BlueprintCallable, Category = "Quest")
+	void CompleteQuest(int32 QuestIndex);
+
+	void CheckAndCompleteQuest();
 
 	float CurrentBrightness = 0.0f;//当前屏幕亮度
 
