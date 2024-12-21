@@ -30,6 +30,7 @@
 #include "Sound/SoundBase.h"
 #include "BackPackWidget.h"
 #include "CurrentUsingItemWidget.h"
+#include "DayStateFilterWidget.h"
 
 #include "PlayerUI.h"
 #include "StardrewGameInstance.h"
@@ -78,6 +79,9 @@ class TJ_STARDEW_VALLEY_API AMyPaperZDCharacter : public APaperZDCharacter
 
 public:
 	FSpawnFishDelegate SpawnFishDelegate;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ACGameMode* GameMode;
 	//基本组件
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	USpringArmComponent* SpringArm;
@@ -141,6 +145,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UCurrentUsingItemWidget* CurrentUsingItemWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UDayStateFilterWidget* DayStateFilterWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UInputAction* CameraUpAction;

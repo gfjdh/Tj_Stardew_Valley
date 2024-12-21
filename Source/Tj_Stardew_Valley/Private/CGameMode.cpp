@@ -1,7 +1,9 @@
 #include "CGameMode.h"
+#include "MyPaperZDCharacter.h"
 
 ACGameMode::ACGameMode()
 {
+	PrimaryActorTick.bCanEverTick = true;
 	// 设置默认的Pawn类为自定义的MyPaperZDCharacter
 	DefaultPawnClass = AMyPaperZDCharacter::StaticClass();
 }
@@ -15,7 +17,7 @@ void ACGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	CurrentTicks++;
-	if (CurrentTicks >= 30 * 30) //900s = 游戏内0.5h
+	if (CurrentTicks >= 30 * 30 / TimeFlowSpeedRate) //900s = 游戏内0.5h
 	{
 		CurrentTicks = 0;
 		CurrentTime += 0.5;

@@ -205,6 +205,9 @@ void AMyPaperZDCharacter::BeginPlay()
 		Stamina = SDGameInstance->Stamina;
 	}
 
+	//获取GameMode
+	GameMode = Cast<ACGameMode>(GetWorld()->GetAuthGameMode());s
+
 	// 创建玩家UI
 	if (PlayerUIClass)
 	{
@@ -222,6 +225,12 @@ void AMyPaperZDCharacter::BeginPlay()
 	{
 		CurrentUsingItemWidget->AddToViewport();
 	}
+	// 一天的时间滤镜
+	if (DayStateFilterWidget)
+	{
+		DayStateFilterWidget->AddToViewport();
+		DayStateFilterWidget->GameMode = GameMode;
+	}
 }
 
 // Called every frame
@@ -231,6 +240,8 @@ void AMyPaperZDCharacter::Tick(float DeltaTime)
 	FVector PlayerLocation = GetActorLocation();
 	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Player Location: X=%f, Y=%f, Z=%f"), PlayerLocation.X, PlayerLocation.Y, PlayerLocation.Z));
 	FishGameTick();
+
+	//DayStateFilterWidget->SetFilterTransparency();
 }
 
 
