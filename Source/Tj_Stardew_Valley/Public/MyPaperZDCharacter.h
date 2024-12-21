@@ -31,6 +31,7 @@
 #include "BackPackWidget.h"
 #include "CurrentUsingItemWidget.h"
 #include "DayStateFilterWidget.h"
+#include "CookWidget.h"
 
 #include "PlayerUI.h"
 #include "StardrewGameInstance.h"
@@ -68,7 +69,8 @@ enum class EPlayerState : uint8
 	Interact,
 	InFishingGame,
 	BackPackOpened,
-	Plant
+	Plant,
+	Cook
 };
 
 USTRUCT(BlueprintType)
@@ -172,6 +174,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UTimeWidget* TimeWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UCookWidget* CookWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UInputAction* CameraUpAction;
