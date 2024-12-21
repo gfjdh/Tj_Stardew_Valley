@@ -33,7 +33,7 @@ public:
 
 	FTimerHandle DelayTimerHandle;
 
-	bool WhetherToTeleport = true;
+	bool WhetherToTeleport=1;
 
 	UFUNCTION()
 	void Teleport(AMyPaperZDCharacter* Player);

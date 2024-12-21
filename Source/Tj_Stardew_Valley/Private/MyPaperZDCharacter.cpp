@@ -270,7 +270,7 @@ void AMyPaperZDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(CameraDownAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::CameraChangeDown);
 		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::Inventory);
 		EnhancedInputComponent->BindAction(SwitchSkillAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::SwitchSkill);
-		//EnhancedInputComponent->BindAction(SkillAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::DisplaySkillBoard);
+		EnhancedInputComponent->BindAction(SkillAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::DisplaySkillBoard);
 		EnhancedInputComponent->BindAction(SkillAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::CheckTask);
 	}
 }
@@ -359,7 +359,6 @@ void AMyPaperZDCharacter::UseItem(const FInputActionValue& Value)
 	}
 	else if (UsingItem->ItemType == CollectableType::Seed)
 	{
-		//进入种植状态，同时消耗一个种子
 		CurrentPlayerState = EPlayerState::Plant;
 		EnableInteractBox(true);
 		//回到默认状态
@@ -387,10 +386,22 @@ void AMyPaperZDCharacter::UseItem(const FInputActionValue& Value)
 		}
 		PlayerInventory->RemoveItemByIndex(PlayerInventory->UsingIndex, 1);
 	}
-	//else if (UsingItem->ItemType == CollectableType::Other)
-	//{
-	//	//
-	//}
+	else if (UsingItem->ItemType == CollectableType::Other)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Using type:Other!")));
+		switch (UsingItem->ItemID)
+		{
+			case 83:
+				CurrentPlayerState = EPlayerState::Heal;
+				EnableInteractBox(true);
+				CurrentPlayerState = EPlayerState::Idle;
+				break;
+			case 84:
+				CurrentPlayerState = EPlayerState::Fert;
+				EnableInteractBox(true);
+				CurrentPlayerState = EPlayerState::Idle;
+		}
+	}
 	//刷新背包
 	CurrentUsingItemWidget->FlushSlot(PlayerInventory);
 	BackPackWidget->FlushBackpack(PlayerInventory);
@@ -684,7 +695,7 @@ void AMyPaperZDCharacter::Inventory(const FInputActionValue& Value)
 {
 	if (CurrentPlayerState == EPlayerState::InFishingGame || CurrentPlayerState == EPlayerState::Cook)
 		return;
-	PlayerInventory->PrintInventory();
+	//PlayerInventory->PrintInventory();
 
 	if (BackPackWidget) {
 		//开背包
@@ -723,19 +734,6 @@ void AMyPaperZDCharacter::SwitchSkill(const FInputActionValue& Value)
 	PlayerSkill->SwitchSkillIndex();
 	CurrentPlayerState = EPlayerState::Idle;
 }
-
-//使用技能，一定时间内会有一个Skilling的buff
-//void AMyPaperZDCharacter::DisplaySkillBoard(const FInputActionValue& Value)
-//{
-//	if (SkillWidgetClass)
-//	{
-//		// 创建 Widget
-//		SkillWidget = CreateWidget<USkillWidget>(this,SkillWidgetClass);
-//		// 将 widget 添加到视图中
-//		SkillWidget->AddToViewport();
-//	}
-//}
-
 
 // 互动开始重叠
 void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
@@ -789,6 +787,7 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 					break;
 				}
 				PlayerInventory->RemoveItemByIndex(PlayerInventory->UsingIndex, 1);
+				CurrentPlayerState = EPlayerState::Idle;
 			}
 		}
 	}
@@ -805,6 +804,7 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 					if (PlayerInventory->CurrentItem()->ItemID == Animal->FoodId) {
 						//Item--
 						PlayerInventory->RemoveItemByIndex(PlayerInventory->UsingIndex, 1);
+						CurrentPlayerState = EPlayerState::Idle;
 						//刷新背包
 						CurrentUsingItemWidget->FlushSlot(PlayerInventory);
 						Animal->EatFood();
@@ -869,6 +869,24 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 			Crop->Destroy();
 			Crop->SpawnProducts();
 		}
+		if (CurrentPlayerState == EPlayerState::Heal) {
+			if (Crop->IsDefected) {
+				Crop->HealDef();
+				PlayerInventory->RemoveItemByIndex(PlayerInventory->UsingIndex, 1);
+				CurrentPlayerState = EPlayerState::Idle;
+			}
+		}
+		if (CurrentPlayerState == EPlayerState::Fert) {
+			Crop->Fert();
+			PlayerInventory->RemoveItemByIndex(PlayerInventory->UsingIndex, 1);
+			CurrentPlayerState = EPlayerState::Idle;
+		}
+		if (CurrentPlayerState == EPlayerState::Water) {
+			if (Crop->IsDry) {
+				Crop->HealDry();
+			}
+		}
+
 	}
 	else if (CookPot) {
 		if (CurrentPlayerState == EPlayerState::Interact) {
@@ -1165,5 +1183,34 @@ void AMyPaperZDCharacter::CheckAndCompleteQuest()
 		{
 			CompleteQuest(i);
 		}
+	}
+}
+
+void AMyPaperZDCharacter::DisplaySkillBoard()
+{
+	if (SkillWidgetClass&&!SkillBoardIsOpen)
+	{
+		// 创建用户界面实例
+		SkillWidgetInstance = CreateWidget<UUserWidget>(GetWorld(), SkillWidgetClass);
+
+		// 确保实例已成功创建
+		if (SkillWidgetInstance)
+		{
+			// 将用户界面添加到视图中
+			SkillWidgetInstance->AddToViewport();
+			SkillBoardIsOpen = true;
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Failed to create UserWidgetInstance."));
+		}
+	}
+	else if (SkillBoardIsOpen) {
+		SkillWidgetInstance->RemoveFromParent();
+		SkillBoardIsOpen = false;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UserWidgetClass is not set."));
 	}
 }

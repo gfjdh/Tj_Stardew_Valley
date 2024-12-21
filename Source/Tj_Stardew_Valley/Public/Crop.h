@@ -75,7 +75,13 @@ public:
 	bool IsDefected = false;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	int DefectRate = 60;
+	int DefectRate = 30;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool IsDry = false;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int DryRate = 60;
 
 
 	// Sets default values for this actor's properties
@@ -107,4 +113,17 @@ public:
 
 	UFUNCTION()
 	void GetDefect();
+
+
+	UFUNCTION()
+	void GetDry();
+
+	UFUNCTION()
+	void HealDef();
+
+	UFUNCTION()
+	void HealDry();
+
+	UFUNCTION()
+	void Fert();
 };
