@@ -150,6 +150,9 @@ public:
 	UDayStateFilterWidget* DayStateFilterWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UTimeWidget* TimeWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UInputAction* CameraUpAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -401,6 +404,8 @@ public:
 	void SetMiniMapEnabled(bool Enabled);//设置小地图是否可见
 
 	float CurrentBrightness = 0.0f;//当前屏幕亮度
+
+	void SetTimeWidgetImage();
 
 	FTimerHandle Timer;
 	FTimerHandle Timer1;

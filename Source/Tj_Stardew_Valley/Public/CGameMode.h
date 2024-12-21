@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "TimeWidget.h"
 
 #include "CGameMode.generated.h"
 
@@ -43,8 +44,20 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	EDayState CurrentDayState = EDayState::Day;	//day state
 
-	UPROPERTY(eDITAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int TimeFlowSpeedRate = 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* SpringTexture;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* SummerTexture;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* AutumnTexture;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* WinterTexture;
 
 	int CurrentTicks;	//ticks
 public:

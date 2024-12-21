@@ -231,6 +231,11 @@ void AMyPaperZDCharacter::BeginPlay()
 		DayStateFilterWidget->AddToViewport();
 		DayStateFilterWidget->GameMode = GameMode;
 	}
+	//TimeWidget
+	if (TimeWidget)
+	{
+		TimeWidget->AddToViewport();
+	}
 }
 
 // Called every frame
@@ -241,6 +246,7 @@ void AMyPaperZDCharacter::Tick(float DeltaTime)
 	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Player Location: X=%f, Y=%f, Z=%f"), PlayerLocation.X, PlayerLocation.Y, PlayerLocation.Z));
 	FishGameTick();
 	DayStateFilterWidget->SetFilterTransparency();
+	SetTimeWidgetImage();
 }
 
 
@@ -986,6 +992,35 @@ void AMyPaperZDCharacter::FishGameTick()
 void AMyPaperZDCharacter::SetMiniMapEnabled(bool Enabled)
 {
 	MiniMapEnabled = Enabled;
+}
+
+void AMyPaperZDCharacter::SetTimeWidgetImage()
+{
+	auto CurrentSeason = GameMode->CurrentSeason;
+	auto CurrentTime = GameMode->CurrentTime;
+
+	if (!TimeWidget)
+	{
+		return;
+	}
+	switch (CurrentSeason)
+	{
+		case ESeason::Spring:
+			TimeWidget->SetSeasonImage(GameMode->SpringTexture);
+			break;
+		case ESeason::Summer:
+			TimeWidget->SetSeasonImage(GameMode->SummerTexture);
+			break;
+		case ESeason::Fall:
+			TimeWidget->SetSeasonImage(GameMode->AutumnTexture);
+			break;
+		case ESeason::Winter:
+			TimeWidget->SetSeasonImage(GameMode->WinterTexture);
+			break;
+		default:
+			break;
+	}
+	//TimeWidget->SetClockPointer(FRotator(0.0f, 0.0f, CurrentTime * 15));
 }
 
 //ÉèÖÃÉãÏñ»úÁÁ¶È
