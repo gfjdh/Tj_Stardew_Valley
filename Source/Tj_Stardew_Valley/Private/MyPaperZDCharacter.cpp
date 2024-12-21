@@ -764,7 +764,16 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 				return;
 			}
 			if (!Animal->IsFed) {
-				Animal->EatFood();
+				//背包是否有物品
+				if (PlayerInventory->CurrentItem()) {
+					if (PlayerInventory->CurrentItem()->ItemID == Animal->FoodId) {
+						//Item--
+						PlayerInventory->RemoveItemByIndex(PlayerInventory->UsingIndex, 1);
+						//刷新背包
+						CurrentUsingItemWidget->FlushSlot(PlayerInventory);
+						Animal->EatFood();
+					}
+				}
 			}
 			else{
 				Animal->SpawnProduct();
