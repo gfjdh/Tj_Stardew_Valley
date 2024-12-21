@@ -390,11 +390,10 @@ void USkillStates::SkillPointUse(SkillType SkillType, int32 SkillID) {
 			break;*/
 	}
 }
-
 void USkillStates::SwitchSkillIndex() {
 	Index++;
 	if (Index > 3) {
 		Index = 1;
-		FString ItemInfo = FString::Printf(TEXT("Switching to :%s"), *FString::FromInt(Index));
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Stamina Exp gained!"));
 	}
 }

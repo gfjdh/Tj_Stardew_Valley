@@ -33,8 +33,12 @@ public:
 
 	FTimerHandle DelayTimerHandle;
 
+	bool WhetherToTeleport;
+
 	UFUNCTION()
 	void Teleport(AMyPaperZDCharacter* Player);
+
+	void SetWhetherToTeleport(bool judge) { WhetherToTeleport = judge; }
 
 	UFUNCTION()
 	void TeleportAreaOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
