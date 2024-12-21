@@ -122,4 +122,5 @@ public:
 
 private:
 	AMyPaperZDCharacter *CurrentPlayer = nullptr;
+	bool bTrading = false;
 };

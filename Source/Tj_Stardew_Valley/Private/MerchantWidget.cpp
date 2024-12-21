@@ -12,25 +12,39 @@ void UMerchantWidget::NativeConstruct()
     {
         PurchaseButton1->OnClicked.AddDynamic(this, &UMerchantWidget::OnPurchaseButton1Clicked);
     }
-
+    else
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("PurchaseButton1 is null!"));
+    }
     if (PurchaseButton2)
     {
         PurchaseButton2->OnClicked.AddDynamic(this, &UMerchantWidget::OnPurchaseButton2Clicked);
     }
-
+    else
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("PurchaseButton2 is null!"));
+    }
     if (PurchaseButton3)
     {
         PurchaseButton3->OnClicked.AddDynamic(this, &UMerchantWidget::OnPurchaseButton3Clicked);
     }
-
+    else
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("PurchaseButton3 is null!"));
+    }
     if (ExitButton)
     {
         ExitButton->OnClicked.AddDynamic(this, &UMerchantWidget::OnExitButtonClicked);
+    }
+    else
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("PurchaseButton1 is null!"));
     }
 }
 
 void UMerchantWidget::OnPurchaseButton1Clicked()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("PurchaseButton1Clicked!"));
     OnPurchaseButtonClicked(0);
 }
 
@@ -49,7 +63,12 @@ void UMerchantWidget::OnPurchaseButtonClicked(int32 ItemIndex)
     if (CurrentMerchant)
     {
         CurrentMerchant->HandlePurchase(ItemIndex);
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("HandlePurchase!"));
     }
+    else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("CurrentMerchant is null!"));
+	}
 }
 
 void UMerchantWidget::OnExitButtonClicked()
@@ -57,7 +76,11 @@ void UMerchantWidget::OnExitButtonClicked()
     if (CurrentMerchant)
     {
         CurrentMerchant->HandleExit();
-    }
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("CurrentMerchant is null!"));
+	}
 }
 
 void UMerchantWidget::SetMerchant(AMerchant *Merchant)

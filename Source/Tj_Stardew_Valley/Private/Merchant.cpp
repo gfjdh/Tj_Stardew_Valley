@@ -14,7 +14,7 @@ AMerchant::AMerchant()
     NPCCapsuleComponent->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
     NPCCapsuleComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
     // 设置NPC的移动区域
-    MovementAreaCenter = FVector(150.0f, -180.0f, 0.0f); // 设置NPC的移动区域中心
+    MovementAreaCenter = FVector(120.0f, -180.0f, 0.0f); // 设置NPC的移动区域中心
     MovementAreaRadius = 0.0f; // 设置NPC的移动区域半径
     MovementSpeed = 0.0f; // 设置NPC的移动速度
     CurrentDirection = FVector::ZeroVector; // 初始化NPC的方向
@@ -35,25 +35,29 @@ AMerchant::AMerchant()
     TradeOptions.Add(TEXT("Buy rings (50 Gold)"));
 
     // 初始化小游戏界面类
-    static ConstructorHelpers::FClassFinder<UUserWidget> GameWidget(TEXT("/Game/BluePrints/NPC/GameWidget"));
+    static ConstructorHelpers::FClassFinder<UUserWidget> GameWidget(TEXT("/Game/BluePrints/NPC/BP_GameWidget"));
     if (GameWidget.Succeeded())
     {
         GameWidgetClass = GameWidget.Class;
     }
 
     // 初始化交易界面类
-    static ConstructorHelpers::FClassFinder<UUserWidget> TradeWidget(TEXT("/Game/BluePrints/NPC/TradeWidget"));
+    static ConstructorHelpers::FClassFinder<UUserWidget> TradeWidget(TEXT("/Game/BluePrints/NPC/BP_TradeWidget"));
     if (TradeWidget.Succeeded())
     {
         TradeWidgetClass = TradeWidget.Class;
     }
-
+    else
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Failed to find TradeWidget class!"));
+    }
     // 初始化商品数据
     ItemsForSale.Add(10);
     ItemsForSale.Add(15);
     ItemsForSale.Add(50);
 
     CurrentPlayer = nullptr;
+    bTrading = false;
 }
 
 void AMerchant::BeginPlay()
@@ -74,6 +78,7 @@ void AMerchant::Tick(float DeltaTime)
 
 void AMerchant::ShowTradeMenu()
 {
+    bTrading = true;
     if (TradeWidgetClass)
     {
         CurrentWidget = CreateWidget<UMerchantWidget>(GetWorld(), TradeWidgetClass);
@@ -85,8 +90,21 @@ void AMerchant::ShowTradeMenu()
             if (PlayerController)
             {
                 PlayerController->SetShowMouseCursor(true);
+                GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Trade menu displayed!"));
+            }
+            else
+            {
+                GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Failed to get PlayerController!"));
             }
         }
+        else
+        {
+            GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Failed to create TradeWidget!"));
+        }
+    }
+    else
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("TradeWidgetClass is null!"));
     }
 }
 
@@ -133,7 +151,7 @@ UBoxComponent *AMerchant::GetPlayerInteractionBox(AMyPaperZDCharacter *Player)
 void AMerchant::CheckForPlayerInteractionBox()
 {
     static float DialogueCooldown = 0.0f;
-    if (DialogueCooldown > 0.0f)
+    if (DialogueCooldown > 0.0f || bTrading)
     {
         DialogueCooldown -= GetWorld()->GetDeltaSeconds();
         return;
@@ -154,7 +172,7 @@ void AMerchant::CheckForPlayerInteractionBox()
                 CurrentPlayer = Player;
 				//输出调试信息
 				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("ShowGameMenu!"));
-                ShowGameMenu();
+				ShowTradeMenu();
                 bPlayerNearby = true;
                 DialogueCooldown = 3.0f; // 设置冷却时间为3秒
             }
@@ -237,6 +255,7 @@ void AMerchant::CloseCurrentMenu()
             PlayerController->SetShowMouseCursor(false);
         }
     }
+    bTrading = false;
 }
 
 bool AMerchant::CheckPlayerGold(int32 Cost)
