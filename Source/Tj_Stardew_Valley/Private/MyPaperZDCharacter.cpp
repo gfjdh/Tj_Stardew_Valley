@@ -359,7 +359,6 @@ void AMyPaperZDCharacter::UseItem(const FInputActionValue& Value)
 		//进入种植状态，同时消耗一个种子
 		CurrentPlayerState = EPlayerState::Plant;
 		EnableInteractBox(true);
-		PlayerInventory->RemoveItemByIndex(PlayerInventory->UsingIndex, 1);
 		//回到默认状态
 		CurrentPlayerState = EPlayerState::Idle;
 	}
@@ -738,7 +737,6 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 	else if (FarmLand) {
 		//浇水
 		if (CurrentPlayerState == EPlayerState::Water) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("1111111"));
 			FarmLand->WaterFarmLand();
 		}
 		//种植
@@ -748,18 +746,14 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 			if (FarmLand->WaterStage == 1) {
 				switch (PlayerInventory->CurrentItem()->ItemID) {
 				case 1002:
-					GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("AAAA"));
 					GetWorld()->SpawnActor<ACrop>(CarrotToSpawn, PlantLocation, FRotator(0.0f, 0.0f, 0.0f));
 					break;
 				case 1003:
-					GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("BBBB"));
 					GetWorld()->SpawnActor<ACrop>(WheatToSpawn, PlantLocation, FRotator(0.0f, 0.0f, 0.0f));
 					break;
 				}
+				PlayerInventory->RemoveItemByIndex(PlayerInventory->UsingIndex, 1);
 			}
-		}
-		else {
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));
 		}
 	}
 	else if (Animal) {

@@ -58,6 +58,14 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	bool IsWet = 0;
 
+	//病害
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool IsDefected = false;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int DefectRate = 60;
+
+
 	// Sets default values for this actor's properties
 	ACrop();
 
@@ -84,4 +92,7 @@ public:
 	//生成产品
 	UFUNCTION()
 	void SpawnProducts();
+
+	UFUNCTION()
+	void GetDefect();
 };

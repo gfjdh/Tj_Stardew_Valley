@@ -33,7 +33,6 @@ void ACrop::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	JudgeMaturity();
 	SwitchSprite();
-
 }
 
 void ACrop::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
@@ -73,6 +72,8 @@ void ACrop::JudgeMaturity()
 	else {
 		status = 3;
 	}
+
+	GetDefect();
 }
 
 //改变当前作物外观
@@ -116,4 +117,18 @@ void ACrop::SpawnProducts()
 		GetWorld()->SpawnActor<ACollectableEntity>(ProductActor2, ProductsSpawnLocation, FRotator(0.0f, 0.0f, 0.0f));
 	}
 
+}
+
+
+void ACrop::GetDefect() {
+	if (!IsDefected) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Crop has not been defected!"));
+		int RandomValue = FMath::RandRange(0, 100);
+		if (RandomValue <= DefectRate)
+		{
+			IsDefected = true;
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Crop has been defected!"));
+
+		}
+	}
 }
