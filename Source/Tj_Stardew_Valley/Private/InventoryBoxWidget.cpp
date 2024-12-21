@@ -38,8 +38,16 @@ void UInventoryBoxWidget::NativeOnDragDetected(const FGeometry& InGeometry, cons
 		DragDropOperation->Payload = this;
 		DragDropOperation->Pivot = EDragPivot::MouseDown;
 		//拖拽样式
-		DragDropOperation->DefaultDragVisual = this;
-		DragDropOperation->Offset = FVector2D(0.0f, 0.0f);
+		UImage* DragVisual = NewObject<UImage>(this);
+		DragVisual->SetBrushFromTexture(CurrentItem->ItemTexture);
+		DragVisual->SetRenderScale(FVector2D(2.0f, 2.0f));
+		DragDropOperation->DefaultDragVisual = DragVisual;
+		DragDropOperation->Offset = FVector2D(1.0f, 1.0f);
+		// 设置DefaultDragVisual的缩放比例为2倍
+		if (DragDropOperation->DefaultDragVisual)
+		{
+			DragDropOperation->DefaultDragVisual->SetRenderScale(FVector2D(2.0f, 2.0f));
+		}
 		OutOperation = DragDropOperation;
 	}
 }
