@@ -6,7 +6,7 @@
 #include "Components/CapsuleComponent.h"
 #include "PaperFlipbookComponent.h"
 #include "MyPaperZDCharacter.h"
-#include <Item.h>
+#include "Item.h"
 #include "CollectableEntity.h"
 #include "NPC.generated.h"
 
@@ -89,7 +89,7 @@ public:
 	// 任务数组
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest")
 	TArray<FQuest> AvailableQuests;
-	
+	// 任务完成后的奖励
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ACollectableEntity> CollectableEntityClass;
 	// 分配任务
@@ -105,9 +105,8 @@ public:
 	// 送礼物给NPC
 	void ReceiveGift(UItem *GiftItem);
 
-	// 与NPC交易
-	bool TradeWithPlayer(int32 GoldAmount);
-
+	// 生成物品
+	void SpawnItemForPlayer(AMyPaperZDCharacter *Player, TSubclassOf<ACollectableEntity> NameOfCollectableEntityClass);
 	// 获取NPC的碰撞盒
 	UBoxComponent *GetPlayerInteractionBox(AMyPaperZDCharacter *Player);
 protected:

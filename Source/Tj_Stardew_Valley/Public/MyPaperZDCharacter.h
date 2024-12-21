@@ -42,7 +42,6 @@
 #include "SkillStates.h"
 #include "FarmLand.h"
 #include "TaskWidget.h"
-//#include "SkillWidget.h"
 
 
 #include "MyPaperZDCharacter.generated.h"
@@ -472,4 +471,19 @@ public:
 
 	FTimerHandle Timer;
 	FTimerHandle Timer1;
+
+	// 指向用户界面类的指针
+	UPROPERTY(EditAnywhere, Category = "UI")
+	TSubclassOf<UUserWidget> SkillWidgetClass;
+
+	// 指向当前用户界面实例的指针
+	UPROPERTY(EditAnywhere, Category = "UI")
+	UUserWidget* SkillWidgetInstance;
+
+	//用来开关技能面板
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool SkillBoardIsOpen=0;
+
+	UFUNCTION()
+	void DisplaySkillBoard();
 };
