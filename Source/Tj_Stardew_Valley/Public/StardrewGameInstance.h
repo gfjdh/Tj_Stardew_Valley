@@ -2,8 +2,9 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
-#include "StardrewGameInstance.generated.h"
 
+
+#include "StardrewGameInstance.generated.h"
 UCLASS()
 class TJ_STARDEW_VALLEY_API UStardrewGameInstance : public UGameInstance
 {
@@ -19,6 +20,7 @@ public:
 	int Level = 1;
 
 
+	
 	void SetPlayerStamina(int NewStamina);
 	void SetPlayerGold(int Coins);
 	void SetPlayerLevel(int UpLevel);
