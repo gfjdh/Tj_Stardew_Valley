@@ -229,6 +229,7 @@ void ANPC::CheckFavorabilityLevel()
         FavorabilityLevel = 3; // 极高好感度
     }
 }
+
 // 获取NPC的碰撞盒
 UBoxComponent *ANPC::GetPlayerInteractionBox(AMyPaperZDCharacter *Player)
 {
