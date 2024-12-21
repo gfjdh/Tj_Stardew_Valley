@@ -45,9 +45,13 @@ public:
     virtual void BeginPlay() override;
     virtual void Tick(float DeltaTime) override;
 
+    // 检查玩家是否靠近并触发对话
+    void CheckForPlayerInteractionBox();
 
 	// 商品数据
     void HandlePurchase(int32 ItemIndex);
+	// 生成物品
+    TSubclassOf<ACollectableEntity> GetCollectableEntityClass(int32 Index);
 	// 退出交易
     void HandleExit();
     // 商人类型
@@ -80,7 +84,7 @@ public:
 
     // 处理交易
     UFUNCTION(BlueprintCallable, Category = "Merchant")
-    void HandleTrade(int32 OptionIndex);
+    void HandleTrade(int32 OptionIndex, AMyPaperZDCharacter *Player);
 
     // 处理小游戏
     UFUNCTION(BlueprintCallable, Category = "Merchant")
@@ -112,4 +116,7 @@ public:
     TSubclassOf<ACollectableEntity> CollectableEntityClass2;
     UPROPERTY(EditDefaultsOnly)
     TSubclassOf<ACollectableEntity> CollectableEntityClass3;
+
+private:
+	AMyPaperZDCharacter *CurrentPlayer = nullptr;
 };

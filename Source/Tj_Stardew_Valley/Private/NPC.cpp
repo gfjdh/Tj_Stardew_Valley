@@ -338,7 +338,7 @@ void ANPC::CheckForPlayerInteractionBox()
         bIsDialogueVisible = false;
     }
 }
-// 生成苹果
+// 生成物品
 void ANPC::SpawnItemForPlayer(AMyPaperZDCharacter *Player, TSubclassOf<ACollectableEntity> NameOfCollectableEntityClass)
 {
     // 使用this->明确引用类成员变量
