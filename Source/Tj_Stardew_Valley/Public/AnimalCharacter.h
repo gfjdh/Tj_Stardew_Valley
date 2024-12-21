@@ -5,6 +5,7 @@
 
 #include "Engine/TimerHandle.h"
 #include "PaperFlipbookComponent.h"
+#include "CollectableEntity.h"
 
 #include "AnimalCharacter.generated.h"
 
@@ -65,6 +66,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float SpawnProductTime = 20.0f;//喂食后多久产出产品
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<ACollectableEntity> ProductClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AnimalType Type;

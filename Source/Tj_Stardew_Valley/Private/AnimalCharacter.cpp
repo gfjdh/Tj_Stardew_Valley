@@ -147,24 +147,33 @@ void AAnimalCharacter::SpawnProduct()
 	//由时间管理部分在每天的开始设置IsFed为false,HadSpawnedProduct为false
 	HadSpawnedProduct = true;
 	CanSpawnProduct = false;
-
 	//产出产品
-	switch (Type) {
-		case AnimalType::Chicken:
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Chicken produce egg!")));
-			//产出鸡蛋
-			break;
-		case AnimalType::Cow:
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Cow produce milk!")));
-			//产出牛奶
-			break;
-		case AnimalType::Pig:
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Pig produce ?")));
-			//产出猪
-			break;
-		case AnimalType::Sheep:
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Sheep produce wool!")));
-			//产出羊毛
-			break;
-	}
+	FVector Location = GetActorLocation();
+	//远离player 30 生成
+	FVector PlayerLocation = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
+	FVector Direction = (Location - PlayerLocation).GetSafeNormal();
+	Location += Direction * 20;
+	//生成产品
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Animal produce product!")));
+	ACollectableEntity* Product = GetWorld()->SpawnActor<ACollectableEntity>(ProductClass, Location, FRotator::ZeroRotator);
+
+	////产出产品
+	//switch (Type) {
+	//	case AnimalType::Chicken:
+	//		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Chicken produce egg!")));
+	//		//产出鸡蛋
+	//		break;
+	//	case AnimalType::Cow:
+	//		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Cow produce milk!")));
+	//		//产出牛奶
+	//		break;
+	//	//case AnimalType::Pig:
+	//	//	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Pig produce ?")));
+	//	//	//产出猪,废弃
+	//	//	break;
+	//	case AnimalType::Sheep:
+	//		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Sheep produce wool!")));
+	//		//产出羊毛
+	//		break;
+	//}
 }
