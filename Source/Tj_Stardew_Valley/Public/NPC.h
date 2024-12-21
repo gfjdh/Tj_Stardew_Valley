@@ -132,7 +132,7 @@ protected:
 	void DisplayRandomDialogue(int LinesId);
 
 	// 检测玩家是否靠近并触发对话
-	void CheckForPlayerInteractionBox();
+	virtual void CheckForPlayerInteractionBox();
 
 	// 完成任务
 	int CheckCompleteQuest();
