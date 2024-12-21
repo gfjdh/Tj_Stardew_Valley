@@ -1020,7 +1020,7 @@ void AMyPaperZDCharacter::SetTimeWidgetImage()
 		default:
 			break;
 	}
-	//TimeWidget->SetClockPointer(FRotator(0.0f, 0.0f, CurrentTime * 15));
+	TimeWidget->SetClockPointer(FRotator(0.0f, 0.0f, CurrentTime * 15));
 }
 
 //ÉèÖÃÉãÏñ»úÁÁ¶È

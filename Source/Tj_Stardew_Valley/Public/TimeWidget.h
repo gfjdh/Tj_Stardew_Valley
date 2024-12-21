@@ -26,5 +26,5 @@ public:
 	UTextBlock* TimeText;
 public:
 	void SetSeasonImage(UTexture2D* Texture);
-	//void SetClockPointer(const FRotator& Angle);
+	void SetClockPointer(const FRotator& Angle);
 };

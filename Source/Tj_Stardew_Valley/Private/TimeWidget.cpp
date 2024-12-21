@@ -7,7 +7,7 @@ void UTimeWidget::SetSeasonImage(UTexture2D* Texture)
 	SeasonTextImage->SetBrushFromTexture(Texture);
 }
 
-//void UTimeWidget::SetClockPointer(const FRotator& Angle)
-//{
-//
-//}
+void UTimeWidget::SetClockPointer(const FRotator& Angle)
+{
+
+}
