@@ -1,24 +1,18 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Ores.h"
 #include "MyPaperZDCharacter.h"
 
-// Sets default values
 AOres::AOres()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	CapsuleComp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComp"));
 	SetRootComponent(CapsuleComp);
 
-	TreeSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("TreeSprite"));
-	TreeSprite->SetupAttachment(RootComponent);
+	OreSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("TreeSprite"));
+	OreSprite->SetupAttachment(RootComponent);
 
 }
 
-// Called when the game starts or when spawned
 void AOres::BeginPlay()
 {
 	Super::BeginPlay();
@@ -26,7 +20,6 @@ void AOres::BeginPlay()
 
 }
 
-// Called every frame
 void AOres::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -42,4 +35,28 @@ void AOres::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* Other
 
 }
 
-//同样的，这里也可以写出矿石的逻辑，比如掉落物品等等
+void AOres::Mine(AActor* OtherActor)
+{
+	AMyPaperZDCharacter* Player = Cast<AMyPaperZDCharacter>(OtherActor);
+	if (Player) {
+		//加经验
+		int ExpValue = 10;
+		Player->UpdateLevel(ExpValue);
+		//判断是否挖完
+		Health--;
+		if (Health != 0)
+			return;
+		int DropNumber = FMath::RandRange(MinDropNumber, MaxDropNumber);
+		while (DropNumber--) {
+			//远离玩家随机5-30的位置
+			FVector Location = GetActorLocation();
+			FVector PlayerLocation = OtherActor->GetActorLocation();
+			FVector Direction = Location - PlayerLocation;
+			Direction.Normalize();
+			Location += Direction * FMath::RandRange(5, 30);
+			ACollectableEntity* Product = GetWorld()->SpawnActor<ACollectableEntity>(ProductClass, Location, FRotator::ZeroRotator);
+		}
+		//销毁自己
+		Destroy();
+	}
+}

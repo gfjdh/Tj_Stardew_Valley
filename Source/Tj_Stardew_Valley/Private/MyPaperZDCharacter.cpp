@@ -713,7 +713,7 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 	if (TreeStump) {
 		if (CurrentPlayerState == EPlayerState::Chop) {
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Tree is being Chopped"));
-			//TreeStump->Chop();
+			TreeStump->Chop(this);
 		}
 		else {
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));
@@ -722,7 +722,7 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 	else if (Ores) {
 		if (CurrentPlayerState == EPlayerState::Mine) {
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Ores is being Mined"));
-			//Ores->Mine();
+			Ores->Mine(this);
 		}
 		else {
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));

@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -11,6 +9,7 @@
 #include "InputAction.h"
 #include "InputMappingContext.h"
 #include "GameFramework/Actor.h"
+#include "CollectableEntity.h"
 
 #include "Ores.generated.h"
 
@@ -20,24 +19,32 @@ class TJ_STARDEW_VALLEY_API AOres : public AActor
 	GENERATED_BODY()
 
 public:
+	AOres();
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
+public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UCapsuleComponent* CapsuleComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	UPaperSpriteComponent* TreeSprite;
+	UPaperSpriteComponent* OreSprite;
 
-	// Sets default values for this actor's properties
-	AOres();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<ACollectableEntity> ProductClass;
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int MaxDropNumber = 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int MinDropNumber = 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Health = 1;
 
 public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 	UFUNCTION()
 	void OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	void Mine(AActor* OtherActor);
 };

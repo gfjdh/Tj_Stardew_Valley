@@ -1,13 +1,8 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "TreeStump.h"
 #include "MyPaperZDCharacter.h"
 
-// Sets default values
 ATreeStump::ATreeStump()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	CapsuleComp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComp"));
@@ -18,7 +13,6 @@ ATreeStump::ATreeStump()
 
 }
 
-// Called when the game starts or when spawned
 void ATreeStump::BeginPlay()
 {
 	Super::BeginPlay();
@@ -26,7 +20,6 @@ void ATreeStump::BeginPlay()
 	
 }
 
-// Called every frame
 void ATreeStump::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -43,11 +36,26 @@ void ATreeStump::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* 
 }
 
 void ATreeStump::Chop(AActor* OtherActor) {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Chopped"));
-	//写出逻辑:掉落物品等等
-	int ExpValue = 0;//需要修改
 	AMyPaperZDCharacter* Player = Cast<AMyPaperZDCharacter>(OtherActor);
 	if (Player) {
+		//加经验
+		int ExpValue = 10;
 		Player->UpdateLevel(ExpValue);
+		//判断是否砍完
+		Health--;
+		if (Health != 0)
+			return;
+		int DropNumber = FMath::RandRange(MinDropNumber, MaxDropNumber);
+		while (DropNumber--) {
+			//远离玩家随机5-30的位置
+			FVector Location = GetActorLocation();
+			FVector PlayerLocation = OtherActor->GetActorLocation();
+			FVector Direction = Location - PlayerLocation;
+			Direction.Normalize();
+			Location += Direction * FMath::RandRange(5, 30);
+			ACollectableEntity* Product = GetWorld()->SpawnActor<ACollectableEntity>(ProductClass, Location, FRotator::ZeroRotator);
+		}
+		//销毁自己
+		Destroy();
 	}
 }
