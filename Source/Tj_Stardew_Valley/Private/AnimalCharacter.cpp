@@ -1,4 +1,5 @@
 #include "AnimalCharacter.h"
+#include "Kismet/GameplayStatics.h"
 
 AAnimalCharacter::AAnimalCharacter()
 {
@@ -129,13 +130,13 @@ void AAnimalCharacter::UpdateDirection()
 
 void AAnimalCharacter::EatFood()
 {
-	//判断喂的食物类型是否正确
-	
 	//调试信息
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Animal eat food!")));
 	//喂食后开始产出产品
 	IsFed = true;
-	
+	//播放声音
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), EatSound, GetActorLocation());
+	//设置产出产品计时器
 	GetWorldTimerManager().SetTimer(SpawnProductTimer, this, &AAnimalCharacter::OnSpawnProductTimerTimerTimeout,
 		1.0f, false, SpawnProductTime);
 }
@@ -156,6 +157,8 @@ void AAnimalCharacter::SpawnProduct()
 	//生成产品
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Animal produce product!")));
 	ACollectableEntity* Product = GetWorld()->SpawnActor<ACollectableEntity>(ProductClass, Location, FRotator::ZeroRotator);
+	//播放声音
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), ProduceSound, GetActorLocation());
 
 	////产出产品
 	//switch (Type) {
