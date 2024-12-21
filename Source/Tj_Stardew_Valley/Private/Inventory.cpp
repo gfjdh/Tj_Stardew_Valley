@@ -31,6 +31,19 @@ void UInventory::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 	// ...
 }
 
+
+bool UInventory::HasItem(int32 ItemID) const
+{
+	for (UItem *Item : Inventory)
+	{
+		if (Item && Item->ItemID == ItemID)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 bool UInventory::AddItem(const UItem* ItemToAdd)
 {
 	if (ItemToAdd == nullptr)

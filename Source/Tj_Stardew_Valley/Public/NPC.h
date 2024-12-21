@@ -86,6 +86,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 	UPaperFlipbook *MoveRightAnimation;
 
+	// 任务数组
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest")
+	TArray<FQuest> AvailableQuests;
+	// 分配任务
+	UFUNCTION(BlueprintCallable, Category = "Quest")
+	void AssignQuest(AMyPaperZDCharacter *Player, const FQuest &Quest);
+
 	ANPC();
 
 	virtual void BeginPlay() override;
@@ -100,9 +107,10 @@ public:
 
 	// 获取NPC的碰撞盒
 	UBoxComponent *GetPlayerInteractionBox(AMyPaperZDCharacter *Player);
-private:
+protected:
 	FRandomStream RandomStream;// 随机数生成器
 	bool bIsDialogueVisible;// 对话可见性状态
+	bool bQuestCompleted;// 任务完成状态
 
 	// 好感度相关
 	int32 Favorability;
@@ -120,4 +128,7 @@ private:
 
 	// 检测玩家是否靠近并触发对话
 	void CheckForPlayerInteractionBox();
+
+	// 完成任务
+	int CheckCompleteQuest();
 };

@@ -16,26 +16,27 @@ class TJ_STARDEW_VALLEY_API UInventory : public UActorComponent
 	GENERATED_BODY()
 
 public:	
-	// Sets default values for this component's properties
 	UInventory();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<UItem*> Inventory;
+	TArray<UItem *> Inventory;//物品栏
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 MaxInventorySlots = 40;
+	int32 MaxInventorySlots = 40;//最大物品栏容量
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int UsingIndex = 0;
+	int UsingIndex = 0;//当前使用物品的序号
 
 
 protected:
-	// Called when the game starts
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	// 检查是否有指定ID的物品
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	bool HasItem(int32 ItemID) const;
 
 	// 添加物品
 	UFUNCTION()
