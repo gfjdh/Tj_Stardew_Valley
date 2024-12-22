@@ -204,9 +204,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UInputAction* SkillAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UInputAction* SwitchSkillAction;
-
 	//砍树动画
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UPaperZDAnimSequence* ChopAnimSequenceUp;
@@ -408,9 +405,6 @@ public:
 
 	void Inventory(const FInputActionValue& Value);
 
-	//切换技能
-	void SwitchSkill(const FInputActionValue& Value);
-
 	//展示技能面板
 	//void DisplaySkillBoard(const FInputActionValue& Value);
 
@@ -423,11 +417,6 @@ public:
 	//更新耐力
 	void UpdateStamina(int Value);
 
-	//更新金钱
-	//void UpdateGold(int Value);
-
-	//更新等级
-	void UpdateLevel(int ExValue);
 
 	//动画结束
 	void OnInteractOverrideAnimEnd(bool bCompleted);
