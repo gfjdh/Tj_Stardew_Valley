@@ -10,14 +10,14 @@ void UCookMenuRow::NativeConstruct()
 
 void UCookMenuRow::OnCookButtonClicked()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Cook Button Clicked"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Cook Button Clicked"));
 	//原材料--，食物++
 	//get inventory
 	AMyPaperZDCharacter* Player = Cast<AMyPaperZDCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 	if (Player) {
 		//检查经验是否足够
 		if (Player->PlayerSkill->Cooking->Exp < DesiredExp) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("You don't have enough EXP!"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("You don't have enough EXP!"));
 			return;
 		}
 		UInventory* Inventory = Player->PlayerInventory;
@@ -27,7 +27,7 @@ void UCookMenuRow::OnCookButtonClicked()
 				Inventory->RemoveItem(MaterialIndexA, 1);
 				Inventory->RemoveItem(MaterialIndexB, 1);
 				//加经验
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Add EXP 10!"));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Add EXP 10!"));
 				Player->PlayerSkill->SkillStrucUpdate(UpdateType, 100);
 				Player->PlayerSkill->SkillStrucUpdate(UpdateType, 100);
 				Player->PlayerSkill->SkillStrucUpdate(UpdateType, 100);
@@ -40,7 +40,7 @@ void UCookMenuRow::OnCookButtonClicked()
 				Player->CurrentUsingItemWidget->FlushSlot(Inventory);
 			}
 			else {
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("You don't have enough material!"));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("You don't have enough material!"));
 			}
 		}
 	}
