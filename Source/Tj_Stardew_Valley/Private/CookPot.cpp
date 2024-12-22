@@ -28,7 +28,6 @@ void ACookPot::OpenCookMenu(AActor* OtherActor)
 	AMyPaperZDCharacter* Player = Cast<AMyPaperZDCharacter>(OtherActor);
 	if (Player) {
 		//´ò¿ªÅëâ¿²Ëµ¥
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Open Cook Menu"));
 		Player->CookWidget->DisplayWidget(true);
 	}
 }

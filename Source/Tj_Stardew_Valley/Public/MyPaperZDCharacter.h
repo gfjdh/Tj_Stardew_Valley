@@ -32,6 +32,7 @@
 #include "CurrentUsingItemWidget.h"
 #include "DayStateFilterWidget.h"
 #include "CookWidget.h"
+#include "MainMenuWidget.h"
 
 #include "PlayerUI.h"
 #include "StardrewGameInstance.h"
@@ -169,6 +170,9 @@ public:
 	UInputAction* CheckTaskAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UInputAction* PauseAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UFishingWidget* FishingWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -191,6 +195,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTaskWidget* TaskWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UMainMenuWidget* MainMenuWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UInputAction* CameraUpAction;
@@ -413,6 +420,9 @@ public:
 	
 	//查看任务列表
 	void CheckTask(const FInputActionValue& Value);
+
+	//暂停界面
+	void PauseGame(const FInputActionValue& Value);
 
 	//更新耐力
 	void UpdateStamina(int Value);
