@@ -166,6 +166,9 @@ public:
 	UInputAction* PullRodAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UInputAction* CheckTaskAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UFishingWidget* FishingWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

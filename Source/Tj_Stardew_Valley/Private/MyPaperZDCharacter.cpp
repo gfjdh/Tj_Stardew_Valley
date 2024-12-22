@@ -273,7 +273,7 @@ void AMyPaperZDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::Inventory);
 		EnhancedInputComponent->BindAction(SwitchSkillAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::SwitchSkill);
 		EnhancedInputComponent->BindAction(SkillAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::DisplaySkillBoard);
-		EnhancedInputComponent->BindAction(SkillAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::CheckTask);
+		EnhancedInputComponent->BindAction(CheckTaskAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::CheckTask);
 	}
 }
 
