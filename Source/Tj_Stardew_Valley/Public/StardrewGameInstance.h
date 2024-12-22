@@ -22,6 +22,6 @@ public:
 
 	
 	void SetPlayerStamina(int NewStamina);
-	void SetPlayerGold(int Coins);
+	void AddPlayerGold(int Coins);
 	void SetPlayerLevel(int UpLevel);
 };

@@ -35,7 +35,7 @@ void AMonkeyGold::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor*
 	if (Player) {
 		if (Player->Stamina > 0) {
 			Player->UpdateStamina(-50);
-			Player->SDGameInstance->SetPlayerGold(100);
+			Player->SDGameInstance->AddPlayerGold(100);
 			Player->PlayerUIWidget->SetGold(Player->SDGameInstance->GoldWealth);
 		}
 	}
