@@ -32,6 +32,7 @@
 #include "CurrentUsingItemWidget.h"
 #include "DayStateFilterWidget.h"
 #include "CookWidget.h"
+#include "MainMenuWidget.h"
 
 #include "PlayerUI.h"
 #include "StardrewGameInstance.h"
@@ -191,6 +192,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTaskWidget* TaskWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UMainMenuWidget* MainMenuWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UInputAction* CameraUpAction;

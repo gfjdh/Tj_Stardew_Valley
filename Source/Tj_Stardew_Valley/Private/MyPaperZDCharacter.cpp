@@ -234,6 +234,10 @@ void AMyPaperZDCharacter::BeginPlay()
 		TimeWidget->AddToViewport();
 	}
 	PlayerUIWidget->SetLevel(PlayerSkill->Farming->Level, PlayerSkill->Tool->Level, PlayerSkill->Cooking->Level);
+	if (MainMenuWidget)
+	{
+		MainMenuWidget->SetActive();
+	}
 }
 
 // Called every frame
