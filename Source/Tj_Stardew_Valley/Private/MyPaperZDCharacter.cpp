@@ -933,18 +933,6 @@ void AMyPaperZDCharacter::EnableInteractBox(bool Enabled){
 void AMyPaperZDCharacter::UpdateStamina(int Value) {
 	int MaxStamina = 100;
 	int MinStamina = 0;
-
-	if (PlayerSkill->EnduranceSaver.SkillStage) {
-		for (int i = 0; i < PlayerSkill->EnduranceSaver.SkillStage; i++) {
-			Value *= 0.9;
-		}
-	}
-	if (PlayerSkill->EnduranceStander.SkillStage) {
-		MinStamina += -10* PlayerSkill->EnduranceStander.SkillStage;
-	}
-	if (PlayerSkill->EnduranceMaxMaster.SkillStage) {
-		MaxStamina += 10 * PlayerSkill->EnduranceMaxMaster.SkillStage;
-	}
 	Stamina += Value;
 	if (Stamina > MinStamina) {
 		if (Stamina > MaxStamina) {
@@ -972,8 +960,6 @@ void AMyPaperZDCharacter::UpdateStamina(int Value) {
 	}
 	PlayerUIWidget->SetStamina(Stamina);
 	SDGameInstance->SetPlayerStamina(Stamina);
-
-	PlayerSkill->SkillStrucUpdate(SkillType::Endurance, 10);
 }
 
 void AMyPaperZDCharacter::UpdateLevel(int ExValue) {
