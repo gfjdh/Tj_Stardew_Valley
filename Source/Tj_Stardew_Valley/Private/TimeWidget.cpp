@@ -1,9 +1,9 @@
+// TimeWidget.cpp
 #include "TimeWidget.h"
 #include "Slate.h"
 #include "SlateCore.h"
 
-
-void UTimeWidget::SetSeasonImage(UTexture2D* Texture)
+void UTimeWidget::SetSeasonImage(UTexture2D *Texture)
 {
 	SeasonTextImage->SetBrushFromTexture(Texture);
 }
@@ -18,9 +18,25 @@ void UTimeWidget::SetClockPointer(float DeltaDegree)
 void UTimeWidget::SetTimeText(int Day, float CurrentTime)
 {
 	FString TimeString;
-	if(CurrentTime < 10.0)
-		TimeString = FString::Printf(TEXT("Day %d 0%d:%d0"), Day, (int)CurrentTime, ((int)(CurrentTime * 10) - ((int)CurrentTime)*10) / 5 * 3);
+	if (CurrentTime < 10.0)
+		TimeString = FString::Printf(TEXT("Day %d 0%d:%d0"), Day, (int)CurrentTime, ((int)(CurrentTime * 10) - ((int)CurrentTime) * 10) / 5 * 3);
 	else
 		TimeString = FString::Printf(TEXT("Day %d %d:%d0"), Day, (int)CurrentTime, ((int)(CurrentTime * 10) - ((int)CurrentTime) * 10) / 5 * 3);
 	TimeText->SetText(FText::FromString(TimeString));
+
+	SetHolidayText(Day);
+}
+
+void UTimeWidget::SetHolidayText(int Day)
+{
+	FString HolidayString = TEXT("No Festival");
+	for (const FHoliday &Holiday : Holidays)
+	{
+		if (Holiday.HolidayDate == Day)
+		{
+			HolidayString = Holiday.HolidayName;
+			break;
+		}
+	}
+	HolidayText->SetText(FText::FromString(HolidayString));
 }
