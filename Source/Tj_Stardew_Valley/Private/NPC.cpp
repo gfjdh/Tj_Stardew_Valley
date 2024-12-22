@@ -302,7 +302,8 @@ void ANPC::CheckForPlayerInteractionBox()
                             AssignQuest(Player, AvailableQuests[0]);
                             bQuestCompleted = false;
                         }
-                        else if (Player->Quests[0].bIsCompleted) {
+                        else if (Player->Quests.ContainsByPredicate([&](const FQuest& Quest) { return Quest.QuestName == AvailableQuests[0].QuestName; }) 
+                            && Player->Quests[Player->Quests.IndexOfByPredicate([&](const FQuest& Quest) { return Quest.QuestName == AvailableQuests[0].QuestName; })].bIsCompleted) {
                             IncreaseFavorability(1);
                             //删除完成的任务
                             AvailableQuests.RemoveAt(0);
