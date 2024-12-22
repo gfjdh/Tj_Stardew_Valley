@@ -245,6 +245,8 @@ void AMyPaperZDCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	FVector PlayerLocation = GetActorLocation();
+	DayStateFilterWidget->SetFilterTransparency();
+	SetTimeWidgetImage();
 	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Player Location: X=%f, Y=%f, Z=%f"), PlayerLocation.X, PlayerLocation.Y, PlayerLocation.Z));
 	FishGameTick();
 }
