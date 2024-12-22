@@ -354,7 +354,7 @@ void ANPC::SpawnItemForPlayer(AMyPaperZDCharacter *Player, TSubclassOf<ACollecta
     this->CollectableEntityClass = NameOfCollectableEntityClass;
     //始位置
     FVector AppleSpawnLocation = GetActorLocation();
-    //生成位置x,y朝着Player的反方向偏离20
+    //生成位置x,y朝着Player的方向偏离
     FVector PlayerLocation = Player->GetActorLocation();
     FVector Direction = (AppleSpawnLocation - PlayerLocation).GetSafeNormal();
     AppleSpawnLocation -= Direction * 40.0f;
