@@ -1277,9 +1277,6 @@ void AMyPaperZDCharacter::OnCookSkillLevel1Clicked()
 	if (PlayerSkill->Cooking->SkillStage != 1||PlayerSkill->Cooking->SkillPoint<1) {
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!"));
 	}
-	else if (PlayerSkill->CookingExpert.SkillStage == 1) {
-		SkillWidgetInstance->HighLight(SkillWidgetInstance->CookSkillImage1, 5.0f);
-	}
 	else {
 		PlayerSkill->Cooking->SkillStage++;
 		PlayerSkill->SkillLevelUp(PlayerSkill->CookingExpert);
