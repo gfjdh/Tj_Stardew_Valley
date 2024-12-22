@@ -29,6 +29,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UCookMenuRow* CookMenuRowB;
+
+	bool IsOpen = false;
 public:
 	virtual void NativeConstruct() override;
 

@@ -922,7 +922,7 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 
 	}
 	else if (CookPot) {
-		if (CurrentPlayerState == EPlayerState::Interact) {
+		if (CurrentPlayerState == EPlayerState::Interact && !CookWidget->IsOpen) {
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Cooking"));
 			ActivatePlayer(false);
 			CurrentPlayerState = EPlayerState::Cook;
