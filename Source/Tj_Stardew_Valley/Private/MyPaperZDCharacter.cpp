@@ -753,6 +753,7 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 		if (CurrentPlayerState == EPlayerState::Chop) {
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Tree is being Chopped"));
 			TreeStump->Chop(this);
+			PlayerSkill->SkillStrucUpdate(SkillType::Tool, 10);
 		}
 		else {
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));
@@ -761,6 +762,7 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 	else if (Ores) {
 		if (CurrentPlayerState == EPlayerState::Mine) {
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Ores is being Mined"));
+			PlayerSkill->SkillStrucUpdate(SkillType::Tool, 10);
 			Ores->Mine(this);
 		}
 		else {
@@ -772,6 +774,7 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 		//浇水
 		if (CurrentPlayerState == EPlayerState::Water) {
 			FarmLand->WaterFarmLand();
+			PlayerSkill->SkillStrucUpdate(SkillType::Tool, 10);
 		}
 		//种植
 		else if (CurrentPlayerState == EPlayerState::Plant) {
@@ -781,9 +784,11 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 				switch (PlayerInventory->CurrentItem()->ItemID) {
 				case 1002:
 					GetWorld()->SpawnActor<ACrop>(CarrotToSpawn, PlantLocation, FRotator(0.0f, 0.0f, 0.0f));
+					PlayerSkill->SkillStrucUpdate(SkillType::Farming, 10);
 					break;
 				case 1003:
 					GetWorld()->SpawnActor<ACrop>(WheatToSpawn, PlantLocation, FRotator(0.0f, 0.0f, 0.0f));
+					PlayerSkill->SkillStrucUpdate(SkillType::Farming, 10);
 					break;
 				}
 				PlayerInventory->RemoveItemByIndex(PlayerInventory->UsingIndex, 1);
@@ -860,6 +865,8 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 			}
 			else {
 				FarmLandLocationList.push_back(SpawnLocation);
+				PlayerSkill->SkillStrucUpdate(SkillType::Farming, 10);
+				PlayerSkill->SkillStrucUpdate(SkillType::Tool, 10);
 			}
 		}
 	}
@@ -868,6 +875,8 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 			FVector CropLocation = Crop->GetActorLocation();
 			Crop->Destroy();
 			Crop->SpawnProducts();
+			PlayerSkill->SkillStrucUpdate(SkillType::Farming, 10);
+			PlayerSkill->SkillStrucUpdate(SkillType::Tool, 10);
 		}
 		if (CurrentPlayerState == EPlayerState::Heal) {
 			if (Crop->IsDefected) {
@@ -1183,8 +1192,8 @@ void AMyPaperZDCharacter::DisplaySkillBoard()
 		if (SkillWidgetInstance)
 		{
 			// 将用户界面添加到视图中
-			SkillWidgetInstance->SkillPointText(PlayerSkill->Farming->SkillPoint, PlayerSkill->Tool->SkillPoint, PlayerSkill->Cooking->SkillPoint);
 			SkillWidgetInstance->AddToViewport();
+			SkillWidgetInstance->SkillPointText(PlayerSkill->Farming->SkillPoint, PlayerSkill->Tool->SkillPoint, PlayerSkill->Cooking->SkillPoint);
 			SkillBoardIsOpen = true;
 			if (SkillWidgetInstance->FarmingSkillLevel1)
 			{
