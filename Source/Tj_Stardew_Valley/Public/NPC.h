@@ -48,6 +48,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue", meta = (AllowPrivateAccess = "true"))
 	ENPCGender Gender;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue", meta = (AllowPrivateAccess = "true"))
+	bool EnableFavorability;
+
 	// 定义NPC移动区域的中心和半径
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	FVector MovementAreaCenter;
