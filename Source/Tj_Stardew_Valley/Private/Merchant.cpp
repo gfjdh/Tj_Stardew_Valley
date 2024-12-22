@@ -5,6 +5,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "MerchantWidget.h"
 #include "Inventory.h"
+
+
 AMerchant::AMerchant()
 {
     // 设置商人不需要移动
@@ -49,6 +51,8 @@ AMerchant::AMerchant()
     ItemsForSale.Add(15);
     ItemsForSale.Add(50);
 
+    GameMode = Cast<ACGameMode>(GetWorld()->GetAuthGameMode());
+
     CurrentPlayer = nullptr;
     bTrading = false;
 }
@@ -66,6 +70,8 @@ void AMerchant::Tick(float DeltaTime)
     {
         AMerchant::CheckForPlayerInteractionBox();
     }
+
+    UpdatePrice();
 }
 
 void AMerchant::ShowTradeMenu()
@@ -110,6 +116,34 @@ UBoxComponent *AMerchant::GetPlayerInteractionBox(AMyPaperZDCharacter *Player)
     }
     return InteractionBox;
 }
+
+void AMerchant::UpdatePrice() {
+    switch (GameMode->CurrentSeason) {
+        case ESeason::Spring:
+            SellWeight = 2;
+            BuyWeight = 1;
+            break;
+        case ESeason::Summer:
+            SellWeight = 1;
+            BuyWeight = 2;
+            break;
+        case ESeason::Fall:
+            SellWeight = 2;
+            BuyWeight = 2;
+            break;
+        case ESeason::Winter:
+            SellWeight = 1;
+            BuyWeight = 3;
+            break;
+        default:
+            break;
+    }
+}
+
+
+
+
+
 void AMerchant::CheckForPlayerInteractionBox()
 {
     static float DialogueCooldown = 0.0f;
@@ -148,7 +182,7 @@ void AMerchant::HandleTrade(int32 OptionIndex, AMyPaperZDCharacter *Player)
 		if (CheckPlayerGold(ItemsForSale[OptionIndex].Price))
         {
             if (Player->PlayerSkill->Farming->SkillStage > 2||Option.FItemData.ItemID!=1003) {
-                UpdatePlayerGold(-1 * ItemsForSale[OptionIndex].Price);
+                UpdatePlayerGold(-1 * ItemsForSale[OptionIndex].Price * SellWeight);
                 // 给玩家添加物品
                 SpawnItemForPlayer(Player, GetCollectableEntityClass(OptionIndex));
                 GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("You bought a Item!"));
@@ -190,7 +224,7 @@ void AMerchant::HandleSale(int32 OptionIndex, AMyPaperZDCharacter *Player)
             // 移除玩家的物品
             PlayerInventory->RemoveItem(Option.FItemData.ItemID, 1);
             // 更新玩家的金币
-            UpdatePlayerGold(Option.Price);
+            UpdatePlayerGold(Option.Price * BuyWeight);
             GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Item sold!"));
         }
         else

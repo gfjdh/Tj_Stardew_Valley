@@ -90,23 +90,44 @@ void UMerchantWidget::SetMerchant(AMerchant *Merchant)
 
     if (CurrentMerchant)
     {
-        // 设置商品图片和价格
-        if (ItemImage1 && ItemPrice1)
-        {
-            ItemImage1->SetBrushFromTexture(CurrentMerchant->ItemsForSale[0].FItemData.ItemTexture);
-            ItemPrice1->SetText(FText::FromString(FString::FromInt(CurrentMerchant->ItemsForSale[0].Price)));
-        }
+        if (CurrentMerchant->MerchantType == EMerchantType::Vendor) {
+            // 设置商品图片和价格
+            if (ItemImage1 && ItemPrice1)
+            {
+                ItemImage1->SetBrushFromTexture(CurrentMerchant->ItemsForSale[0].FItemData.ItemTexture);
+                ItemPrice1->SetText(FText::FromString(FString::FromInt(CurrentMerchant->ItemsForSale[0].Price * CurrentMerchant->SellWeight)));
+            }
 
-        if (ItemImage2 && ItemPrice2)
-        {
-            ItemImage2->SetBrushFromTexture(CurrentMerchant->ItemsForSale[1].FItemData.ItemTexture);
-            ItemPrice2->SetText(FText::FromString(FString::FromInt(CurrentMerchant->ItemsForSale[1].Price)));
-        }
+            if (ItemImage2 && ItemPrice2)
+            {
+                ItemImage2->SetBrushFromTexture(CurrentMerchant->ItemsForSale[1].FItemData.ItemTexture);
+                ItemPrice2->SetText(FText::FromString(FString::FromInt(CurrentMerchant->ItemsForSale[1].Price * CurrentMerchant->SellWeight)));
+            }
 
-        if (ItemImage3 && ItemPrice3)
-        {
-            ItemImage3->SetBrushFromTexture(CurrentMerchant->ItemsForSale[2].FItemData.ItemTexture);
-            ItemPrice3->SetText(FText::FromString(FString::FromInt(CurrentMerchant->ItemsForSale[2].Price)));
+            if (ItemImage3 && ItemPrice3)
+            {
+                ItemImage3->SetBrushFromTexture(CurrentMerchant->ItemsForSale[2].FItemData.ItemTexture);
+                ItemPrice3->SetText(FText::FromString(FString::FromInt(CurrentMerchant->ItemsForSale[2].Price * CurrentMerchant->SellWeight)));
+            }
+        }
+        else {
+            if (ItemImage1 && ItemPrice1)
+            {
+                ItemImage1->SetBrushFromTexture(CurrentMerchant->ItemsForSale[0].FItemData.ItemTexture);
+                ItemPrice1->SetText(FText::FromString(FString::FromInt(CurrentMerchant->ItemsForSale[0].Price * CurrentMerchant->BuyWeight)));
+            }
+
+            if (ItemImage2 && ItemPrice2)
+            {
+                ItemImage2->SetBrushFromTexture(CurrentMerchant->ItemsForSale[1].FItemData.ItemTexture);
+                ItemPrice2->SetText(FText::FromString(FString::FromInt(CurrentMerchant->ItemsForSale[1].Price * CurrentMerchant->BuyWeight)));
+            }
+
+            if (ItemImage3 && ItemPrice3)
+            {
+                ItemImage3->SetBrushFromTexture(CurrentMerchant->ItemsForSale[2].FItemData.ItemTexture);
+                ItemPrice3->SetText(FText::FromString(FString::FromInt(CurrentMerchant->ItemsForSale[2].Price * CurrentMerchant->BuyWeight)));
+            }
         }
     }
 }

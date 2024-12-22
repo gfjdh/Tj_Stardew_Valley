@@ -73,6 +73,14 @@ public:
     UPROPERTY()
     UUserWidget *CurrentWidget;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Merchant")
+    ACGameMode* GameMode;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Merchant")
+    int SellWeight = 1;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Merchant")
+    int BuyWeight = 1;
+
     // 显示交易界面
     UFUNCTION(BlueprintCallable, Category = "Merchant")
     void ShowTradeMenu();
@@ -100,6 +108,9 @@ public:
     // 获取玩家金币
     UFUNCTION(BlueprintCallable, Category = "Merchant")
     int32 GetPlayerGold() const;
+
+    UFUNCTION(BlueprintCallable, Category = "Merchant")
+    void UpdatePrice();
 
     // 商品列表
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Merchant")
