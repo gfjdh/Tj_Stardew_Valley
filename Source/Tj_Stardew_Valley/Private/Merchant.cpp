@@ -51,8 +51,6 @@ AMerchant::AMerchant()
     ItemsForSale.Add(15);
     ItemsForSale.Add(50);
 
-    GameMode = Cast<ACGameMode>(GetWorld()->GetAuthGameMode());
-
     CurrentPlayer = nullptr;
     bTrading = false;
 }
@@ -60,6 +58,7 @@ AMerchant::AMerchant()
 void AMerchant::BeginPlay()
 {
     Super::BeginPlay();
+    MGameMode = Cast<ACGameMode>(GetWorld()->GetAuthGameMode());
 }
 
 void AMerchant::Tick(float DeltaTime)
@@ -118,7 +117,7 @@ UBoxComponent *AMerchant::GetPlayerInteractionBox(AMyPaperZDCharacter *Player)
 }
 
 void AMerchant::UpdatePrice() {
-    switch (GameMode->CurrentSeason) {
+    switch (MGameMode->CurrentSeason) {
         case ESeason::Spring:
             SellWeight = 2;
             BuyWeight = 1;

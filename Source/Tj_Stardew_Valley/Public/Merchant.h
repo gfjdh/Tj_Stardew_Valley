@@ -74,7 +74,7 @@ public:
     UUserWidget *CurrentWidget;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Merchant")
-    ACGameMode* GameMode;
+    ACGameMode* MGameMode;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Merchant")
     int SellWeight = 1;
