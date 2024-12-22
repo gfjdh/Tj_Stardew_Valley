@@ -10,6 +10,7 @@
 #include "InputMappingContext.h"
 #include "GameFramework/Actor.h"
 #include "CollectableEntity.h"
+#include "SkillStates.h"
 
 #include "Ores.generated.h"
 
@@ -46,5 +47,5 @@ public:
 	void OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	void Mine(AActor* OtherActor);
+	void Mine(AActor* OtherActor, USkillStates* PlayerSkill);
 };

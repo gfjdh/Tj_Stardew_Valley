@@ -10,6 +10,7 @@
 #include "InputMappingContext.h"
 #include "GameFramework/Actor.h"
 #include "CollectableEntity.h"
+#include "SkillStates.h"
 
 #include "TreeStump.generated.h"
 
@@ -50,6 +51,6 @@ public:
 	void OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, 
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	void Chop(AActor* OtherActor);
+	void Chop(AActor* OtherActor,USkillStates* PlayerSkill);
 
 };

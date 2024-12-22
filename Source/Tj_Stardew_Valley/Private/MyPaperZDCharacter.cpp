@@ -173,7 +173,6 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 	// 设置默认玩家控制器
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
-
 }
 
 void AMyPaperZDCharacter::BeginPlay()
@@ -210,6 +209,8 @@ void AMyPaperZDCharacter::BeginPlay()
 	//获取GameMode
 	GameMode = Cast<ACGameMode>(GetWorld()->GetAuthGameMode());
 
+	PlayerSkill->SkillInit1();
+
 	// 创建玩家UI
 	if (PlayerUIClass)
 	{
@@ -238,6 +239,7 @@ void AMyPaperZDCharacter::BeginPlay()
 	{
 		TimeWidget->AddToViewport();
 	}
+	PlayerUIWidget->SetLevel(PlayerSkill->Farming->Level, PlayerSkill->Tool->Level, PlayerSkill->Cooking->Level);
 }
 
 // Called every frame
@@ -448,7 +450,7 @@ void AMyPaperZDCharacter::Chop()
 		}
 
 		CurrentPlayerState = EPlayerState::Idle;
-		UpdateStamina(-5);
+		UpdateStamina(-5+PlayerSkill->ToolExpert.SkillStage);
 	}
 }
 
@@ -480,7 +482,7 @@ void AMyPaperZDCharacter::Mine()
 		}
 
 		CurrentPlayerState = EPlayerState::Idle;
-		UpdateStamina(-5);
+		UpdateStamina(-5 + PlayerSkill->ToolExpert.SkillStage);
 	}
 }
 
@@ -512,7 +514,7 @@ void AMyPaperZDCharacter::Water()
 		}
 
 		CurrentPlayerState = EPlayerState::Idle;
-		UpdateStamina(-3+ PlayerSkill->FarmingEndurancer.SkillStage);
+		UpdateStamina(-3 + PlayerSkill->ToolExpert.SkillStage);
 	}
 }
 
@@ -547,7 +549,7 @@ void AMyPaperZDCharacter::Hoe()
 		}
 
 		CurrentPlayerState = EPlayerState::Idle;
-		UpdateStamina(-6+PlayerSkill->FarmingEndurancer.SkillStage);
+		UpdateStamina(-6+PlayerSkill->FarmingEndurancer.SkillStage + PlayerSkill->ToolExpert.SkillStage);
 	}
 }
 
@@ -752,7 +754,7 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 	if (TreeStump) {
 		if (CurrentPlayerState == EPlayerState::Chop) {
 			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Tree is being Chopped"));
-			TreeStump->Chop(this);
+			TreeStump->Chop(this,PlayerSkill);
 			PlayerSkill->SkillStrucUpdate(SkillType::Tool, 10);
 			PlayerUIWidget->SetLevel(PlayerSkill->Farming->Level, PlayerSkill->Tool->Level, PlayerSkill->Cooking->Level);
 		}
@@ -765,7 +767,7 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Ores is being Mined"));
 			PlayerSkill->SkillStrucUpdate(SkillType::Tool, 10);
 			PlayerUIWidget->SetLevel(PlayerSkill->Farming->Level, PlayerSkill->Tool->Level, PlayerSkill->Cooking->Level);
-			Ores->Mine(this);
+			Ores->Mine(this,PlayerSkill);
 		}
 		else {
 			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));
@@ -992,7 +994,7 @@ void AMyPaperZDCharacter::CollectItem(UItem* ItemData) {
 	int GoldAmount = 1;
 	switch (ItemData->ItemType) {
 		case CollectableType::Gold:
-			SDGameInstance->SetPlayerGold(GoldAmount);
+			SDGameInstance->AddPlayerGold(GoldAmount);
 			PlayerUIWidget->SetGold(SDGameInstance->GoldWealth);
 			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Gold"));
 			break;
@@ -1156,7 +1158,7 @@ void AMyPaperZDCharacter::CompleteQuest(int32 QuestIndex)
 			}
 
 			// 奖励玩家
-			SDGameInstance->SetPlayerGold(SDGameInstance->GoldWealth + Quests[QuestIndex].RewardGold);
+			SDGameInstance->AddPlayerGold(SDGameInstance->GoldWealth + Quests[QuestIndex].RewardGold);
 			PlayerUIWidget->SetGold(SDGameInstance->GoldWealth);
 
 			// 标记任务为已完成
@@ -1217,7 +1219,7 @@ void AMyPaperZDCharacter::DisplaySkillBoard()
 			}
 			if (SkillWidgetInstance->CookSkillLevel2)
 			{
-				SkillWidgetInstance->CookSkillLevel1->OnClicked.AddDynamic(this, &AMyPaperZDCharacter::OnCookSkillLevel2Clicked);
+				SkillWidgetInstance->CookSkillLevel2->OnClicked.AddDynamic(this, &AMyPaperZDCharacter::OnCookSkillLevel2Clicked);
 			}
 		}
 		else
@@ -1239,7 +1241,7 @@ UFUNCTION()
 void AMyPaperZDCharacter::OnCookSkillLevel1Clicked()
 {
 	if (PlayerSkill->Cooking->SkillStage != 1||PlayerSkill->Cooking->SkillPoint<1) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!A"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!"));
 	}
 	else {
 		PlayerSkill->Cooking->SkillStage++;
@@ -1256,7 +1258,7 @@ UFUNCTION()
 void AMyPaperZDCharacter::OnCookSkillLevel2Clicked()
 {
 	if (PlayerSkill->Cooking->SkillStage != 2 || PlayerSkill->Cooking->SkillPoint < 1) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!B"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!"));
 	}
 	else {
 		PlayerSkill->Cooking->SkillStage++;
@@ -1273,7 +1275,7 @@ UFUNCTION()
 void AMyPaperZDCharacter::OnFarmingSkillLevel1Clicked()
 {
 	if (PlayerSkill->Farming->SkillStage != 1 || PlayerSkill->Farming->SkillPoint < 1) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!C"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!"));
 	}
 	else {
 		PlayerSkill->Farming->SkillStage++;
@@ -1290,7 +1292,7 @@ UFUNCTION()
 void AMyPaperZDCharacter::OnFarmingSkillLevel2Clicked()
 {
 	if (PlayerSkill->Farming->SkillStage != 2 || PlayerSkill->Farming->SkillPoint < 1) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!D"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!"));
 		
 	}
 	else {
@@ -1308,7 +1310,7 @@ UFUNCTION()
 void AMyPaperZDCharacter::OnToolSkillLevel1Clicked()
 {
 	if (PlayerSkill->Tool->SkillStage != 1 || PlayerSkill->Tool->SkillPoint < 1) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!E"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!"));
 	}
 	else {
 		PlayerSkill->Tool->SkillStage++;
@@ -1325,7 +1327,7 @@ UFUNCTION()
 void AMyPaperZDCharacter::OnToolSkillLevel2Clicked()
 {
 	if (PlayerSkill->Tool->Level != 2 || PlayerSkill->Tool->SkillPoint < 1) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!F"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!"));
 	}
 	else {
 		PlayerSkill->Tool->Level++;
