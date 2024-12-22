@@ -11,6 +11,10 @@ void UMainMenuWidget::OnStartButtonClicked()
 	//¼ÌÐøÊ±¼ä
 	GetWorld()->GetFirstPlayerController()->SetPause(false);
 	RemoveFromParent();
+	if (!HasBegun) {
+		HasBegun = true;
+		InfoText->SetText(FText::FromString(" Coninue"));
+	}
 }
 
 void UMainMenuWidget::SetActive()

@@ -4,6 +4,7 @@
 #include "Blueprint/UserWidget.h"
 
 #include "Components/Image.h"
+#include "Components/TextBlock.h"
 #include "Components/Button.h"
 
 #include "MainMenuWidget.generated.h"
@@ -17,7 +18,15 @@ public:
 	UImage* BackgroundImage;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UImage* LogoImage;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UButton* StartButton;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* InfoText;
+
+	bool HasBegun = false;
 public:
 	virtual void NativeConstruct() override;
 
