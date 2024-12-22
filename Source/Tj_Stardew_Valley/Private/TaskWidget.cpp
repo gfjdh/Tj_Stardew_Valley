@@ -25,9 +25,11 @@ void UTaskWidget::ShowCurrentTasks(AActor* PlayerActor)
 		if (Player) {
 			//获取玩家当前任务
 			TArray<FQuest> Quests = Player->Quests;
+			//打印任务数量
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Quests Num: %d"), Quests.Num()));
 			for (const auto& Quest : Quests)
 			{
-				if (Quest.bIsCompleted) {
+				if (!Quest.bIsCompleted) {
 					UTaskItemWidget* TaskItemWidget = CreateWidget<UTaskItemWidget>(GetWorld(), TaskItemWidgetClass);
 					if (TaskItemWidget)
 					{
