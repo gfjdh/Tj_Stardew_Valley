@@ -27,13 +27,15 @@ void UTaskWidget::ShowCurrentTasks(AActor* PlayerActor)
 			TArray<FQuest> Quests = Player->Quests;
 			for (const auto& Quest : Quests)
 			{
-				UTaskItemWidget* TaskItemWidget = CreateWidget<UTaskItemWidget>(GetWorld(), TaskItemWidgetClass);
-				if (TaskItemWidget)
-				{
-					// Description + RewardGold
-					FString TaskInfo = Quest.Description + FString::Printf(TEXT("     RewardGold: %d"), Quest.RewardGold);
-					TaskItemWidget->TaskInfo->SetText(FText::FromString(TaskInfo));
-					TaskGridPanel->AddChild(TaskItemWidget);
+				if (Quest.bIsCompleted) {
+					UTaskItemWidget* TaskItemWidget = CreateWidget<UTaskItemWidget>(GetWorld(), TaskItemWidgetClass);
+					if (TaskItemWidget)
+					{
+						// Description + RewardGold
+						FString TaskInfo = Quest.Description + FString::Printf(TEXT("     RewardGold: %d"), Quest.RewardGold);
+						TaskItemWidget->TaskInfo->SetText(FText::FromString(TaskInfo));
+						TaskGridPanel->AddChild(TaskItemWidget);
+					}
 				}
 			}
 		}
