@@ -8,7 +8,7 @@ UENUM(BlueprintType)
 enum class EMerchantType : uint8
 {
     Vendor,   // 售货商人
-    GameHost  // 游戏商人
+	Buyer    // 收货商人
 };
 
 USTRUCT(BlueprintType)
@@ -65,10 +65,6 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Merchant")
     TArray<FString> TradeOptions;
 
-    // 小游戏界面类
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Merchant")
-    TSubclassOf<UUserWidget> GameWidgetClass;
-
     // 交易界面类
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Merchant")
     TSubclassOf<UUserWidget> TradeWidgetClass;
@@ -81,17 +77,13 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Merchant")
     void ShowTradeMenu();
 
-    // 显示小游戏界面
-    UFUNCTION(BlueprintCallable, Category = "Merchant")
-    void ShowGameMenu();
-
     // 处理交易
     UFUNCTION(BlueprintCallable, Category = "Merchant")
     void HandleTrade(int32 OptionIndex, AMyPaperZDCharacter *Player);
 
-    // 处理小游戏
+    // 处理售卖
     UFUNCTION(BlueprintCallable, Category = "Merchant")
-    void HandleGame();
+    void HandleSale(int32 OptionIndex, AMyPaperZDCharacter *Player);
 
     // 关闭当前界面
     UFUNCTION(BlueprintCallable, Category = "Merchant")

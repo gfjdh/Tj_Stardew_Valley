@@ -8,8 +8,8 @@
 #include "Inventory.h"
 #include "CookPot.h"
 #include "NPC.h"
+#include "Merchant.h"
 //#include "SkillWidget.h"
-
 AMyPaperZDCharacter::AMyPaperZDCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;

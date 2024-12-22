@@ -4,7 +4,7 @@
 #include "MyPaperZDCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "MerchantWidget.h"
-
+#include "Inventory.h"
 AMerchant::AMerchant()
 {
     // 设置商人不需要移动
@@ -34,13 +34,6 @@ AMerchant::AMerchant()
     TradeOptions.Add(TEXT("Buy apples (15 Gold)"));
     TradeOptions.Add(TEXT("Buy rings (50 Gold)"));
 
-    // 初始化小游戏界面类
-    static ConstructorHelpers::FClassFinder<UUserWidget> GameWidget(TEXT("/Game/BluePrints/NPC/BP_GameWidget"));
-    if (GameWidget.Succeeded())
-    {
-        GameWidgetClass = GameWidget.Class;
-    }
-
     // 初始化交易界面类
     static ConstructorHelpers::FClassFinder<UUserWidget> TradeWidget(TEXT("/Game/BluePrints/NPC/BP_TradeWidget"));
     if (TradeWidget.Succeeded())
@@ -63,17 +56,16 @@ AMerchant::AMerchant()
 void AMerchant::BeginPlay()
 {
     Super::BeginPlay();
-
-    // 初始化对话内容
-    DialogueLines.Add(0, { { TEXT("Welcome! What can I do for you?") } });
-    DialogueLines.Add(1, { { TEXT("Need something? I have the best deals!") } });
-    DialogueLines.Add(2, { { TEXT("Want to play a game? It's fun and rewarding!") } });
 }
 
 void AMerchant::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-    AMerchant::CheckForPlayerInteractionBox();
+
+    if (!bTrading)
+    {
+        AMerchant::CheckForPlayerInteractionBox();
+    }
 }
 
 void AMerchant::ShowTradeMenu()
@@ -90,42 +82,12 @@ void AMerchant::ShowTradeMenu()
             if (PlayerController)
             {
                 PlayerController->SetShowMouseCursor(true);
-                GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Trade menu displayed!"));
-            }
-            else
-            {
-                GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Failed to get PlayerController!"));
             }
         }
-        else
-        {
-            GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Failed to create TradeWidget!"));
-        }
-    }
-    else
-    {
-        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("TradeWidgetClass is null!"));
     }
 }
 
-void AMerchant::ShowGameMenu()
-{
-    if (GameWidgetClass)
-    {
-        CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), GameWidgetClass);
-        if (CurrentWidget)
-        {
-            Cast<UMerchantWidget>(CurrentWidget)->SetMerchant(this);
-            CurrentWidget->AddToViewport();
-            APlayerController *PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-            if (PlayerController)
-            {
-                PlayerController->SetShowMouseCursor(true);
-            }
-        }
-    }
-}
-// 获取NPC的碰撞盒
+// 获取碰撞盒
 UBoxComponent *AMerchant::GetPlayerInteractionBox(AMyPaperZDCharacter *Player)
 {
     if (!Player) return nullptr;
@@ -158,9 +120,7 @@ void AMerchant::CheckForPlayerInteractionBox()
     }
     TArray<AActor *> OverlappingActors;
     GetOverlappingActors(OverlappingActors, AMyPaperZDCharacter::StaticClass());
-
     bool bPlayerNearby = false;
-
     for (AActor *Actor : OverlappingActors)
     {
         AMyPaperZDCharacter *Player = Cast<AMyPaperZDCharacter>(Actor);
@@ -170,18 +130,13 @@ void AMerchant::CheckForPlayerInteractionBox()
             UBoxComponent *InteractionBox = GetPlayerInteractionBox(Player);
             if (InteractionBox && InteractionBox->IsOverlappingActor(this)) {
                 CurrentPlayer = Player;
-				//输出调试信息
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("ShowGameMenu!"));
-				ShowTradeMenu();
+                //输出调试信息
+                GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("ShowGameMenu!"));
+                ShowTradeMenu();
                 bPlayerNearby = true;
                 DialogueCooldown = 3.0f; // 设置冷却时间为3秒
             }
         }
-    }
-    if (!bPlayerNearby && bIsDialogueVisible)
-    {
-        DialogueWidgetComponent->SetVisibility(false);
-        bIsDialogueVisible = false;
     }
 }
 
@@ -195,14 +150,13 @@ void AMerchant::HandleTrade(int32 OptionIndex, AMyPaperZDCharacter *Player)
             UpdatePlayerGold(-1 * ItemsForSale[OptionIndex].Price);
             // 给玩家添加物品
             SpawnItemForPlayer(Player, GetCollectableEntityClass(OptionIndex));
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("You bought a %Item!"));
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("You bought a Item!"));
         }
         else
         {
             GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Not enough gold!"));
         }
     }
-    CloseCurrentMenu();
 }
 
 TSubclassOf<ACollectableEntity> AMerchant::GetCollectableEntityClass(int32 Index)
@@ -222,25 +176,26 @@ TSubclassOf<ACollectableEntity> AMerchant::GetCollectableEntityClass(int32 Index
 	return nullptr;
 }
 
-void AMerchant::HandleGame()
+void AMerchant::HandleSale(int32 OptionIndex, AMyPaperZDCharacter *Player)
 {
-    if (CheckPlayerGold(20))
+    if (OptionIndex >= 0 && OptionIndex < ItemsForSale.Num())
     {
-        UpdatePlayerGold(-20);
-        // 开始小游戏
-        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Game started!"));
-        // 小游戏逻辑
-        // ...
-        // 假设玩家赢了
-        int32 Reward = FMath::RandRange(10, 50);
-        UpdatePlayerGold(Reward);
-        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("You won %d gold!"), Reward));
+        FItemForSale Option = ItemsForSale[OptionIndex];
+        UInventory *PlayerInventory = Player->FindComponentByClass<UInventory>();
+
+        if (PlayerInventory && PlayerInventory->HasItem(Option.FItemData.ItemID))
+        {
+            // 移除玩家的物品
+            PlayerInventory->RemoveItem(Option.FItemData.ItemID, 1);
+            // 更新玩家的金币
+            UpdatePlayerGold(Option.Price);
+            GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Item sold!"));
+        }
+        else
+        {
+            GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("You don't have the item to sell!"));
+        }
     }
-    else
-    {
-        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Not enough gold to play!"));
-    }
-    CloseCurrentMenu();
 }
 
 void AMerchant::CloseCurrentMenu()
@@ -290,7 +245,14 @@ int32 AMerchant::GetPlayerGold() const
 
 void AMerchant::HandlePurchase(int32 ItemIndex)
 {
-	HandleTrade(ItemIndex, CurrentPlayer);
+	if (MerchantType == EMerchantType::Vendor)
+	{
+		HandleTrade(ItemIndex, CurrentPlayer);
+	}
+	else if (MerchantType == EMerchantType::Buyer)
+	{
+        HandleSale(ItemIndex, CurrentPlayer);
+	}
 }
 
 void AMerchant::HandleExit()
