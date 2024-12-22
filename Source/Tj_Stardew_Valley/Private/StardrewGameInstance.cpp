@@ -8,7 +8,7 @@ void UStardrewGameInstance::SetPlayerStamina(int NewStamina) {
 	Stamina = NewStamina;
 }
 
-void UStardrewGameInstance::SetPlayerGold(int Coins) {
+void UStardrewGameInstance::AddPlayerGold(int Coins) {
 	GoldWealth += Coins;
 }
 

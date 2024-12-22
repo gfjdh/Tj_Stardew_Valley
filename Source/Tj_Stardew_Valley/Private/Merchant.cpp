@@ -14,7 +14,7 @@ AMerchant::AMerchant()
     NPCCapsuleComponent->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
     NPCCapsuleComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
     // 设置NPC的移动区域
-    MovementAreaCenter = FVector(120.0f, -180.0f, 0.0f); // 设置NPC的移动区域中心
+    MovementAreaCenter = FVector(80.0f, -180.0f, 10.0f); // 设置NPC的移动区域中心
     MovementAreaRadius = 0.0f; // 设置NPC的移动区域半径
     MovementSpeed = 0.0f; // 设置NPC的移动速度
     CurrentDirection = FVector::ZeroVector; // 初始化NPC的方向
@@ -273,7 +273,7 @@ void AMerchant::UpdatePlayerGold(int32 Amount)
     AMyPaperZDCharacter *Player = Cast<AMyPaperZDCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
     if (Player)
     {
-        Player->SDGameInstance->SetPlayerGold(Player->SDGameInstance->GoldWealth + Amount);
+        Player->SDGameInstance->AddPlayerGold(Amount);
         Player->PlayerUIWidget->SetGold(Player->SDGameInstance->GoldWealth);
     }
 }

@@ -992,7 +992,7 @@ void AMyPaperZDCharacter::CollectItem(UItem* ItemData) {
 	int GoldAmount = 1;
 	switch (ItemData->ItemType) {
 		case CollectableType::Gold:
-			SDGameInstance->SetPlayerGold(GoldAmount);
+			SDGameInstance->AddPlayerGold(GoldAmount);
 			PlayerUIWidget->SetGold(SDGameInstance->GoldWealth);
 			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Gold"));
 			break;
@@ -1156,7 +1156,7 @@ void AMyPaperZDCharacter::CompleteQuest(int32 QuestIndex)
 			}
 
 			// 奖励玩家
-			SDGameInstance->SetPlayerGold(SDGameInstance->GoldWealth + Quests[QuestIndex].RewardGold);
+			SDGameInstance->AddPlayerGold(SDGameInstance->GoldWealth + Quests[QuestIndex].RewardGold);
 			PlayerUIWidget->SetGold(SDGameInstance->GoldWealth);
 
 			// 标记任务为已完成
