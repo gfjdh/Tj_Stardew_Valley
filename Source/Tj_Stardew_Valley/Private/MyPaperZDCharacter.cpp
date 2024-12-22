@@ -1238,90 +1238,96 @@ void AMyPaperZDCharacter::DisplaySkillBoard()
 UFUNCTION()
 void AMyPaperZDCharacter::OnCookSkillLevel1Clicked()
 {
-	if (PlayerSkill->Cooking->Level != 1) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Level Wrong!"));
+	if (PlayerSkill->Cooking->SkillStage != 1||PlayerSkill->Cooking->SkillPoint<1) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!A"));
 	}
 	else {
-		PlayerSkill->Cooking->Level++;
+		PlayerSkill->Cooking->SkillStage++;
 		PlayerSkill->SkillLevelUp(PlayerSkill->CookingExpert);
 		PlayerSkill->SkillLevelUp(PlayerSkill->CookingHarvest);
 		PlayerSkill->SkillLevelUp(PlayerSkill->FastCooker);
+		PlayerSkill->Cooking->SkillPoint--;
 	}
+	SkillWidgetInstance->SkillPointText(PlayerSkill->Farming->SkillPoint, PlayerSkill->Tool->SkillPoint, PlayerSkill->Cooking->SkillPoint);
 }
 
 UFUNCTION()
 void AMyPaperZDCharacter::OnCookSkillLevel2Clicked()
 {
-	if (PlayerSkill->Cooking->Level != 2) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Level Wrong!"));
+	if (PlayerSkill->Cooking->SkillStage != 2 || PlayerSkill->Cooking->SkillPoint < 1) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!B"));
 	}
 	else {
-		PlayerSkill->Cooking->Level++;
+		PlayerSkill->Cooking->SkillStage++;
 		PlayerSkill->SkillLevelUp(PlayerSkill->CookingExpert);
 		PlayerSkill->SkillLevelUp(PlayerSkill->CookingHarvest);
 		PlayerSkill->SkillLevelUp(PlayerSkill->FastCooker);
-
+		PlayerSkill->Cooking->SkillPoint--;
 	}
+	SkillWidgetInstance->SkillPointText(PlayerSkill->Farming->SkillPoint, PlayerSkill->Tool->SkillPoint, PlayerSkill->Cooking->SkillPoint);
 }
 
 UFUNCTION()
 void AMyPaperZDCharacter::OnFarmingSkillLevel1Clicked()
 {
-	if (PlayerSkill->Farming->Level != 1) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Level Wrong!"));
+	if (PlayerSkill->Farming->SkillStage != 1 || PlayerSkill->Farming->SkillPoint < 1) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!C"));
 	}
 	else {
-		PlayerSkill->Farming->Level++;
+		PlayerSkill->Farming->SkillStage++;
 		PlayerSkill->SkillLevelUp(PlayerSkill->FarmingExpert);
 		PlayerSkill->SkillLevelUp(PlayerSkill->FarmingHarvest);
 		PlayerSkill->SkillLevelUp(PlayerSkill->FarmingEndurancer);
-
+		PlayerSkill->Farming->SkillPoint--;
 	}
+	SkillWidgetInstance->SkillPointText(PlayerSkill->Farming->SkillPoint, PlayerSkill->Tool->SkillPoint, PlayerSkill->Cooking->SkillPoint);
 }
 
 UFUNCTION()
 void AMyPaperZDCharacter::OnFarmingSkillLevel2Clicked()
 {
-	if (PlayerSkill->Farming->Level != 2) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Level Wrong!"));
+	if (PlayerSkill->Farming->SkillStage != 2 || PlayerSkill->Farming->SkillPoint < 1) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!D"));
+		
 	}
 	else {
-		PlayerSkill->Farming->Level++;
+		PlayerSkill->Farming->SkillStage++;
 		PlayerSkill->SkillLevelUp(PlayerSkill->FarmingExpert);
 		PlayerSkill->SkillLevelUp(PlayerSkill->FarmingHarvest);
 		PlayerSkill->SkillLevelUp(PlayerSkill->FarmingEndurancer);
-
+		PlayerSkill->Farming->SkillPoint--;
 	}
+	SkillWidgetInstance->SkillPointText(PlayerSkill->Farming->SkillPoint, PlayerSkill->Tool->SkillPoint, PlayerSkill->Cooking->SkillPoint);
 }
 
 UFUNCTION()
 void AMyPaperZDCharacter::OnToolSkillLevel1Clicked()
 {
-	if (PlayerSkill->Tool->Level != 1) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Level Wrong!"));
+	if (PlayerSkill->Tool->SkillStage != 1 || PlayerSkill->Tool->SkillPoint < 1) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!E"));
 	}
 	else {
-		PlayerSkill->Tool->Level++;
+		PlayerSkill->Tool->SkillStage++;
 		PlayerSkill->SkillLevelUp(PlayerSkill->ToolExpert);
 		PlayerSkill->SkillLevelUp(PlayerSkill->ToolHarvest);
 		PlayerSkill->SkillLevelUp(PlayerSkill->ToolSaver);
-
+		PlayerSkill->Tool->SkillPoint--;
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired!"));
+	SkillWidgetInstance->SkillPointText(PlayerSkill->Farming->SkillPoint, PlayerSkill->Tool->SkillPoint, PlayerSkill->Cooking->SkillPoint);
 }
 
 UFUNCTION()
 void AMyPaperZDCharacter::OnToolSkillLevel2Clicked()
 {
-	if (PlayerSkill->Tool->Level != 2) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Level Wrong!"));
+	if (PlayerSkill->Tool->Level != 2 || PlayerSkill->Tool->SkillPoint < 1) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!F"));
 	}
 	else {
 		PlayerSkill->Tool->Level++;
 		PlayerSkill->SkillLevelUp(PlayerSkill->ToolExpert);
 		PlayerSkill->SkillLevelUp(PlayerSkill->ToolHarvest);
 		PlayerSkill->SkillLevelUp(PlayerSkill->ToolSaver);
-
+		PlayerSkill->Tool->SkillPoint--;
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired!"));
+	SkillWidgetInstance->SkillPointText(PlayerSkill->Farming->SkillPoint, PlayerSkill->Tool->SkillPoint, PlayerSkill->Cooking->SkillPoint);
 }
