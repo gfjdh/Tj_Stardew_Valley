@@ -8,8 +8,8 @@
 #include "Inventory.h"
 #include "CookPot.h"
 #include "NPC.h"
+#include "Merchant.h"
 //#include "SkillWidget.h"
-
 AMyPaperZDCharacter::AMyPaperZDCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -920,8 +920,8 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 
 	}
 	else if (CookPot) {
-		if (CurrentPlayerState == EPlayerState::Interact) {
-			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Cooking"));
+		if (CurrentPlayerState == EPlayerState::Interact && !CookWidget->IsOpen) {
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Cooking"));
 			ActivatePlayer(false);
 			CurrentPlayerState = EPlayerState::Cook;
 			CookPot->OpenCookMenu(this);
@@ -1137,7 +1137,7 @@ void AMyPaperZDCharacter::SetScreenBrightness(float Brightness)
 void AMyPaperZDCharacter::ReceiveQuest(const FQuest &NewQuest)
 {
 	Quests.Add(NewQuest);
-	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Received Quest: %s"), *NewQuest.QuestName));
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Received Quest: %s"), *NewQuest.QuestName));
 }
 
 void AMyPaperZDCharacter::CompleteQuest(int32 QuestIndex)
@@ -1170,11 +1170,11 @@ void AMyPaperZDCharacter::CompleteQuest(int32 QuestIndex)
 
 			// 标记任务为已完成
 			Quests[QuestIndex].bIsCompleted = true;
-			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Completed Quest: %s"), *Quests[QuestIndex].QuestName));
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Completed Quest: %s"), *Quests[QuestIndex].QuestName));
 		}
 		else
 		{
-			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("You don't have all the required items!"));
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("You don't have all the required items!"));
 		}
 	}
 }
@@ -1271,7 +1271,7 @@ UFUNCTION()
 void AMyPaperZDCharacter::OnCookSkillLevel1Clicked()
 {
 	if (PlayerSkill->Cooking->SkillStage != 1||PlayerSkill->Cooking->SkillPoint<1) {
-		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!"));
 	}
 	else if (PlayerSkill->CookingExpert.SkillStage == 1) {
 		SkillWidgetInstance->HighLight(SkillWidgetInstance->CookSkillImage1, 5.0f);
@@ -1291,7 +1291,7 @@ UFUNCTION()
 void AMyPaperZDCharacter::OnCookSkillLevel2Clicked()
 {
 	if (PlayerSkill->Cooking->SkillStage != 2 || PlayerSkill->Cooking->SkillPoint < 1) {
-		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!"));
 	}
 	else {
 		PlayerSkill->Cooking->SkillStage++;
@@ -1308,7 +1308,7 @@ UFUNCTION()
 void AMyPaperZDCharacter::OnFarmingSkillLevel1Clicked()
 {
 	if (PlayerSkill->Farming->SkillStage != 1 || PlayerSkill->Farming->SkillPoint < 1) {
-		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!"));
 	}
 	else {
 		PlayerSkill->Farming->SkillStage++;
@@ -1325,7 +1325,7 @@ UFUNCTION()
 void AMyPaperZDCharacter::OnFarmingSkillLevel2Clicked()
 {
 	if (PlayerSkill->Farming->SkillStage != 2 || PlayerSkill->Farming->SkillPoint < 1) {
-		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!"));
 		
 	}
 	else {
@@ -1343,7 +1343,7 @@ UFUNCTION()
 void AMyPaperZDCharacter::OnToolSkillLevel1Clicked()
 {
 	if (PlayerSkill->Tool->SkillStage != 1 || PlayerSkill->Tool->SkillPoint < 1) {
-		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!"));
 	}
 	else {
 		PlayerSkill->Tool->SkillStage++;
@@ -1360,7 +1360,7 @@ UFUNCTION()
 void AMyPaperZDCharacter::OnToolSkillLevel2Clicked()
 {
 	if (PlayerSkill->Tool->Level != 2 || PlayerSkill->Tool->SkillPoint < 1) {
-		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!"));
 	}
 	else {
 		PlayerSkill->Tool->Level++;
