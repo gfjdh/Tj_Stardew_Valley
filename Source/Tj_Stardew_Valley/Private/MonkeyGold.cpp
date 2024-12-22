@@ -33,9 +33,11 @@ void AMonkeyGold::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor*
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
 	AMyPaperZDCharacter* Player = Cast<AMyPaperZDCharacter>(OtherActor);
 	if (Player) {
-		Player->UpdateStamina(-50);
-		Player->SDGameInstance->SetPlayerGold(100);
-		Player->PlayerUIWidget->SetGold(Player->SDGameInstance->GoldWealth);
+		if (Player->Stamina > 0) {
+			Player->UpdateStamina(-50);
+			Player->SDGameInstance->SetPlayerGold(100);
+			Player->PlayerUIWidget->SetGold(Player->SDGameInstance->GoldWealth);
+		}
 	}
 
 }
