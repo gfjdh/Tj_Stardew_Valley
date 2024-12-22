@@ -101,18 +101,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UDataTable* ItemDataTable;
 
-	UItem()
-	{
-		ItemID = -1;
-		ItemName = TEXT("None");
-		ItemType = CollectableType::None;
-		ItemSprite = nullptr;
-		ItemTexture = nullptr;
-		CurrentAmount = 0;
-		MaxStackAmount = 99;
-		bIsConsumable = false;
-		bIsEquippable = false;
-	}
+	UItem();
+
 	UItem(int32 ID, FString Name, CollectableType Type, UPaperSprite* Sprite, UTexture2D* Texture, int32 Amount, int32 MaxAmount, bool Consumable, bool Equippable)
 	{
 		ItemID = ID;

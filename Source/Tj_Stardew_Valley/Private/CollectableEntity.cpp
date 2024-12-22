@@ -39,7 +39,7 @@ void ACollectableEntity::OverlapBegin(UPrimitiveComponent* OverlappedComponent, 
 
 	AMyPaperZDCharacter* Player = Cast<AMyPaperZDCharacter>(OtherActor);
 	if (Player) {
-		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Picked it!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Item ID %d Picked Up5"), ItemId));
 		ItemData->CreateItemInfo(ItemId);
 		Player->CollectItem(ItemData);
 		//获取物品时刷新背包

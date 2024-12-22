@@ -38,26 +38,30 @@ bool UInventory::AddItem(const UItem* ItemToAdd)
 	}
 	if (Inventory.Num() >= MaxInventorySlots)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Item ID %d Picked Up2"), ItemToAdd->ItemID));
 		return false;
 	}
-	if (ItemToAdd->CurrentAmount <= 0)
-	{
-		return false;
-	}
+	//if (ItemToAdd->CurrentAmount <= 0)
+	//{
+	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Item ID %d Picked Up3"), ItemToAdd->ItemID));
+	//	return false;
+	//}
 	if (ItemToAdd->MaxStackAmount <= 0)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Item ID %d Picked Up4"), ItemToAdd->ItemID));
 		return false;
 	}
 	if (ItemToAdd->CurrentAmount > ItemToAdd->MaxStackAmount)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Item ID %d Picked Up5"), ItemToAdd->ItemID));
 		return false;
 	}
-
 	for (auto& i : Inventory)
 	{
 		if (i->ItemID == ItemToAdd->ItemID)
 		{
-			i->CurrentAmount += ItemToAdd->CurrentAmount;
+			//i->CurrentAmount += ItemToAdd->CurrentAmount;
+			i->CurrentAmount += 1;
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Item ID %d Picked Up"), ItemToAdd->ItemID));
 			return true;
 		}
