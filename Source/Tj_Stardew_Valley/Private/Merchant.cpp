@@ -14,7 +14,7 @@ AMerchant::AMerchant()
     NPCCapsuleComponent->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
     NPCCapsuleComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
     // 设置NPC的移动区域
-    MovementAreaCenter = FVector(80.0f, -180.0f, 10.0f); // 设置NPC的移动区域中心
+    MovementAreaCenter = FVector(0.0f, -180.0f, 10.0f); // 设置NPC的移动区域中心
     MovementAreaRadius = 0.0f; // 设置NPC的移动区域半径
     MovementSpeed = 0.0f; // 设置NPC的移动速度
     CurrentDirection = FVector::ZeroVector; // 初始化NPC的方向

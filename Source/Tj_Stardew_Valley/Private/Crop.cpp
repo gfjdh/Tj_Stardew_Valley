@@ -60,9 +60,9 @@ void ACrop::JudgeMaturity()
 	int temp_stat = status;
 	srand(time(0));
 	if (Maturity < 1000) {
-		//作物的生长速度在一定范围内随机
+		//作物的生长速度在一定范围内随机,受技能和季节影响
 		if (!IsDefected && !IsDry) {
-			Maturity += (double)(rand() % 5 / 10 + 0.5) * IsWet*GrowSpeed;
+			Maturity += (double)(rand() % 5 / 10 + 0.5) * IsWet*GrowSpeed*SeasonSpeed[(int)Cast<ACGameMode>(GetWorld()->GetAuthGameMode())->CurrentSeason];
 		}
 	}
 	if (Maturity < 200) {

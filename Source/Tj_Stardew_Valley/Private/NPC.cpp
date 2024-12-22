@@ -7,7 +7,7 @@
 const int DialogueOfTrade = 5;
 const int DialogueOfCopleteQuest = 6;
 const int DialogueOfAcceptQuest = 7;
-const int DialogueOfGiveApple = 8;
+const int DialogueOfGiveItem = 8;
 const int LowFavorabilityThreshold = 5;
 const int MediumFavorabilityThreshold = 10;
 const int HighFavorabilityThreshold = 20;
@@ -67,8 +67,9 @@ ANPC::ANPC()
     RandomStream.Initialize(FDateTime::Now().GetMillisecond());
 
     // 初始化好感度
-    Favorability = 18;
+    Favorability = 0;
 	FavorabilityLevel = 0;
+	EnableFavorability = true;
 
     // 初始化对话可见性状态
     bIsDialogueVisible = false;
@@ -102,13 +103,7 @@ ANPC::ANPC()
 	bHasGivenAppleToday = false;// 初始化今天没有给过苹果
 	LastGiftDay = -1;// 初始化上次送礼物的日期
     GameMode = nullptr;
-}
 
-void ANPC::BeginPlay()
-{
-    Super::BeginPlay();
-    // 获取GameMode的引用
-    GameMode = Cast<ACGameMode>(GetWorld()->GetAuthGameMode());
     // 初始化对话内容
     if (Gender == ENPCGender::Male) {
         DialogueLines.Add(0, { { TEXT("Hey, buddy!"), TEXT("How have you been?"), TEXT("The weather is great today, perfect for a walk!") } });
@@ -117,8 +112,8 @@ void ANPC::BeginPlay()
         DialogueLines.Add(3, { { TEXT("Hey, bro!"), TEXT("What have you been up to?"), TEXT("Today is a great day for an adventure!") } });
         DialogueLines.Add(DialogueOfTrade, { { TEXT("Thank you very much"), TEXT("Thanks!"), TEXT("You're a good person!") } });
         DialogueLines.Add(DialogueOfCopleteQuest, { { TEXT("Thank you very much"), TEXT("Thanks!"), TEXT("You're a good person!") } });
-		DialogueLines.Add(DialogueOfAcceptQuest, { { TEXT("Please help me!(Press 'J' to open the task list)") } });
-		DialogueLines.Add(DialogueOfGiveApple, { { TEXT("This is for you!" } }));
+        DialogueLines.Add(DialogueOfAcceptQuest, { { TEXT("Please help me!(Press 'J' to open the task list)") } });
+        DialogueLines.Add(DialogueOfGiveItem, { { TEXT("This is for you!" } }));
     }
     else {
         DialogueLines.Add(0, { { TEXT("Hi!"), TEXT("How have you been?"), TEXT("The weather is great today, perfect for shopping!") } });
@@ -128,8 +123,15 @@ void ANPC::BeginPlay()
         DialogueLines.Add(DialogueOfTrade, { { TEXT("Wow! This is my favorite gift!"), TEXT("Thank you!"), TEXT("You're a good person!") } });
         DialogueLines.Add(DialogueOfCopleteQuest, { { TEXT("Thank you very much"), TEXT("Thanks!"), TEXT("You're a good person!") } });
         DialogueLines.Add(DialogueOfAcceptQuest, { { TEXT("Please help me!(Press 'J' to open the task list)") } });
-        DialogueLines.Add(DialogueOfGiveApple, { { TEXT("This is for you!" } }));
+        DialogueLines.Add(DialogueOfGiveItem, { { TEXT("This is for you!" } }));
     }
+}
+
+void ANPC::BeginPlay()
+{
+    Super::BeginPlay();
+    // 获取GameMode的引用
+    GameMode = Cast<ACGameMode>(GetWorld()->GetAuthGameMode());
 }
 
 void ANPC::Tick(float DeltaTime)
@@ -271,6 +273,12 @@ void ANPC::CheckForPlayerInteractionBox()
         AMyPaperZDCharacter *Player = Cast<AMyPaperZDCharacter>(Actor);
         if (Player)
         {
+			if (!EnableFavorability)
+			{
+				Favorability = 0;
+				FavorabilityLevel = 0;
+				DisplayRandomDialogue(0);
+			}
             // 检查是否是新的一天
             if (GameMode)
             {
@@ -307,7 +315,7 @@ void ANPC::CheckForPlayerInteractionBox()
                     {
                         SpawnItemForPlayer(Player, CollectableEntityClass);
                         bHasGivenAppleToday = true;
-                        DisplayRandomDialogue(DialogueOfGiveApple);
+                        DisplayRandomDialogue(DialogueOfGiveItem);
                     }
                     else {
                         IncreaseFavorability(1);

@@ -75,6 +75,8 @@ public:
 
 	//生长速度倍率，可通过技能提高
 	float GrowSpeed = 1.0f;
+	//季节生长速度倍率，不同季节生长速度不同
+	float SeasonSpeed[4] = { 1.0f, 1.5f, 1.0f, 0.0f };
 
 	//病害
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
