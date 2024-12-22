@@ -47,4 +47,7 @@ public:
 	void OnCookButtonClicked();
 
 	virtual void NativeConstruct() override;
+
+	UFUNCTION()
+	void ButtonCanClicked(int LevelNeed);
 };
