@@ -27,7 +27,7 @@ void UCookMenuRow::OnCookButtonClicked()
 				Inventory->RemoveItem(MaterialIndexB, 1);
 				//加经验
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Add EXP 10!"));
-				Player->PlayerSkill->SkillStrucUpdate(SkillType::Cooking, 10);
+				Player->PlayerSkill->SkillStrucUpdate(UpdateType, 10);
 				//在玩家脚底生成食物
 				FVector SpawnLocation = Player->GetActorLocation();
 				GetWorld()->SpawnActor<ACollectableEntity>(CollectableEntityClass, SpawnLocation, FRotator::ZeroRotator);
