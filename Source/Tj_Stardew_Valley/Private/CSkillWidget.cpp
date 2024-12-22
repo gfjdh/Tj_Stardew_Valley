@@ -14,3 +14,17 @@ void UCSkillWidget::SkillPointText(int FarmingPoint, int ToolPoint, int CookingP
 		PointString = FString::Printf(TEXT("CookSkillPoints:%d"), CookingPoint);
 		this->CookSkillPoint->SetText(FText::FromString(PointString));
 }
+
+void UCSkillWidget::HighLight(UImage* TargetImage,float Brightness)
+{
+    if (TargetImage)
+    {
+        FLinearColor CurrentColor = TargetImage->GetColorAndOpacity();
+
+        // 变得不透明
+        CurrentColor.A *= Brightness;
+
+        // 设置新的透明度
+        TargetImage->SetColorAndOpacity(CurrentColor);
+    }
+}

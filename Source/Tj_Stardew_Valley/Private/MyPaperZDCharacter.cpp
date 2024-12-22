@@ -512,7 +512,7 @@ void AMyPaperZDCharacter::Water()
 		}
 
 		CurrentPlayerState = EPlayerState::Idle;
-		UpdateStamina(-2);
+		UpdateStamina(-3+ PlayerSkill->FarmingEndurancer.SkillStage);
 	}
 }
 
@@ -547,7 +547,7 @@ void AMyPaperZDCharacter::Hoe()
 		}
 
 		CurrentPlayerState = EPlayerState::Idle;
-		UpdateStamina(-5);
+		UpdateStamina(-6+PlayerSkill->FarmingEndurancer.SkillStage);
 	}
 }
 
@@ -771,10 +771,12 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 	}
 	//和耕地交互
 	else if (FarmLand) {
+		ACrop* CropToSpawn;
 		//浇水
 		if (CurrentPlayerState == EPlayerState::Water) {
 			FarmLand->WaterFarmLand();
 			PlayerSkill->SkillStrucUpdate(SkillType::Tool, 10);
+			PlayerSkill->SkillStrucUpdate(SkillType::Farming, 5);
 		}
 		//种植
 		else if (CurrentPlayerState == EPlayerState::Plant) {
@@ -783,11 +785,15 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 			if (FarmLand->WaterStage == 1) {
 				switch (PlayerInventory->CurrentItem()->ItemID) {
 				case 1002:
-					GetWorld()->SpawnActor<ACrop>(CarrotToSpawn, PlantLocation, FRotator(0.0f, 0.0f, 0.0f));
+					CropToSpawn=GetWorld()->SpawnActor<ACrop>(CarrotToSpawn, PlantLocation, FRotator(0.0f, 0.0f, 0.0f));
+					CropToSpawn->Expert(PlayerSkill);
+					CropToSpawn->Harvester(PlayerSkill);
 					PlayerSkill->SkillStrucUpdate(SkillType::Farming, 10);
 					break;
 				case 1003:
-					GetWorld()->SpawnActor<ACrop>(WheatToSpawn, PlantLocation, FRotator(0.0f, 0.0f, 0.0f));
+					CropToSpawn=GetWorld()->SpawnActor<ACrop>(WheatToSpawn, PlantLocation, FRotator(0.0f, 0.0f, 0.0f));
+					CropToSpawn->Expert(PlayerSkill);
+					CropToSpawn->Harvester(PlayerSkill);
 					PlayerSkill->SkillStrucUpdate(SkillType::Farming, 10);
 					break;
 				}
@@ -1247,6 +1253,7 @@ void AMyPaperZDCharacter::OnCookSkillLevel1Clicked()
 		PlayerSkill->SkillLevelUp(PlayerSkill->CookingHarvest);
 		PlayerSkill->SkillLevelUp(PlayerSkill->FastCooker);
 		PlayerSkill->Cooking->SkillPoint--;
+		SkillWidgetInstance->HighLight(SkillWidgetInstance->CookSkillImage1, 5.0f);
 	}
 	SkillWidgetInstance->SkillPointText(PlayerSkill->Farming->SkillPoint, PlayerSkill->Tool->SkillPoint, PlayerSkill->Cooking->SkillPoint);
 }
@@ -1263,6 +1270,7 @@ void AMyPaperZDCharacter::OnCookSkillLevel2Clicked()
 		PlayerSkill->SkillLevelUp(PlayerSkill->CookingHarvest);
 		PlayerSkill->SkillLevelUp(PlayerSkill->FastCooker);
 		PlayerSkill->Cooking->SkillPoint--;
+		SkillWidgetInstance->HighLight(SkillWidgetInstance->CookSkillImage2, 5.0f);
 	}
 	SkillWidgetInstance->SkillPointText(PlayerSkill->Farming->SkillPoint, PlayerSkill->Tool->SkillPoint, PlayerSkill->Cooking->SkillPoint);
 }
@@ -1279,6 +1287,7 @@ void AMyPaperZDCharacter::OnFarmingSkillLevel1Clicked()
 		PlayerSkill->SkillLevelUp(PlayerSkill->FarmingHarvest);
 		PlayerSkill->SkillLevelUp(PlayerSkill->FarmingEndurancer);
 		PlayerSkill->Farming->SkillPoint--;
+		SkillWidgetInstance->HighLight(SkillWidgetInstance->FarmingSkillImage1, 5.0f);
 	}
 	SkillWidgetInstance->SkillPointText(PlayerSkill->Farming->SkillPoint, PlayerSkill->Tool->SkillPoint, PlayerSkill->Cooking->SkillPoint);
 }
@@ -1296,6 +1305,7 @@ void AMyPaperZDCharacter::OnFarmingSkillLevel2Clicked()
 		PlayerSkill->SkillLevelUp(PlayerSkill->FarmingHarvest);
 		PlayerSkill->SkillLevelUp(PlayerSkill->FarmingEndurancer);
 		PlayerSkill->Farming->SkillPoint--;
+		SkillWidgetInstance->HighLight(SkillWidgetInstance->FarmingSkillImage2, 5.0f);
 	}
 	SkillWidgetInstance->SkillPointText(PlayerSkill->Farming->SkillPoint, PlayerSkill->Tool->SkillPoint, PlayerSkill->Cooking->SkillPoint);
 }
@@ -1312,6 +1322,7 @@ void AMyPaperZDCharacter::OnToolSkillLevel1Clicked()
 		PlayerSkill->SkillLevelUp(PlayerSkill->ToolHarvest);
 		PlayerSkill->SkillLevelUp(PlayerSkill->ToolSaver);
 		PlayerSkill->Tool->SkillPoint--;
+		SkillWidgetInstance->HighLight(SkillWidgetInstance->ToolSkillImage1, 5.0f);
 	}
 	SkillWidgetInstance->SkillPointText(PlayerSkill->Farming->SkillPoint, PlayerSkill->Tool->SkillPoint, PlayerSkill->Cooking->SkillPoint);
 }
@@ -1328,6 +1339,7 @@ void AMyPaperZDCharacter::OnToolSkillLevel2Clicked()
 		PlayerSkill->SkillLevelUp(PlayerSkill->ToolHarvest);
 		PlayerSkill->SkillLevelUp(PlayerSkill->ToolSaver);
 		PlayerSkill->Tool->SkillPoint--;
+		SkillWidgetInstance->HighLight(SkillWidgetInstance->ToolSkillImage1, 5.0f);
 	}
 	SkillWidgetInstance->SkillPointText(PlayerSkill->Farming->SkillPoint, PlayerSkill->Tool->SkillPoint, PlayerSkill->Cooking->SkillPoint);
 }

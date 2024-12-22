@@ -11,7 +11,7 @@
 #include "InputAction.h"
 #include "InputMappingContext.h"
 #include "CollectableEntity.h"
-
+#include "SkillStates.h"
 #include "Crop.generated.h"
 
 UCLASS()
@@ -66,9 +66,15 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Product")
 	TSubclassOf<ACollectableEntity> ProductActor2;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int HarvestTimes=1;
+
 	//湿耕地才会生长
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	bool IsWet = 0;
+
+	//生长速度倍率，可通过技能提高
+	float GrowSpeed = 1.0f;
 
 	//病害
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -126,4 +132,12 @@ public:
 
 	UFUNCTION()
 	void Fert();
+
+	//种植专家，可以降低作物生长时间、病害概率等
+	UFUNCTION()
+	void Expert(USkillStates* PlayerSkill);
+
+	//种植收获，提高收获物品数量
+	UFUNCTION()
+	void Harvester(USkillStates* PlayerSkill);
 };
