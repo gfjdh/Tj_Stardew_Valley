@@ -35,12 +35,12 @@ void ATreeStump::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* 
 
 }
 
-void ATreeStump::Chop(AActor* OtherActor) {
+void ATreeStump::Chop(AActor* OtherActor,USkillStates* PlayerSkill) {
 	AMyPaperZDCharacter* Player = Cast<AMyPaperZDCharacter>(OtherActor);
 	if (Player) {
 		//判断是否砍完
-		Health--;
-		if (Health != 0)
+		Health-=PlayerSkill->ToolExpert.SkillStage;
+		if (Health > 0)
 			return;
 		int DropNumber = FMath::RandRange(MinDropNumber, MaxDropNumber);
 		while (DropNumber--) {
@@ -50,7 +50,9 @@ void ATreeStump::Chop(AActor* OtherActor) {
 			FVector Direction = Location - PlayerLocation;
 			Direction.Normalize();
 			Location += Direction * FMath::RandRange(5, 30);
-			ACollectableEntity* Product = GetWorld()->SpawnActor<ACollectableEntity>(ProductClass, Location, FRotator::ZeroRotator);
+			for (int i = 0; i < PlayerSkill->ToolHarvest.SkillStage; i++) {
+				ACollectableEntity* Product = GetWorld()->SpawnActor<ACollectableEntity>(ProductClass, Location, FRotator::ZeroRotator);
+			}
 		}
 		//销毁自己
 		Destroy();

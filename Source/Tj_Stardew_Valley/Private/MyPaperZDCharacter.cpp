@@ -754,7 +754,7 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 	if (TreeStump) {
 		if (CurrentPlayerState == EPlayerState::Chop) {
 			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Tree is being Chopped"));
-			TreeStump->Chop(this);
+			TreeStump->Chop(this,PlayerSkill);
 			PlayerSkill->SkillStrucUpdate(SkillType::Tool, 10);
 			PlayerUIWidget->SetLevel(PlayerSkill->Farming->Level, PlayerSkill->Tool->Level, PlayerSkill->Cooking->Level);
 		}
