@@ -16,7 +16,7 @@ void UPlayerUI::SetGold(int Amount) {
 	GoldText->SetText(FText::FromString(Str));
 }
 
-void UPlayerUI::SetLevel(int Index) {
-	FString Str = FString::Printf(TEXT("Level: %d"), Index);
+void UPlayerUI::SetLevel(int FarmLevel,int ToolLevel,int CookLevel) {
+	FString Str = FString::Printf(TEXT("FarmLevel: %d\nToolLevel: %d\nCookLevel: %d\n"), FarmLevel,ToolLevel,CookLevel);
 	LevelText->SetText(FText::FromString(Str));
 }

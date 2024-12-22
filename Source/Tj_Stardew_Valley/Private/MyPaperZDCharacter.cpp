@@ -219,7 +219,7 @@ void AMyPaperZDCharacter::BeginPlay()
 			PlayerUIWidget->AddToPlayerScreen();
 			PlayerUIWidget->SetStamina(Stamina);
 			PlayerUIWidget->SetGold(SDGameInstance->GoldWealth);
-			PlayerUIWidget->SetLevel(Level);
+			PlayerUIWidget->SetLevel(PlayerSkill->Farming->Level,PlayerSkill->Tool->Level,PlayerSkill->Cooking->Level);
 		}
 	}
 	// 显示当前使用物品
@@ -754,6 +754,7 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Tree is being Chopped"));
 			TreeStump->Chop(this);
 			PlayerSkill->SkillStrucUpdate(SkillType::Tool, 10);
+			PlayerUIWidget->SetLevel(PlayerSkill->Farming->Level, PlayerSkill->Tool->Level, PlayerSkill->Cooking->Level);
 		}
 		else {
 			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));
@@ -763,6 +764,7 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 		if (CurrentPlayerState == EPlayerState::Mine) {
 			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Ores is being Mined"));
 			PlayerSkill->SkillStrucUpdate(SkillType::Tool, 10);
+			PlayerUIWidget->SetLevel(PlayerSkill->Farming->Level, PlayerSkill->Tool->Level, PlayerSkill->Cooking->Level);
 			Ores->Mine(this);
 		}
 		else {
@@ -777,6 +779,7 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 			FarmLand->WaterFarmLand();
 			PlayerSkill->SkillStrucUpdate(SkillType::Tool, 10);
 			PlayerSkill->SkillStrucUpdate(SkillType::Farming, 5);
+			PlayerUIWidget->SetLevel(PlayerSkill->Farming->Level, PlayerSkill->Tool->Level, PlayerSkill->Cooking->Level);
 		}
 		//种植
 		else if (CurrentPlayerState == EPlayerState::Plant) {
@@ -789,12 +792,14 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 					CropToSpawn->Expert(PlayerSkill);
 					CropToSpawn->Harvester(PlayerSkill);
 					PlayerSkill->SkillStrucUpdate(SkillType::Farming, 10);
+					PlayerUIWidget->SetLevel(PlayerSkill->Farming->Level, PlayerSkill->Tool->Level, PlayerSkill->Cooking->Level);
 					break;
 				case 1003:
 					CropToSpawn=GetWorld()->SpawnActor<ACrop>(WheatToSpawn, PlantLocation, FRotator(0.0f, 0.0f, 0.0f));
 					CropToSpawn->Expert(PlayerSkill);
 					CropToSpawn->Harvester(PlayerSkill);
 					PlayerSkill->SkillStrucUpdate(SkillType::Farming, 10);
+					PlayerUIWidget->SetLevel(PlayerSkill->Farming->Level, PlayerSkill->Tool->Level, PlayerSkill->Cooking->Level);
 					break;
 				}
 				PlayerInventory->RemoveItemByIndex(PlayerInventory->UsingIndex, 1);
@@ -873,6 +878,7 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 				FarmLandLocationList.push_back(SpawnLocation);
 				PlayerSkill->SkillStrucUpdate(SkillType::Farming, 10);
 				PlayerSkill->SkillStrucUpdate(SkillType::Tool, 10);
+				PlayerUIWidget->SetLevel(PlayerSkill->Farming->Level, PlayerSkill->Tool->Level, PlayerSkill->Cooking->Level);
 			}
 		}
 	}
@@ -883,6 +889,7 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 			Crop->SpawnProducts();
 			PlayerSkill->SkillStrucUpdate(SkillType::Farming, 10);
 			PlayerSkill->SkillStrucUpdate(SkillType::Tool, 10);
+			PlayerUIWidget->SetLevel(PlayerSkill->Farming->Level, PlayerSkill->Tool->Level, PlayerSkill->Cooking->Level);
 		}
 		if (CurrentPlayerState == EPlayerState::Heal) {
 			if (Crop->IsDefected) {
@@ -975,19 +982,6 @@ void AMyPaperZDCharacter::UpdateStamina(int Value) {
 	}
 	PlayerUIWidget->SetStamina(Stamina);
 	SDGameInstance->SetPlayerStamina(Stamina);
-}
-
-void AMyPaperZDCharacter::UpdateLevel(int ExValue) {
-	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Gained Exp: %d"), ExValue));
-	Exp += ExValue;
-	if (Exp >= 10) {
-		Exp = 0;
-		Level++;
-		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Level Up"));
-		PlayerUIWidget->SetLevel(Level);
-		SDGameInstance->SetPlayerLevel(1);
-		Exp = 0;
-	}
 }
 
 

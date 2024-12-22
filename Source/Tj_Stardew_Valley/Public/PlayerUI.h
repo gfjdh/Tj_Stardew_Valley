@@ -35,7 +35,5 @@ public:
 
 	void SetGold(int Amount);
 
-	void SetLevel(int Index);
-
-
+	void SetLevel(int FarmLevel,int ToolLevel,int CookLevel);
 };
