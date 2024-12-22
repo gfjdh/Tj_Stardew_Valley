@@ -234,6 +234,10 @@ void AMyPaperZDCharacter::BeginPlay()
 		TimeWidget->AddToViewport();
 	}
 	PlayerUIWidget->SetLevel(PlayerSkill->Farming->Level, PlayerSkill->Tool->Level, PlayerSkill->Cooking->Level);
+	if (MainMenuWidget)
+	{
+		MainMenuWidget->SetActive();
+	}
 }
 
 // Called every frame
@@ -265,6 +269,7 @@ void AMyPaperZDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::Inventory);
 		EnhancedInputComponent->BindAction(SkillAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::DisplaySkillBoard);
 		EnhancedInputComponent->BindAction(CheckTaskAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::CheckTask);
+		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::PauseGame);
 	}
 }
 
@@ -673,6 +678,12 @@ void AMyPaperZDCharacter::CheckTask(const FInputActionValue& Value)
 			TaskWidget->CloseTaskWidget();
 		}
 	}
+}
+
+void AMyPaperZDCharacter::PauseGame(const FInputActionValue& Value)
+{
+	if(MainMenuWidget->HasBegun)
+		MainMenuWidget->SetActive();
 }
 
 //±º≈‹
