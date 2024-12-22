@@ -1197,6 +1197,7 @@ void AMyPaperZDCharacter::DisplaySkillBoard()
 		if (SkillWidgetInstance)
 		{
 			// 将用户界面添加到视图中
+			SkillWidgetInstance->SkillPointText(PlayerSkill->Farming->SkillPoint, PlayerSkill->Tool->SkillPoint, PlayerSkill->Cooking->SkillPoint);
 			SkillWidgetInstance->AddToViewport();
 			SkillBoardIsOpen = true;
 			if (SkillWidgetInstance->FarmingSkillLevel1)
@@ -1242,7 +1243,7 @@ void AMyPaperZDCharacter::DisplaySkillBoard()
 UFUNCTION()
 void AMyPaperZDCharacter::OnCookSkillLevel1Clicked()
 {
-	if (PlayerSkill->Cooking->Level > 1) {
+	if (PlayerSkill->Cooking->Level != 1) {
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Level Wrong!"));
 	}
 	else {
@@ -1256,7 +1257,7 @@ void AMyPaperZDCharacter::OnCookSkillLevel1Clicked()
 UFUNCTION()
 void AMyPaperZDCharacter::OnCookSkillLevel2Clicked()
 {
-	if (PlayerSkill->Cooking->Level > 2) {
+	if (PlayerSkill->Cooking->Level != 2) {
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Level Wrong!"));
 	}
 	else {
@@ -1271,7 +1272,7 @@ void AMyPaperZDCharacter::OnCookSkillLevel2Clicked()
 UFUNCTION()
 void AMyPaperZDCharacter::OnFarmingSkillLevel1Clicked()
 {
-	if (PlayerSkill->Farming->Level > 1) {
+	if (PlayerSkill->Farming->Level != 1) {
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Level Wrong!"));
 	}
 	else {
@@ -1286,7 +1287,7 @@ void AMyPaperZDCharacter::OnFarmingSkillLevel1Clicked()
 UFUNCTION()
 void AMyPaperZDCharacter::OnFarmingSkillLevel2Clicked()
 {
-	if (PlayerSkill->Farming->Level > 2) {
+	if (PlayerSkill->Farming->Level != 2) {
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Level Wrong!"));
 	}
 	else {
@@ -1301,7 +1302,7 @@ void AMyPaperZDCharacter::OnFarmingSkillLevel2Clicked()
 UFUNCTION()
 void AMyPaperZDCharacter::OnToolSkillLevel1Clicked()
 {
-	if (PlayerSkill->Tool->Level > 1) {
+	if (PlayerSkill->Tool->Level != 1) {
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Level Wrong!"));
 	}
 	else {
@@ -1317,7 +1318,7 @@ void AMyPaperZDCharacter::OnToolSkillLevel1Clicked()
 UFUNCTION()
 void AMyPaperZDCharacter::OnToolSkillLevel2Clicked()
 {
-	if (PlayerSkill->Tool->Level > 2) {
+	if (PlayerSkill->Tool->Level != 2) {
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Level Wrong!"));
 	}
 	else {

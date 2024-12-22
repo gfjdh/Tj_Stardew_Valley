@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
+#include "Components/TextBlock.h"
 #include "CSkillWidget.generated.h"
 
 /**
@@ -33,4 +34,16 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UButton* CookSkillLevel2;
+
+	//显示各类技能当前技能点数
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* FarmingSkillPoint;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* ToolSkillPoint;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* CookSkillPoint;
+
+	void SkillPointText(int FarmingSkillPoint, int ToolSkillPoint, int CookingSkillPoint);
 };
