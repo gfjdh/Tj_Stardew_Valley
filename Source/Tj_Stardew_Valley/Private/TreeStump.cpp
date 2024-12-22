@@ -38,9 +38,6 @@ void ATreeStump::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* 
 void ATreeStump::Chop(AActor* OtherActor) {
 	AMyPaperZDCharacter* Player = Cast<AMyPaperZDCharacter>(OtherActor);
 	if (Player) {
-		//加经验
-		int ExpValue = 10;
-		Player->UpdateLevel(ExpValue);
 		//判断是否砍完
 		Health--;
 		if (Health != 0)

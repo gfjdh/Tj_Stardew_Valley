@@ -39,9 +39,6 @@ void AOres::Mine(AActor* OtherActor)
 {
 	AMyPaperZDCharacter* Player = Cast<AMyPaperZDCharacter>(OtherActor);
 	if (Player) {
-		//加经验
-		int ExpValue = 10;
-		Player->UpdateLevel(ExpValue);
 		//判断是否挖完
 		Health--;
 		if (Health != 0)
