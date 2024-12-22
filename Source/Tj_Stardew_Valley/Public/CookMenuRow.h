@@ -35,6 +35,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int MaterialIndexB;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int DesiredExp = 0;
+
 public:
 	UFUNCTION()
 	void OnCookButtonClicked();

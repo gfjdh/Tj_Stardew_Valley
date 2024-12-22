@@ -10,6 +10,7 @@ void UMerchantWidget::NativeConstruct()
 
     if (PurchaseButton1)
     {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("PurchaseButton1 ok"));
         PurchaseButton1->OnClicked.AddDynamic(this, &UMerchantWidget::OnPurchaseButton1Clicked);
     }
     else

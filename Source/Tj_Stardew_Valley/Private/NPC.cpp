@@ -117,7 +117,7 @@ void ANPC::BeginPlay()
         DialogueLines.Add(3, { { TEXT("Hey, bro!"), TEXT("What have you been up to?"), TEXT("Today is a great day for an adventure!") } });
         DialogueLines.Add(DialogueOfTrade, { { TEXT("Thank you very much"), TEXT("Thanks!"), TEXT("You're a good person!") } });
         DialogueLines.Add(DialogueOfCopleteQuest, { { TEXT("Thank you very much"), TEXT("Thanks!"), TEXT("You're a good person!") } });
-		DialogueLines.Add(DialogueOfAcceptQuest, { { TEXT("Please help me!") } });
+		DialogueLines.Add(DialogueOfAcceptQuest, { { TEXT("Please help me!(Press 'J' to open the task list)") } });
 		DialogueLines.Add(DialogueOfGiveApple, { { TEXT("This is for you!" } }));
     }
     else {
@@ -127,7 +127,7 @@ void ANPC::BeginPlay()
         DialogueLines.Add(3, { { TEXT("Hi, dear!"), TEXT("What have you been up to?"), TEXT("Today is a great day for a date!") } });
         DialogueLines.Add(DialogueOfTrade, { { TEXT("Wow! This is my favorite gift!"), TEXT("Thank you!"), TEXT("You're a good person!") } });
         DialogueLines.Add(DialogueOfCopleteQuest, { { TEXT("Thank you very much"), TEXT("Thanks!"), TEXT("You're a good person!") } });
-        DialogueLines.Add(DialogueOfAcceptQuest, { { TEXT("Please help me!") } });
+        DialogueLines.Add(DialogueOfAcceptQuest, { { TEXT("Please help me!(Press 'J' to open the task list)") } });
         DialogueLines.Add(DialogueOfGiveApple, { { TEXT("This is for you!" } }));
     }
 }
