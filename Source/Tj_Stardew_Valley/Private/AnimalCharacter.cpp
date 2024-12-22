@@ -131,7 +131,7 @@ void AAnimalCharacter::UpdateDirection()
 void AAnimalCharacter::EatFood()
 {
 	//调试信息
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Animal eat food!")));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Animal eat food!")));
 	//喂食后开始产出产品
 	IsFed = true;
 	//播放声音
@@ -155,7 +155,7 @@ void AAnimalCharacter::SpawnProduct()
 	FVector Direction = (Location - PlayerLocation).GetSafeNormal();
 	Location += Direction * 20;
 	//生成产品
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Animal produce product!")));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Animal produce product!")));
 	ACollectableEntity* Product = GetWorld()->SpawnActor<ACollectableEntity>(ProductClass, Location, FRotator::ZeroRotator);
 	//播放声音
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), ProduceSound, GetActorLocation());

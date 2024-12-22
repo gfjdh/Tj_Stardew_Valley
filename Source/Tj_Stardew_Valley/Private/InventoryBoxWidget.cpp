@@ -23,7 +23,7 @@ void UInventoryBoxWidget::NativeConstruct()
 FReply UInventoryBoxWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
 	Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("NativeOnMouseButtonDown"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("NativeOnMouseButtonDown"));
 	return UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::RightMouseButton).NativeReply;
 }
 
@@ -31,7 +31,7 @@ void UInventoryBoxWidget::NativeOnDragDetected(const FGeometry& InGeometry, cons
 {
 	if (CurrentItem)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("NativeOnDragDetected"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("NativeOnDragDetected"));
 		UInventoryDragDropOperation* DragDropOperation = NewObject<UInventoryDragDropOperation>();
 		DragDropOperation->DraggedWidget = this;
 		DragDropOperation->DraggedIndex = Index;
@@ -54,11 +54,11 @@ void UInventoryBoxWidget::NativeOnDragDetected(const FGeometry& InGeometry, cons
 
 bool UInventoryBoxWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("NativeOnDrop"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("NativeOnDrop"));
 	UInventoryDragDropOperation* DragDropOperation = Cast<UInventoryDragDropOperation>(InOperation);
 	if (DragDropOperation && DragDropOperation->DraggedWidget)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Swap Item"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Swap Item"));
 		SwapItem(DragDropOperation->DraggedWidget, DragDropOperation->DraggedIndex);
 	}
 	return Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);

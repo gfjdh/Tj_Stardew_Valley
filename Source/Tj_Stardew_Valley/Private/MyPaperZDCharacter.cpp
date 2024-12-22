@@ -335,12 +335,12 @@ void AMyPaperZDCharacter::UseItem(const FInputActionValue& Value)
 	CurrentPlayerState = EPlayerState::Interact;
 	UItem* UsingItem = PlayerInventory->UseItem();
 	if (UsingItem == nullptr) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("The Item is unusable!")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("The Item is unusable!")));
 		return;
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("UseItem!")));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("UseItem!")));
 	if (UsingItem->ItemType == CollectableType::Tool) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Using type:Tool!")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Using type:Tool!")));
 		switch (UsingItem->ItemID)
 		{
 			case 50:
@@ -366,7 +366,7 @@ void AMyPaperZDCharacter::UseItem(const FInputActionValue& Value)
 	}
 	else if (UsingItem->ItemType == CollectableType::Food)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Using type:Food!")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Using type:Food!")));
 		switch (UsingItem->ItemID)
 		{
 			case 60:
@@ -377,7 +377,7 @@ void AMyPaperZDCharacter::UseItem(const FInputActionValue& Value)
 	}
 	else if (UsingItem->ItemType == CollectableType::Potion)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Using type:Potion!")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Using type:Potion!")));
 		switch (UsingItem->ItemID)
 		{
 			case 40:
@@ -388,7 +388,7 @@ void AMyPaperZDCharacter::UseItem(const FInputActionValue& Value)
 	}
 	else if (UsingItem->ItemType == CollectableType::Other)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Using type:Other!")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Using type:Other!")));
 		switch (UsingItem->ItemID)
 		{
 			case 83:
@@ -414,7 +414,7 @@ void AMyPaperZDCharacter::SwitchItem(const FInputActionValue& Value)
 	if (CurrentPlayerState == EPlayerState::InFishingGame)
 		return;
 	CurrentPlayerState = EPlayerState::Interact;
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("SwitchItem!")));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("SwitchItem!")));
 	PlayerInventory->SwitchItem();
 	CurrentUsingItemWidget->FlushSlot(PlayerInventory);
 	CurrentPlayerState = EPlayerState::Idle;
@@ -429,7 +429,7 @@ void AMyPaperZDCharacter::Chop()
 	{
 		CurrentPlayerState = EPlayerState::Chop;
 
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Chop!")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Chop!")));
 		CanMove = false;
 		CanInteract = false;
 		EnableInteractBox(true);
@@ -461,7 +461,7 @@ void AMyPaperZDCharacter::Mine()
 	{
 		CurrentPlayerState = EPlayerState::Mine;
 
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Mine!")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Mine!")));
 		CanMove = false;
 		CanInteract = false;
 		EnableInteractBox(true);
@@ -493,7 +493,7 @@ void AMyPaperZDCharacter::Water()
 	{
 		CurrentPlayerState = EPlayerState::Water;
 
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Water!")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Water!")));
 		CanMove = false;
 		CanInteract = false;
 		EnableInteractBox(true);
@@ -526,7 +526,7 @@ void AMyPaperZDCharacter::Hoe()
 	{
 		CurrentPlayerState = EPlayerState::Hoe;
 
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Hoe!")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Hoe!")));
 		CanMove = false;
 		CanInteract = false;
 		EnableInteractBox(true);
@@ -560,7 +560,7 @@ void AMyPaperZDCharacter::Fish(const FInputActionValue& Value)
 	if (CanInteract)
 	{
 		CurrentPlayerState = EPlayerState::Fish;
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Fish!")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Fish!")));
 		//ActivatePlayer(false);
 		EnableInteractBox(true);
 		switch (PlayerDirection)
@@ -609,7 +609,7 @@ void AMyPaperZDCharacter::Interact(const FInputActionValue& Value)
 		|| CurrentPlayerState == EPlayerState::Cook)
 		return;
 	CurrentPlayerState = EPlayerState::Interact;
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Interact!")));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Interact!")));
 	CanMove = false;
 	CanInteract = false;
 	EnableInteractBox(true);
@@ -675,18 +675,18 @@ void AMyPaperZDCharacter::Run(const FInputActionValue& Value)
 	if (CanMove && !IsTired && !Running)
 	{
 		Running = true;
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("StartRun!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("StartRun!"));
 		GetCharacterMovement()->MaxWalkSpeed = 300.0f;
 	}
 	else if (Running)
 	{
 		Running = false;
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("StopRun!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("StopRun!"));
 		GetCharacterMovement()->MaxWalkSpeed = 150.0f;
 	}
 	else if (IsTired)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired! Cant Run!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired! Cant Run!"));
 	}
 }
 
@@ -730,7 +730,7 @@ void AMyPaperZDCharacter::OnInteractOverrideAnimEnd(bool bCompleted)
 void AMyPaperZDCharacter::SwitchSkill(const FInputActionValue& Value)
 {
 	CurrentPlayerState = EPlayerState::Interact;
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("SwitchSkill!")));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("SwitchSkill!")));
 	PlayerSkill->SwitchSkillIndex();
 	CurrentPlayerState = EPlayerState::Idle;
 }
@@ -751,22 +751,22 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 
 	if (TreeStump) {
 		if (CurrentPlayerState == EPlayerState::Chop) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Tree is being Chopped"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Tree is being Chopped"));
 			TreeStump->Chop(this);
 			PlayerSkill->SkillStrucUpdate(SkillType::Tool, 10);
 		}
 		else {
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));
 		}
 	}
 	else if (Ores) {
 		if (CurrentPlayerState == EPlayerState::Mine) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Ores is being Mined"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Ores is being Mined"));
 			PlayerSkill->SkillStrucUpdate(SkillType::Tool, 10);
 			Ores->Mine(this);
 		}
 		else {
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));
 		}
 	}
 	//ºÍ¸ûµØ½»»¥
@@ -798,9 +798,9 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 	}
 	else if (Animal) {
 		if (CurrentPlayerState == EPlayerState::Interact) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Interact with animal"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Interact with animal"));
 			if (Animal->HadSpawnedProduct) {
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Animal has already spawned product"));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Animal has already spawned product"));
 				return;
 			}
 			if (!Animal->IsFed) {
@@ -948,7 +948,7 @@ void AMyPaperZDCharacter::UpdateStamina(int Value) {
 			Stamina = MaxStamina;
 		}
 		if (IsTired) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Player is not tired anymore!"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Player is not tired anymore!"));
 			CanInteract = true;
 			IsTired = false;
 		}
@@ -962,7 +962,7 @@ void AMyPaperZDCharacter::UpdateStamina(int Value) {
 				Running = false;
 				GetCharacterMovement()->MaxWalkSpeed = 150.0f;
 			}
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired!"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired!"));
 			CanInteract = false;
 			IsTired = true;
 		}
@@ -972,12 +972,12 @@ void AMyPaperZDCharacter::UpdateStamina(int Value) {
 }
 
 void AMyPaperZDCharacter::UpdateLevel(int ExValue) {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Gained Exp: %d"), ExValue));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Gained Exp: %d"), ExValue));
 	Exp += ExValue;
 	if (Exp >= 10) {
 		Exp = 0;
 		Level++;
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Level Up"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Level Up"));
 		PlayerUIWidget->SetLevel(Level);
 		SDGameInstance->SetPlayerLevel(1);
 		Exp = 0;
@@ -994,11 +994,11 @@ void AMyPaperZDCharacter::CollectItem(UItem* ItemData) {
 		case CollectableType::Gold:
 			SDGameInstance->SetPlayerGold(GoldAmount);
 			PlayerUIWidget->SetGold(SDGameInstance->GoldWealth);
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Gold"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Gold"));
 			break;
 
 		default:
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Default,Pick UP"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Default,Pick UP"));
 			PlayerInventory->AddItem(ItemData);
 			break;
 	}

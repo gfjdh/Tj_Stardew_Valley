@@ -58,13 +58,13 @@ bool UInventory::AddItem(const UItem* ItemToAdd)
 		if (i->ItemID == ItemToAdd->ItemID)
 		{
 			i->CurrentAmount += ItemToAdd->CurrentAmount;
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Item ID %d Picked Up"), ItemToAdd->ItemID));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Item ID %d Picked Up"), ItemToAdd->ItemID));
 			return true;
 		}
 	}
 
 	Inventory.Add(const_cast<UItem*>(ItemToAdd));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Item ID %d Picked Up"), ItemToAdd->ItemID));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Item ID %d Picked Up"), ItemToAdd->ItemID));
 
 
 	return true;
@@ -97,12 +97,12 @@ bool UInventory::AddItemByIndex(const UItem* ItemToAdd)
 		if (i->ItemID == ItemToAdd->ItemID)
 		{
 			i->CurrentAmount += ItemToAdd->CurrentAmount;
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Item ID %d Picked Up"), ItemToAdd->ItemID));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Item ID %d Picked Up"), ItemToAdd->ItemID));
 			return true;
 		}
 	}
 	Inventory.Add(const_cast<UItem*>(ItemToAdd));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Item ID %d Picked Up"), ItemToAdd->ItemID));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Item ID %d Picked Up"), ItemToAdd->ItemID));
 	return true;
 }
 
@@ -182,13 +182,13 @@ UItem* UInventory::UseItem()
 	if (Inventory[UsingIndex]->bIsConsumable)
 	{
 		FString ItemInfo = FString::Printf(TEXT("Using :%d"), Inventory[UsingIndex]->ItemID);
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::White, ItemInfo);
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::White, ItemInfo);
 		return Inventory[UsingIndex];
 	}
 	if (Inventory[UsingIndex]->bIsEquippable)
 	{
 		FString ItemInfo = FString::Printf(TEXT("Equipping :%d"), Inventory[UsingIndex]->ItemID);
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::White, ItemInfo);
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::White, ItemInfo);
 		return Inventory[UsingIndex];
 	}
 	return nullptr;
@@ -203,10 +203,10 @@ void UInventory::SwitchItem()
 		UsingIndex = 0;
 	}
 	if (Inventory.Num() <= 0) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Inventory Empty"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Inventory Empty"));
 	}
 	else {
 		FString ItemInfo = FString::Printf(TEXT("Switching to :%s"), *Inventory[UsingIndex]->ItemName);
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::White, ItemInfo);
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::White, ItemInfo);
 	}
 }
