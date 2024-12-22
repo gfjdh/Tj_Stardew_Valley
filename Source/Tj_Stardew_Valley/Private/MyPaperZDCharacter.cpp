@@ -158,12 +158,6 @@ AMyPaperZDCharacter::AMyPaperZDCharacter()
 		SkillAction = SkillFinder.Object;
 	}
 
-	//加载切换技能输入
-	static ConstructorHelpers::FObjectFinder<UInputAction> SwitchSkillFinder(TEXT("InputAction'/Game/Input/Input_SwitchSkill.Input_SwitchSkill'"));
-	if (SwitchSkillFinder.Succeeded())
-	{
-		SwitchSkillAction = SwitchSkillFinder.Object;
-	}
 
 	GetCharacterMovement()->MaxWalkSpeed = 150.0f;
 
@@ -271,7 +265,6 @@ void AMyPaperZDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(CameraUpAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::CameraChangeUp);
 		EnhancedInputComponent->BindAction(CameraDownAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::CameraChangeDown);
 		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::Inventory);
-		EnhancedInputComponent->BindAction(SwitchSkillAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::SwitchSkill);
 		EnhancedInputComponent->BindAction(SkillAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::DisplaySkillBoard);
 		EnhancedInputComponent->BindAction(CheckTaskAction, ETriggerEvent::Started, this, &AMyPaperZDCharacter::CheckTask);
 	}
@@ -357,6 +350,12 @@ void AMyPaperZDCharacter::UseItem(const FInputActionValue& Value)
 			case 52:
 				Hoe();
 				break;
+			case 54:
+				Chop();
+				break;
+			case 55:
+				Mine();
+				break;
 		}
 	}
 	else if (UsingItem->ItemType == CollectableType::Seed)
@@ -372,6 +371,15 @@ void AMyPaperZDCharacter::UseItem(const FInputActionValue& Value)
 		switch (UsingItem->ItemID)
 		{
 			case 60:
+				UpdateStamina(5);
+				break;
+			case 1001:
+				UpdateStamina(5);
+				break;
+			case 62:
+				UpdateStamina(10);
+				break;
+			case 61:
 				UpdateStamina(5);
 				break;
 		}
@@ -726,14 +734,6 @@ void AMyPaperZDCharacter::OnInteractOverrideAnimEnd(bool bCompleted)
 	EnableInteractBox(false);
 }
 
-//切换技能索引
-void AMyPaperZDCharacter::SwitchSkill(const FInputActionValue& Value)
-{
-	CurrentPlayerState = EPlayerState::Interact;
-	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("SwitchSkill!")));
-	PlayerSkill->SwitchSkillIndex();
-	CurrentPlayerState = EPlayerState::Idle;
-}
 
 // 互动开始重叠
 void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,

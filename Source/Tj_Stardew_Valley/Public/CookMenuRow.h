@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "SkillsTypes.h"
 
 #include "Components/Button.h"
 #include "Components/Image.h"
@@ -37,6 +38,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int DesiredExp = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	SkillType UpdateType = SkillType::Cooking;
 
 public:
 	UFUNCTION()
