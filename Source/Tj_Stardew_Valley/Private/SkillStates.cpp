@@ -10,11 +10,6 @@ USkillStates::USkillStates()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	//耐力部分技能初始化
-	SkillInit(1, EnduranceSaver);
-	SkillInit(2, EnduranceStander);
-	SkillInit(3, EnduranceMaxMaster);
-
 
 	Endurance = CreateDefaultSubobject<USkillsTypes>(TEXT("Endurance"));
 	Endurance->SkillStructName = TEXT("Endurance");
@@ -45,7 +40,6 @@ USkillStates::USkillStates()
 
 	Crafting = CreateDefaultSubobject<USkillsTypes>(TEXT("Crafting"));
 	Crafting->SkillStructName = TEXT("Crafting");
-
 	//初始化技能结构
 	
 	// ...
@@ -384,4 +378,36 @@ void USkillStates::SwitchSkillIndex() {
 		Index = 1;
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Stamina Exp gained!"));
 	}
+}
+
+void USkillStates::SkillInit1()
+{
+	//显式初始化
+	Farming->Level = 1;
+	Tool->Level = 1;
+	Cooking->Level = 1;
+	
+	Farming->SkillPoint = 0;
+	Tool->SkillPoint = 0;
+	Cooking->SkillPoint = 0;
+
+	Farming->ExpToNextLevel = 50;
+	Tool->ExpToNextLevel = 50;
+	Cooking->ExpToNextLevel = 50;
+
+	FarmingExpert.SkillStage = 1;
+	FarmingHarvest.SkillStage = 1;
+	FarmingEndurancer.SkillStage = 1;
+
+	ToolExpert.SkillStage = 1;
+	ToolHarvest.SkillStage = 1;
+	ToolSaver.SkillStage = 1;
+
+	CookingExpert.SkillStage = 1;
+	CookingHarvest.SkillStage = 1;
+	FastCooker.SkillStage = 1;
+
+	Cooking->SkillStage = 1;
+	Farming->SkillStage = 1;
+	Tool->SkillStage = 1;
 }
