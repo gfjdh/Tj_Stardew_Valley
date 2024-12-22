@@ -32,10 +32,13 @@ public:
 
     void SetMerchant(AMerchant *Merchant);
 
+    UFUNCTION()
     void OnPurchaseButton1Clicked();
 
+    UFUNCTION()
     void OnPurchaseButton2Clicked();
 
+    UFUNCTION()
     void OnPurchaseButton3Clicked();
 protected:
     UPROPERTY(meta = (BindWidget))
