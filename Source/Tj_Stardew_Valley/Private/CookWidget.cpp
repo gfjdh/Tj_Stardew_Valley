@@ -5,8 +5,6 @@ void UCookWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	CloseButton->OnClicked.AddDynamic(this, &UCookWidget::OnCloseButtonClicked);
-	CookMenuRowA->SetVisibility(ESlateVisibility::Visible);
-	CookMenuRowB->SetVisibility(ESlateVisibility::Visible);
 }
 
 void UCookWidget::OnCloseButtonClicked()
@@ -18,6 +16,7 @@ void UCookWidget::DisplayWidget(bool bIsVisible)
 {
 	if (bIsVisible) {
 		AddToViewport();
+		CookMenuRowB->ButtonCanClicked(2);
 	}
 	else {
 		RemoveFromParent();
