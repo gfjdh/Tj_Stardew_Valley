@@ -38,10 +38,14 @@ void ATreeStump::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* 
 void ATreeStump::Chop(AActor* OtherActor,USkillStates* PlayerSkill) {
 	AMyPaperZDCharacter* Player = Cast<AMyPaperZDCharacter>(OtherActor);
 	if (Player) {
-		//判断是否砍完
-		Health-=PlayerSkill->ToolExpert.SkillStage;
-		if (Health > 0)
+		int damage = 1;
+		if (Player->PlayerInventory->CurrentItem()->ItemID == 54) {
+			damage++;
+		}
+		Health -= damage;
+		if (Health > 0) {
 			return;
+		}
 		int DropNumber = FMath::RandRange(MinDropNumber, MaxDropNumber);
 		while (DropNumber--) {
 			//远离玩家随机5-30的位置

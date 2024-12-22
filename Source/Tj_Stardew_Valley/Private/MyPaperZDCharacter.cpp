@@ -357,6 +357,12 @@ void AMyPaperZDCharacter::UseItem(const FInputActionValue& Value)
 			case 52:
 				Hoe();
 				break;
+			case 54:
+				Chop();
+				break;
+			case 55:
+				Mine();
+				break;
 		}
 	}
 	else if (UsingItem->ItemType == CollectableType::Seed)
