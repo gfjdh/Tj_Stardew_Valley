@@ -147,10 +147,12 @@ void AMerchant::HandleTrade(int32 OptionIndex, AMyPaperZDCharacter *Player)
         FItemForSale Option = ItemsForSale[OptionIndex];
 		if (CheckPlayerGold(ItemsForSale[OptionIndex].Price))
         {
-            UpdatePlayerGold(-1 * ItemsForSale[OptionIndex].Price);
-            // 给玩家添加物品
-            SpawnItemForPlayer(Player, GetCollectableEntityClass(OptionIndex));
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("You bought a Item!"));
+            if (Player->PlayerSkill->Farming->SkillStage > 2||Option.FItemData.ItemID!=1003) {
+                UpdatePlayerGold(-1 * ItemsForSale[OptionIndex].Price);
+                // 给玩家添加物品
+                SpawnItemForPlayer(Player, GetCollectableEntityClass(OptionIndex));
+                GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("You bought a Item!"));
+            }
         }
         else
         {
