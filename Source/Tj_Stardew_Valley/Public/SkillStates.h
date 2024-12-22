@@ -181,4 +181,3 @@ public:
 	void SkillPointUse(SkillType SkillType, int32 SkillID);
 
 };
-
