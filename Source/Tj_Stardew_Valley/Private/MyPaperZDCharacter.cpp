@@ -661,12 +661,10 @@ void AMyPaperZDCharacter::CheckTask(const FInputActionValue& Value)
 			TaskWidget->IsOpened = true;
 			TaskWidget->AddToViewport();
 			//ÏÔÊ¾ÈÎÎñ
+			TaskWidget->ShowCurrentTasks(this);
 		}
 		else {
-			ActivatePlayer(true);
-			CurrentPlayerState = EPlayerState::Idle;
-			TaskWidget->IsOpened = false;
-			TaskWidget->RemoveFromParent();
+			TaskWidget->CloseTaskWidget();
 		}
 	}
 }
