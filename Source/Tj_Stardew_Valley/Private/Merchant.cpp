@@ -21,12 +21,6 @@ AMerchant::AMerchant()
     MovementSpeed = 0.0f; // 设置NPC的移动速度
     CurrentDirection = FVector::ZeroVector; // 初始化NPC的方向
     TimeToChangeDirection = 0.0f; // 初始化时间
-    // 设置商人待机动画
-    static ConstructorHelpers::FObjectFinder<UPaperFlipbook> IdleAnimation(TEXT("/Game/Animations/IdleAnimation"));
-    if (IdleAnimation.Succeeded())
-    {
-        NPCFlipbookComponent->SetFlipbook(IdleAnimation.Object);
-    }
 
     // 初始化商人类型
     MerchantType = EMerchantType::Vendor;
