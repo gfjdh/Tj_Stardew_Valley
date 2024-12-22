@@ -205,7 +205,7 @@ void ANPC::IncreaseFavorability(int value)
 void ANPC::CheckFavorabilityLevel()
 {
 	//输出调试信息Favorability
-    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Favorability: %d"), Favorability));
+    //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Favorability: %d"), Favorability));
 	if (Favorability == LowFavorabilityThreshold || Favorability == MediumFavorabilityThreshold || Favorability == HighFavorabilityThreshold)
 	{
 		FavorabilityLevel = -1; // 好感度分界点，等待任务
@@ -319,7 +319,7 @@ void ANPC::CheckForPlayerInteractionBox()
                     break;
                 }
                 else if (UsingItem->ItemType == CollectableType::Gift) {
-                    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Using type:Gift!")));
+                    //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Using type:Gift!")));
                     CurrentDirection = FVector::ZeroVector;
                     bPlayerNearby = true;
                     DialogueCooldown = 3.0f; // 设置冷却时间为3秒

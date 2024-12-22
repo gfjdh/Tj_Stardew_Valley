@@ -132,12 +132,12 @@ void ACrop::Fert() {
 
 void ACrop::GetDefect() {
 	if (!IsDefected && !IsDry) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Crop has not been defected!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Crop has not been defected!"));
 		int RandomValue = FMath::RandRange(0, 100);
 		if (RandomValue <= DefectRate)
 		{
 			IsDefected = true;
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Crop has been defected!"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Crop has been defected!"));
 			DefectedSprite->SetSprite(Buff_Defected);
 
 		}
@@ -147,12 +147,12 @@ void ACrop::GetDefect() {
 
 void ACrop::GetDry() {
 	if (!IsDry && !IsDefected) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Crop has not been dryed!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Crop has not been dryed!"));
 		int RandomValue = FMath::RandRange(0, 100);
 		if (RandomValue <= DryRate)
 		{
 			IsDry = true;
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Crop has been dryed!"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Crop has been dryed!"));
 			DefectedSprite->SetSprite(Buff_NeedWater);
 
 		}

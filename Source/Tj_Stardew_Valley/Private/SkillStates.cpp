@@ -92,22 +92,22 @@ void USkillStates::SkillInit(int32 SkillID, FSkillData& Skill)
 			Skill.SkillSprite = SkillData->SkillSprite;
 			Skill.SkillStage = SkillData->SkillStage;
 			Skill.MaxStage = SkillData->MaxStage;
-			if(GEngine)
+			/*if(GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green,
-				FString::Printf(TEXT("Skill ID %d found in DataTable"), SkillID));
+				FString::Printf(TEXT("Skill ID %d found in DataTable"), SkillID));*/
 		}
 		else
 		{
-			if (GEngine)
+			/*if (GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,
-				FString::Printf(TEXT("Skill ID %d not found in DataTable"), SkillID));
+				FString::Printf(TEXT("Skill ID %d not found in DataTable"), SkillID));*/
 		}
 	}
 	else
 	{
-		if (GEngine)
+		/*if (GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,
-			TEXT("Failed to load Skill DataTable"));
+			TEXT("Failed to load Skill DataTable"));*/
 	}
 }
 
