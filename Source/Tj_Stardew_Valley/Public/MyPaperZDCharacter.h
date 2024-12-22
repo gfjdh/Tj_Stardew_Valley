@@ -184,6 +184,9 @@ public:
 	UCookWidget* CookWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UCookWidget* CraftWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTaskWidget* TaskWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)

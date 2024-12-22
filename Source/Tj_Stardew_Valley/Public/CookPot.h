@@ -28,5 +28,5 @@ public:
 	UPaperSpriteComponent* PotSprite;
 
 public:
-	void OpenCookMenu(AActor* OtherActor);
+	virtual void OpenCookMenu(AActor* OtherActor);
 };
