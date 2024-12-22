@@ -7,6 +7,7 @@
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "Components/GridPanel.h"
+#include "TaskItemWidget.h"
 
 #include "TaskWidget.generated.h"
 
@@ -26,8 +27,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UButton* CloseButton;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UTaskItemWidget> TaskItemWidgetClass;
+
 	bool IsOpened = false;
 
 	UFUNCTION()
 	void OnCloseButtonClicked();
+
+	UFUNCTION()
+	void ShowCurrentTasks(AActor* PlayerActor);
+
+	UFUNCTION()
+	void CloseTaskWidget();
 };
