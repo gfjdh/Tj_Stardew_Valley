@@ -335,12 +335,12 @@ void AMyPaperZDCharacter::UseItem(const FInputActionValue& Value)
 	CurrentPlayerState = EPlayerState::Interact;
 	UItem* UsingItem = PlayerInventory->UseItem();
 	if (UsingItem == nullptr) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("The Item is unusable!")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("The Item is unusable!")));
 		return;
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("UseItem!")));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("UseItem!")));
 	if (UsingItem->ItemType == CollectableType::Tool) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Using type:Tool!")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Using type:Tool!")));
 		switch (UsingItem->ItemID)
 		{
 			case 50:
@@ -366,7 +366,7 @@ void AMyPaperZDCharacter::UseItem(const FInputActionValue& Value)
 	}
 	else if (UsingItem->ItemType == CollectableType::Food)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Using type:Food!")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Using type:Food!")));
 		switch (UsingItem->ItemID)
 		{
 			case 60:
@@ -377,7 +377,7 @@ void AMyPaperZDCharacter::UseItem(const FInputActionValue& Value)
 	}
 	else if (UsingItem->ItemType == CollectableType::Potion)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Using type:Potion!")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Using type:Potion!")));
 		switch (UsingItem->ItemID)
 		{
 			case 40:
@@ -388,7 +388,7 @@ void AMyPaperZDCharacter::UseItem(const FInputActionValue& Value)
 	}
 	else if (UsingItem->ItemType == CollectableType::Other)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Using type:Other!")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Using type:Other!")));
 		switch (UsingItem->ItemID)
 		{
 			case 83:
@@ -414,7 +414,7 @@ void AMyPaperZDCharacter::SwitchItem(const FInputActionValue& Value)
 	if (CurrentPlayerState == EPlayerState::InFishingGame)
 		return;
 	CurrentPlayerState = EPlayerState::Interact;
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("SwitchItem!")));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("SwitchItem!")));
 	PlayerInventory->SwitchItem();
 	CurrentUsingItemWidget->FlushSlot(PlayerInventory);
 	CurrentPlayerState = EPlayerState::Idle;
@@ -429,7 +429,7 @@ void AMyPaperZDCharacter::Chop()
 	{
 		CurrentPlayerState = EPlayerState::Chop;
 
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Chop!")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Chop!")));
 		CanMove = false;
 		CanInteract = false;
 		EnableInteractBox(true);
@@ -461,7 +461,7 @@ void AMyPaperZDCharacter::Mine()
 	{
 		CurrentPlayerState = EPlayerState::Mine;
 
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Mine!")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Mine!")));
 		CanMove = false;
 		CanInteract = false;
 		EnableInteractBox(true);
@@ -493,7 +493,7 @@ void AMyPaperZDCharacter::Water()
 	{
 		CurrentPlayerState = EPlayerState::Water;
 
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Water!")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Water!")));
 		CanMove = false;
 		CanInteract = false;
 		EnableInteractBox(true);
@@ -512,7 +512,7 @@ void AMyPaperZDCharacter::Water()
 		}
 
 		CurrentPlayerState = EPlayerState::Idle;
-		UpdateStamina(-2);
+		UpdateStamina(-3+ PlayerSkill->FarmingEndurancer.SkillStage);
 	}
 }
 
@@ -526,7 +526,7 @@ void AMyPaperZDCharacter::Hoe()
 	{
 		CurrentPlayerState = EPlayerState::Hoe;
 
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Hoe!")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Hoe!")));
 		CanMove = false;
 		CanInteract = false;
 		EnableInteractBox(true);
@@ -547,7 +547,7 @@ void AMyPaperZDCharacter::Hoe()
 		}
 
 		CurrentPlayerState = EPlayerState::Idle;
-		UpdateStamina(-5);
+		UpdateStamina(-6+PlayerSkill->FarmingEndurancer.SkillStage);
 	}
 }
 
@@ -560,7 +560,7 @@ void AMyPaperZDCharacter::Fish(const FInputActionValue& Value)
 	if (CanInteract)
 	{
 		CurrentPlayerState = EPlayerState::Fish;
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Fish!")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Fish!")));
 		//ActivatePlayer(false);
 		EnableInteractBox(true);
 		switch (PlayerDirection)
@@ -609,7 +609,7 @@ void AMyPaperZDCharacter::Interact(const FInputActionValue& Value)
 		|| CurrentPlayerState == EPlayerState::Cook)
 		return;
 	CurrentPlayerState = EPlayerState::Interact;
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Interact!")));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Interact!")));
 	CanMove = false;
 	CanInteract = false;
 	EnableInteractBox(true);
@@ -675,18 +675,18 @@ void AMyPaperZDCharacter::Run(const FInputActionValue& Value)
 	if (CanMove && !IsTired && !Running)
 	{
 		Running = true;
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("StartRun!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("StartRun!"));
 		GetCharacterMovement()->MaxWalkSpeed = 300.0f;
 	}
 	else if (Running)
 	{
 		Running = false;
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("StopRun!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("StopRun!"));
 		GetCharacterMovement()->MaxWalkSpeed = 150.0f;
 	}
 	else if (IsTired)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired! Cant Run!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired! Cant Run!"));
 	}
 }
 
@@ -730,7 +730,7 @@ void AMyPaperZDCharacter::OnInteractOverrideAnimEnd(bool bCompleted)
 void AMyPaperZDCharacter::SwitchSkill(const FInputActionValue& Value)
 {
 	CurrentPlayerState = EPlayerState::Interact;
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("SwitchSkill!")));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("SwitchSkill!")));
 	PlayerSkill->SwitchSkillIndex();
 	CurrentPlayerState = EPlayerState::Idle;
 }
@@ -751,27 +751,32 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 
 	if (TreeStump) {
 		if (CurrentPlayerState == EPlayerState::Chop) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Tree is being Chopped"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Tree is being Chopped"));
 			TreeStump->Chop(this);
+			PlayerSkill->SkillStrucUpdate(SkillType::Tool, 10);
 		}
 		else {
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));
 		}
 	}
 	else if (Ores) {
 		if (CurrentPlayerState == EPlayerState::Mine) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Ores is being Mined"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Ores is being Mined"));
+			PlayerSkill->SkillStrucUpdate(SkillType::Tool, 10);
 			Ores->Mine(this);
 		}
 		else {
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Not Useful Tool"));
 		}
 	}
 	//和耕地交互
 	else if (FarmLand) {
+		ACrop* CropToSpawn;
 		//浇水
 		if (CurrentPlayerState == EPlayerState::Water) {
 			FarmLand->WaterFarmLand();
+			PlayerSkill->SkillStrucUpdate(SkillType::Tool, 10);
+			PlayerSkill->SkillStrucUpdate(SkillType::Farming, 5);
 		}
 		//种植
 		else if (CurrentPlayerState == EPlayerState::Plant) {
@@ -780,10 +785,16 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 			if (FarmLand->WaterStage == 1) {
 				switch (PlayerInventory->CurrentItem()->ItemID) {
 				case 1002:
-					GetWorld()->SpawnActor<ACrop>(CarrotToSpawn, PlantLocation, FRotator(0.0f, 0.0f, 0.0f));
+					CropToSpawn=GetWorld()->SpawnActor<ACrop>(CarrotToSpawn, PlantLocation, FRotator(0.0f, 0.0f, 0.0f));
+					CropToSpawn->Expert(PlayerSkill);
+					CropToSpawn->Harvester(PlayerSkill);
+					PlayerSkill->SkillStrucUpdate(SkillType::Farming, 10);
 					break;
 				case 1003:
-					GetWorld()->SpawnActor<ACrop>(WheatToSpawn, PlantLocation, FRotator(0.0f, 0.0f, 0.0f));
+					CropToSpawn=GetWorld()->SpawnActor<ACrop>(WheatToSpawn, PlantLocation, FRotator(0.0f, 0.0f, 0.0f));
+					CropToSpawn->Expert(PlayerSkill);
+					CropToSpawn->Harvester(PlayerSkill);
+					PlayerSkill->SkillStrucUpdate(SkillType::Farming, 10);
 					break;
 				}
 				PlayerInventory->RemoveItemByIndex(PlayerInventory->UsingIndex, 1);
@@ -793,9 +804,9 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 	}
 	else if (Animal) {
 		if (CurrentPlayerState == EPlayerState::Interact) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Interact with animal"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Interact with animal"));
 			if (Animal->HadSpawnedProduct) {
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Animal has already spawned product"));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Animal has already spawned product"));
 				return;
 			}
 			if (!Animal->IsFed) {
@@ -860,6 +871,8 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 			}
 			else {
 				FarmLandLocationList.push_back(SpawnLocation);
+				PlayerSkill->SkillStrucUpdate(SkillType::Farming, 10);
+				PlayerSkill->SkillStrucUpdate(SkillType::Tool, 10);
 			}
 		}
 	}
@@ -868,6 +881,8 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 			FVector CropLocation = Crop->GetActorLocation();
 			Crop->Destroy();
 			Crop->SpawnProducts();
+			PlayerSkill->SkillStrucUpdate(SkillType::Farming, 10);
+			PlayerSkill->SkillStrucUpdate(SkillType::Tool, 10);
 		}
 		if (CurrentPlayerState == EPlayerState::Heal) {
 			if (Crop->IsDefected) {
@@ -933,25 +948,13 @@ void AMyPaperZDCharacter::EnableInteractBox(bool Enabled){
 void AMyPaperZDCharacter::UpdateStamina(int Value) {
 	int MaxStamina = 100;
 	int MinStamina = 0;
-
-	if (PlayerSkill->EnduranceSaver.SkillStage) {
-		for (int i = 0; i < PlayerSkill->EnduranceSaver.SkillStage; i++) {
-			Value *= 0.9;
-		}
-	}
-	if (PlayerSkill->EnduranceStander.SkillStage) {
-		MinStamina += -10* PlayerSkill->EnduranceStander.SkillStage;
-	}
-	if (PlayerSkill->EnduranceMaxMaster.SkillStage) {
-		MaxStamina += 10 * PlayerSkill->EnduranceMaxMaster.SkillStage;
-	}
 	Stamina += Value;
 	if (Stamina > MinStamina) {
 		if (Stamina > MaxStamina) {
 			Stamina = MaxStamina;
 		}
 		if (IsTired) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Player is not tired anymore!"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Player is not tired anymore!"));
 			CanInteract = true;
 			IsTired = false;
 		}
@@ -965,24 +968,22 @@ void AMyPaperZDCharacter::UpdateStamina(int Value) {
 				Running = false;
 				GetCharacterMovement()->MaxWalkSpeed = 150.0f;
 			}
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired!"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired!"));
 			CanInteract = false;
 			IsTired = true;
 		}
 	}
 	PlayerUIWidget->SetStamina(Stamina);
 	SDGameInstance->SetPlayerStamina(Stamina);
-
-	PlayerSkill->SkillStrucUpdate(SkillType::Endurance, 10);
 }
 
 void AMyPaperZDCharacter::UpdateLevel(int ExValue) {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Gained Exp: %d"), ExValue));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Gained Exp: %d"), ExValue));
 	Exp += ExValue;
 	if (Exp >= 10) {
 		Exp = 0;
 		Level++;
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Level Up"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Level Up"));
 		PlayerUIWidget->SetLevel(Level);
 		SDGameInstance->SetPlayerLevel(1);
 		Exp = 0;
@@ -999,11 +1000,11 @@ void AMyPaperZDCharacter::CollectItem(UItem* ItemData) {
 		case CollectableType::Gold:
 			SDGameInstance->SetPlayerGold(GoldAmount);
 			PlayerUIWidget->SetGold(SDGameInstance->GoldWealth);
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Gold"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Gold"));
 			break;
 
 		default:
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Default,Pick UP"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Default,Pick UP"));
 			PlayerInventory->AddItem(ItemData);
 			break;
 	}
@@ -1198,6 +1199,7 @@ void AMyPaperZDCharacter::DisplaySkillBoard()
 		{
 			// 将用户界面添加到视图中
 			SkillWidgetInstance->AddToViewport();
+			SkillWidgetInstance->SkillPointText(PlayerSkill->Farming->SkillPoint, PlayerSkill->Tool->SkillPoint, PlayerSkill->Cooking->SkillPoint);
 			SkillBoardIsOpen = true;
 			if (SkillWidgetInstance->FarmingSkillLevel1)
 			{
@@ -1242,90 +1244,102 @@ void AMyPaperZDCharacter::DisplaySkillBoard()
 UFUNCTION()
 void AMyPaperZDCharacter::OnCookSkillLevel1Clicked()
 {
-	if (PlayerSkill->Cooking->Level > 1) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Level Wrong!"));
+	if (PlayerSkill->Cooking->SkillStage != 1||PlayerSkill->Cooking->SkillPoint<1) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!A"));
 	}
 	else {
-		PlayerSkill->Cooking->Level++;
+		PlayerSkill->Cooking->SkillStage++;
 		PlayerSkill->SkillLevelUp(PlayerSkill->CookingExpert);
 		PlayerSkill->SkillLevelUp(PlayerSkill->CookingHarvest);
 		PlayerSkill->SkillLevelUp(PlayerSkill->FastCooker);
+		PlayerSkill->Cooking->SkillPoint--;
+		SkillWidgetInstance->HighLight(SkillWidgetInstance->CookSkillImage1, 5.0f);
 	}
+	SkillWidgetInstance->SkillPointText(PlayerSkill->Farming->SkillPoint, PlayerSkill->Tool->SkillPoint, PlayerSkill->Cooking->SkillPoint);
 }
 
 UFUNCTION()
 void AMyPaperZDCharacter::OnCookSkillLevel2Clicked()
 {
-	if (PlayerSkill->Cooking->Level > 2) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Level Wrong!"));
+	if (PlayerSkill->Cooking->SkillStage != 2 || PlayerSkill->Cooking->SkillPoint < 1) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!B"));
 	}
 	else {
-		PlayerSkill->Cooking->Level++;
+		PlayerSkill->Cooking->SkillStage++;
 		PlayerSkill->SkillLevelUp(PlayerSkill->CookingExpert);
 		PlayerSkill->SkillLevelUp(PlayerSkill->CookingHarvest);
 		PlayerSkill->SkillLevelUp(PlayerSkill->FastCooker);
-
+		PlayerSkill->Cooking->SkillPoint--;
+		SkillWidgetInstance->HighLight(SkillWidgetInstance->CookSkillImage2, 5.0f);
 	}
+	SkillWidgetInstance->SkillPointText(PlayerSkill->Farming->SkillPoint, PlayerSkill->Tool->SkillPoint, PlayerSkill->Cooking->SkillPoint);
 }
 
 UFUNCTION()
 void AMyPaperZDCharacter::OnFarmingSkillLevel1Clicked()
 {
-	if (PlayerSkill->Farming->Level > 1) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Level Wrong!"));
+	if (PlayerSkill->Farming->SkillStage != 1 || PlayerSkill->Farming->SkillPoint < 1) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!C"));
 	}
 	else {
-		PlayerSkill->Farming->Level++;
+		PlayerSkill->Farming->SkillStage++;
 		PlayerSkill->SkillLevelUp(PlayerSkill->FarmingExpert);
 		PlayerSkill->SkillLevelUp(PlayerSkill->FarmingHarvest);
 		PlayerSkill->SkillLevelUp(PlayerSkill->FarmingEndurancer);
-
+		PlayerSkill->Farming->SkillPoint--;
+		SkillWidgetInstance->HighLight(SkillWidgetInstance->FarmingSkillImage1, 5.0f);
 	}
+	SkillWidgetInstance->SkillPointText(PlayerSkill->Farming->SkillPoint, PlayerSkill->Tool->SkillPoint, PlayerSkill->Cooking->SkillPoint);
 }
 
 UFUNCTION()
 void AMyPaperZDCharacter::OnFarmingSkillLevel2Clicked()
 {
-	if (PlayerSkill->Farming->Level > 2) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Level Wrong!"));
+	if (PlayerSkill->Farming->SkillStage != 2 || PlayerSkill->Farming->SkillPoint < 1) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!D"));
+		
 	}
 	else {
-		PlayerSkill->Farming->Level++;
+		PlayerSkill->Farming->SkillStage++;
 		PlayerSkill->SkillLevelUp(PlayerSkill->FarmingExpert);
 		PlayerSkill->SkillLevelUp(PlayerSkill->FarmingHarvest);
 		PlayerSkill->SkillLevelUp(PlayerSkill->FarmingEndurancer);
-
+		PlayerSkill->Farming->SkillPoint--;
+		SkillWidgetInstance->HighLight(SkillWidgetInstance->FarmingSkillImage2, 5.0f);
 	}
+	SkillWidgetInstance->SkillPointText(PlayerSkill->Farming->SkillPoint, PlayerSkill->Tool->SkillPoint, PlayerSkill->Cooking->SkillPoint);
 }
 
 UFUNCTION()
 void AMyPaperZDCharacter::OnToolSkillLevel1Clicked()
 {
-	if (PlayerSkill->Tool->Level > 1) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Level Wrong!"));
+	if (PlayerSkill->Tool->SkillStage != 1 || PlayerSkill->Tool->SkillPoint < 1) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!E"));
 	}
 	else {
-		PlayerSkill->Tool->Level++;
+		PlayerSkill->Tool->SkillStage++;
 		PlayerSkill->SkillLevelUp(PlayerSkill->ToolExpert);
 		PlayerSkill->SkillLevelUp(PlayerSkill->ToolHarvest);
 		PlayerSkill->SkillLevelUp(PlayerSkill->ToolSaver);
-
+		PlayerSkill->Tool->SkillPoint--;
+		SkillWidgetInstance->HighLight(SkillWidgetInstance->ToolSkillImage1, 5.0f);
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired!"));
+	SkillWidgetInstance->SkillPointText(PlayerSkill->Farming->SkillPoint, PlayerSkill->Tool->SkillPoint, PlayerSkill->Cooking->SkillPoint);
 }
 
 UFUNCTION()
 void AMyPaperZDCharacter::OnToolSkillLevel2Clicked()
 {
-	if (PlayerSkill->Tool->Level > 2) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Level Wrong!"));
+	if (PlayerSkill->Tool->Level != 2 || PlayerSkill->Tool->SkillPoint < 1) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!F"));
 	}
 	else {
 		PlayerSkill->Tool->Level++;
 		PlayerSkill->SkillLevelUp(PlayerSkill->ToolExpert);
 		PlayerSkill->SkillLevelUp(PlayerSkill->ToolHarvest);
 		PlayerSkill->SkillLevelUp(PlayerSkill->ToolSaver);
-
+		PlayerSkill->Tool->SkillPoint--;
+		SkillWidgetInstance->HighLight(SkillWidgetInstance->ToolSkillImage1, 5.0f);
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Player is tired!"));
+	SkillWidgetInstance->SkillPointText(PlayerSkill->Farming->SkillPoint, PlayerSkill->Tool->SkillPoint, PlayerSkill->Cooking->SkillPoint);
 }

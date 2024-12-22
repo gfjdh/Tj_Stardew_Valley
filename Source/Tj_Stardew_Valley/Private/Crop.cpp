@@ -62,7 +62,7 @@ void ACrop::JudgeMaturity()
 	if (Maturity < 1000) {
 		//作物的生长速度在一定范围内随机
 		if (!IsDefected && !IsDry) {
-			Maturity += (double)(rand() % 5 / 10 + 0.5) * IsWet;
+			Maturity += (double)(rand() % 5 / 10 + 0.5) * IsWet*GrowSpeed;
 		}
 	}
 	if (Maturity < 200) {
@@ -112,7 +112,9 @@ void ACrop::SpawnProducts()
 	FVector ProductsSpawnLocation = CropLocation + FVector(OffsetX, OffsetY, 0);
 	//成熟阶段收获，可以生成产品
 	if (status == 3){
-		GetWorld()->SpawnActor<ACollectableEntity>(ProductActor1, ProductsSpawnLocation, FRotator(0.0f, 0.0f, 0.0f));
+		for (int i = 0; i < HarvestTimes; i++) {
+			GetWorld()->SpawnActor<ACollectableEntity>(ProductActor1, ProductsSpawnLocation, FRotator(0.0f, 0.0f, 0.0f));
+		}
 	}
 
 	//生成种子,根据status成熟情况生成种子数
@@ -132,12 +134,12 @@ void ACrop::Fert() {
 
 void ACrop::GetDefect() {
 	if (!IsDefected && !IsDry) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Crop has not been defected!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Crop has not been defected!"));
 		int RandomValue = FMath::RandRange(0, 100);
 		if (RandomValue <= DefectRate)
 		{
 			IsDefected = true;
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Crop has been defected!"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Crop has been defected!"));
 			DefectedSprite->SetSprite(Buff_Defected);
 
 		}
@@ -147,12 +149,12 @@ void ACrop::GetDefect() {
 
 void ACrop::GetDry() {
 	if (!IsDry && !IsDefected) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Crop has not been dryed!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Crop has not been dryed!"));
 		int RandomValue = FMath::RandRange(0, 100);
 		if (RandomValue <= DryRate)
 		{
 			IsDry = true;
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Crop has been dryed!"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Crop has been dryed!"));
 			DefectedSprite->SetSprite(Buff_NeedWater);
 
 		}
@@ -168,4 +170,16 @@ void ACrop::HealDef() {
 void ACrop::HealDry() {
 	IsDry = false;
 	DefectedSprite->SetSprite(Buff_Empty);
+}
+
+void ACrop::Expert(USkillStates* PlayerSkill)
+{
+	this->DefectRate /= PlayerSkill->FarmingExpert.SkillStage;
+	this->DryRate /= PlayerSkill->FarmingExpert.SkillStage;
+	this->GrowSpeed *= PlayerSkill->FarmingExpert.SkillStage;
+}
+
+void ACrop::Harvester(USkillStates* PlayerSkill)
+{
+	this->HarvestTimes *= PlayerSkill->FarmingHarvest.SkillStage;
 }

@@ -28,6 +28,9 @@ USkillStates::USkillStates()
 	Chopping = CreateDefaultSubobject<USkillsTypes>(TEXT("Chopping"));
 	Chopping->SkillStructName = TEXT("Chopping");
 
+	Tool = CreateDefaultSubobject<USkillsTypes>(TEXT("Tool"));
+	Tool->SkillStructName = TEXT("Tool");
+
 	Mining = CreateDefaultSubobject<USkillsTypes>(TEXT("Mining"));
 	Mining->SkillStructName = TEXT("Mining");
 
@@ -89,22 +92,22 @@ void USkillStates::SkillInit(int32 SkillID, FSkillData& Skill)
 			Skill.SkillSprite = SkillData->SkillSprite;
 			Skill.SkillStage = SkillData->SkillStage;
 			Skill.MaxStage = SkillData->MaxStage;
-			if(GEngine)
+			/*if(GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green,
-				FString::Printf(TEXT("Skill ID %d found in DataTable"), SkillID));
+				FString::Printf(TEXT("Skill ID %d found in DataTable"), SkillID));*/
 		}
 		else
 		{
-			if (GEngine)
+			/*if (GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,
-				FString::Printf(TEXT("Skill ID %d not found in DataTable"), SkillID));
+				FString::Printf(TEXT("Skill ID %d not found in DataTable"), SkillID));*/
 		}
 	}
 	else
 	{
-		if (GEngine)
+		/*if (GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,
-			TEXT("Failed to load Skill DataTable"));
+			TEXT("Failed to load Skill DataTable"));*/
 	}
 }
 
@@ -137,36 +140,12 @@ void USkillStates::SkillStrucUpdate(SkillType SkillType, int32 ExpValue) {
 				SkillPointUse(SkillType::Endurance, Index);
 			}
 			break;
-		case SkillType::Farming:
-			Farming->UpdateLevel(ExpValue);
-			if (Farming->SkillPoint)
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green,
-					FString::Printf(TEXT("SkillStruc %s £¬open skill table and choose one skill to levelup"), *Farming->SkillStructName));
-			}
-			break;
 		case SkillType::Fishing:
 			Fishing->UpdateLevel(ExpValue);
 			if (Fishing->SkillPoint)
 			{
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green,
 					FString::Printf(TEXT("SkillStruc %s £¬open skill table and choose one skill to levelup"), *Fishing->SkillStructName));
-			}
-			break;
-		case SkillType::Chopping:
-			Chopping->UpdateLevel(ExpValue);
-			if (Chopping->SkillPoint)
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green,
-					FString::Printf(TEXT("SkillStruc %s £¬open skill table and choose one skill to levelup"), *Chopping->SkillStructName));
-			}
-			break;
-		case SkillType::Mining:
-			Mining->UpdateLevel(ExpValue);
-			if (Mining->SkillPoint)
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green,
-					FString::Printf(TEXT("SkillStruc %s £¬open skill table and choose one skill to levelup"), *Mining->SkillStructName));
 			}
 			break;
 		case SkillType::Cooking:
@@ -193,7 +172,16 @@ void USkillStates::SkillStrucUpdate(SkillType SkillType, int32 ExpValue) {
 					FString::Printf(TEXT("SkillStruc %s £¬open skill table and choose one skill to levelup"), *Foraging->SkillStructName));
 			}
 			break;
+		case SkillType::Farming:
+			Farming->UpdateLevel(ExpValue);
+			if (Farming->SkillPoint)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green,
+					FString::Printf(TEXT("SkillStruc %s £¬open skill table and choose one skill to levelup"), *Farming->SkillStructName));
+			}
 		case SkillType::Tool:
+		case SkillType::Chopping:
+		case SkillType::Mining:
 			Tool->UpdateLevel(ExpValue);
 			if (Tool->SkillPoint)
 			{

@@ -47,7 +47,7 @@ struct FSkillData : public FTableRowBase
 	UPaperSprite* SkillSprite = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 SkillStage = 0;
+	int32 SkillStage = 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 MaxStage = 3;
@@ -60,7 +60,7 @@ struct FSkillData : public FTableRowBase
 		Describe = TEXT("None");
 		SkillType = SkillType::Endurance;
 		SkillSprite = nullptr;
-		SkillStage = 0;
+		SkillStage = 1;
 		MaxStage = 3;
 	}
 
@@ -89,6 +89,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString SkillStructName;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 SkillStage;
+
 	USkillsTypes()
 	{
 		Level = 1;
@@ -96,6 +99,7 @@ public:
 		SkillPoint = 0;
 		ExpToNextLevel = 50;
 		SkillStructName = TEXT("None");
+		SkillStage = 1;
 	}
 	
 
