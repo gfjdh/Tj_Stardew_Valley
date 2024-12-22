@@ -58,10 +58,19 @@ void UCookMenuRow::ButtonCanClicked(int LevelNeed)
 			CookButton->SetColorAndOpacity(FLinearColor(1.0f, 1.0f, 1.0f, 0.5f));
 		}
 		else {
+			CookButton->OnClicked.AddDynamic(this, &UCookMenuRow::OnCookButtonClicked);
 			CookButton->SetColorAndOpacity(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
 		}
 		break;
 	case SkillType::Tool:
+		if (Player->PlayerSkill->Tool->SkillStage <= LevelNeed) {
+			//等级不够不让合成
+			CookButton->OnClicked.RemoveAll(this);
+			CookButton->SetColorAndOpacity(FLinearColor(1.0f, 1.0f, 1.0f, 0.5f));
+		}
+		else {
+			CookButton->SetColorAndOpacity(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
+		}
 		break;
 	default:
 		break;

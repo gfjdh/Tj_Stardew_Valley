@@ -16,7 +16,7 @@ void UCookWidget::DisplayWidget(bool bIsVisible)
 {
 	if (bIsVisible) {
 		AddToViewport();
-		CookMenuRowB->ButtonCanClicked(2);
+		CookMenuRowB->ButtonCanClicked(1);
 	}
 	else {
 		RemoveFromParent();

@@ -243,8 +243,6 @@ void AMyPaperZDCharacter::Tick(float DeltaTime)
 	FVector PlayerLocation = GetActorLocation();
 	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Player Location: X=%f, Y=%f, Z=%f"), PlayerLocation.X, PlayerLocation.Y, PlayerLocation.Z));
 	FishGameTick();
-	DayStateFilterWidget->SetFilterTransparency();
-	SetTimeWidgetImage();
 }
 
 
@@ -1193,6 +1191,29 @@ void AMyPaperZDCharacter::DisplaySkillBoard()
 		{
 			// 将用户界面添加到视图中
 			SkillWidgetInstance->AddToViewport();
+			//保持加点状况
+			if (PlayerSkill->CookingExpert.SkillStage == 3) {
+				SkillWidgetInstance->HighLight(SkillWidgetInstance->CookSkillImage2, 5.0f);
+			}
+			else if (PlayerSkill->CookingExpert.SkillStage == 2) {
+				SkillWidgetInstance->HighLight(SkillWidgetInstance->CookSkillImage1, 5.0f);
+			}
+
+			if (PlayerSkill->FarmingExpert.SkillStage == 3) {
+				SkillWidgetInstance->HighLight(SkillWidgetInstance->FarmingSkillImage2, 5.0f);
+			}
+			else if (PlayerSkill->FarmingExpert.SkillStage == 2) {
+				SkillWidgetInstance->HighLight(SkillWidgetInstance->FarmingSkillImage1, 5.0f);
+			}
+
+			if (PlayerSkill->ToolExpert.SkillStage == 3) {
+				SkillWidgetInstance->HighLight(SkillWidgetInstance->ToolSkillImage2, 5.0f);
+			}
+			else if (PlayerSkill->ToolExpert.SkillStage == 2) {
+				SkillWidgetInstance->HighLight(SkillWidgetInstance->ToolSkillImage1, 5.0f);
+			}
+
+
 			SkillWidgetInstance->SkillPointText(PlayerSkill->Farming->SkillPoint, PlayerSkill->Tool->SkillPoint, PlayerSkill->Cooking->SkillPoint);
 			SkillBoardIsOpen = true;
 			if (SkillWidgetInstance->FarmingSkillLevel1)
@@ -1240,6 +1261,9 @@ void AMyPaperZDCharacter::OnCookSkillLevel1Clicked()
 {
 	if (PlayerSkill->Cooking->SkillStage != 1||PlayerSkill->Cooking->SkillPoint<1) {
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Unable To Unlock!"));
+	}
+	else if (PlayerSkill->CookingExpert.SkillStage == 1) {
+		SkillWidgetInstance->HighLight(SkillWidgetInstance->CookSkillImage1, 5.0f);
 	}
 	else {
 		PlayerSkill->Cooking->SkillStage++;
