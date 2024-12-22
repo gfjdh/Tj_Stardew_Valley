@@ -1,9 +1,12 @@
 #include "CookWidget.h"
+#include "MyPaperZDCharacter.h"
 
 void UCookWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	CloseButton->OnClicked.AddDynamic(this, &UCookWidget::OnCloseButtonClicked);
+	CookMenuRowA->SetVisibility(ESlateVisibility::Visible);
+	CookMenuRowB->SetVisibility(ESlateVisibility::Visible);
 }
 
 void UCookWidget::OnCloseButtonClicked()
@@ -21,10 +24,4 @@ void UCookWidget::DisplayWidget(bool bIsVisible)
 	}
 }
 
-void UCookWidget::EnableCookMenuRow(int Index, bool bIsEnable)
-{
-	if (Index < CookMenuRow.Num()) {
-		CookMenuRow[Index]->SetVisibility(bIsEnable ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
-	}
-}
 

@@ -75,7 +75,7 @@ class TJ_STARDEW_VALLEY_API USkillsTypes : public UObject
 	GENERATED_BODY()
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 Level;
+	int32 Level=1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 Exp;

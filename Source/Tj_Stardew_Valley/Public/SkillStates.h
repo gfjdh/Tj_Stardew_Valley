@@ -180,4 +180,6 @@ public:
 	UFUNCTION()
 	void SkillPointUse(SkillType SkillType, int32 SkillID);
 
+	UFUNCTION()
+	void SkillInit1();
 };

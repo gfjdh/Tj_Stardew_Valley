@@ -25,7 +25,10 @@ public:
 	UTextBlock* TitleText;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	TArray<UCookMenuRow*> CookMenuRow;
+	UCookMenuRow* CookMenuRowA;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UCookMenuRow* CookMenuRowB;
 public:
 	virtual void NativeConstruct() override;
 
@@ -33,6 +36,4 @@ public:
 	void OnCloseButtonClicked();
 
 	void DisplayWidget(bool bIsVisible);
-
-	void EnableCookMenuRow(int Index, bool bIsEnable);
 };
