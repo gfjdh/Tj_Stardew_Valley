@@ -512,7 +512,7 @@ void AMyPaperZDCharacter::Water()
 		}
 
 		CurrentPlayerState = EPlayerState::Idle;
-		UpdateStamina(-2);
+		UpdateStamina(-3+ PlayerSkill->FarmingEndurancer.SkillStage);
 	}
 }
 
@@ -547,7 +547,7 @@ void AMyPaperZDCharacter::Hoe()
 		}
 
 		CurrentPlayerState = EPlayerState::Idle;
-		UpdateStamina(-5);
+		UpdateStamina(-6+PlayerSkill->FarmingEndurancer.SkillStage);
 	}
 }
 
@@ -771,10 +771,12 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 	}
 	//和耕地交互
 	else if (FarmLand) {
+		ACrop* CropToSpawn;
 		//浇水
 		if (CurrentPlayerState == EPlayerState::Water) {
 			FarmLand->WaterFarmLand();
 			PlayerSkill->SkillStrucUpdate(SkillType::Tool, 10);
+			PlayerSkill->SkillStrucUpdate(SkillType::Farming, 5);
 		}
 		//种植
 		else if (CurrentPlayerState == EPlayerState::Plant) {
@@ -783,11 +785,15 @@ void AMyPaperZDCharacter::InteractBoxOverlapBegin(UPrimitiveComponent* Overlappe
 			if (FarmLand->WaterStage == 1) {
 				switch (PlayerInventory->CurrentItem()->ItemID) {
 				case 1002:
-					GetWorld()->SpawnActor<ACrop>(CarrotToSpawn, PlantLocation, FRotator(0.0f, 0.0f, 0.0f));
+					CropToSpawn=GetWorld()->SpawnActor<ACrop>(CarrotToSpawn, PlantLocation, FRotator(0.0f, 0.0f, 0.0f));
+					CropToSpawn->Expert(PlayerSkill);
+					CropToSpawn->Harvester(PlayerSkill);
 					PlayerSkill->SkillStrucUpdate(SkillType::Farming, 10);
 					break;
 				case 1003:
-					GetWorld()->SpawnActor<ACrop>(WheatToSpawn, PlantLocation, FRotator(0.0f, 0.0f, 0.0f));
+					CropToSpawn=GetWorld()->SpawnActor<ACrop>(WheatToSpawn, PlantLocation, FRotator(0.0f, 0.0f, 0.0f));
+					CropToSpawn->Expert(PlayerSkill);
+					CropToSpawn->Harvester(PlayerSkill);
 					PlayerSkill->SkillStrucUpdate(SkillType::Farming, 10);
 					break;
 				}
