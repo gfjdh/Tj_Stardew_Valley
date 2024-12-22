@@ -172,8 +172,14 @@ void USkillStates::SkillStrucUpdate(SkillType SkillType, int32 ExpValue) {
 					FString::Printf(TEXT("SkillStruc %s £¬open skill table and choose one skill to levelup"), *Foraging->SkillStructName));
 			}
 			break;
-		case SkillType::Tool:
 		case SkillType::Farming:
+			Farming->UpdateLevel(ExpValue);
+			if (Farming->SkillPoint)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green,
+					FString::Printf(TEXT("SkillStruc %s £¬open skill table and choose one skill to levelup"), *Farming->SkillStructName));
+			}
+		case SkillType::Tool:
 		case SkillType::Chopping:
 		case SkillType::Mining:
 			Tool->UpdateLevel(ExpValue);
