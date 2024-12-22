@@ -10,6 +10,11 @@ void UCookWidget::NativeConstruct()
 void UCookWidget::OnCloseButtonClicked()
 {
 	DisplayWidget(false);
+	APlayerController *PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	if (PlayerController)
+	{
+		PlayerController->SetShowMouseCursor(false);
+	}
 }
 
 void UCookWidget::DisplayWidget(bool bIsVisible)
@@ -20,6 +25,11 @@ void UCookWidget::DisplayWidget(bool bIsVisible)
 	}
 	else {
 		RemoveFromParent();
+	}
+	APlayerController *PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	if (PlayerController)
+	{
+		PlayerController->SetShowMouseCursor(true);
 	}
 }
 

@@ -211,7 +211,6 @@ void AMerchant::HandleSale(int32 OptionIndex, AMyPaperZDCharacter *Player)
     {
         FItemForSale Option = ItemsForSale[OptionIndex];
         UInventory *PlayerInventory = Player->FindComponentByClass<UInventory>();
-
         if (PlayerInventory && PlayerInventory->HasItem(Option.FItemData.ItemID))
         {
             // 移除玩家的物品

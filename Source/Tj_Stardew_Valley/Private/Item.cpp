@@ -20,8 +20,7 @@ UItem::UItem()
 void UItem::CreateItemInfo(int32 InItemID)
 {
     static const FString ContextString(TEXT("Item Data Context"));
-    ItemDataTable = LoadObject<UDataTable>(nullptr, TEXT("/Game/Inventory/Item_Table"));
-
+	ItemDataTable = LoadObject<UDataTable>(nullptr, TEXT("/Engine.DataTable'/Game/Inventory/Item_Table.Item_Table'"));
     if (ItemDataTable)
     {
         FString LocalContextString;
@@ -53,8 +52,7 @@ void UItem::CreateItemInfo(int32 InItemID)
     }
     else
     {
-        /*GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,
-            TEXT("Failed to load Item DataTable"));*/
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,TEXT("Failed to load Item DataTable"));
     }
 }
 

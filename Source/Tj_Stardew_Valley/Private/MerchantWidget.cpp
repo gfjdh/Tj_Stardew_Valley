@@ -64,7 +64,7 @@ void UMerchantWidget::OnPurchaseButtonClicked(int32 ItemIndex)
     if (CurrentMerchant)
     {
         CurrentMerchant->HandlePurchase(ItemIndex);
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("HandlePurchase!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("HandlePurchase!"));
     }
     else
 	{
